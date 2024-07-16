@@ -1,4 +1,4 @@
-package com.example.startap.dto;
+package com.example.startapp.dto;
 
 import lombok.Builder;
 

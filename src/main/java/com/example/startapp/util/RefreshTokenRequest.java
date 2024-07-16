@@ -1,4 +1,4 @@
-package com.example.startap.util;
+package com.example.startapp.util;
 
 import lombok.Data;
 

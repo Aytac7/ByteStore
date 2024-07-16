@@ -1,4 +1,4 @@
-package com.example.startap.util;
+package com.example.startapp.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,11 @@ import lombok.NoArgsConstructor;
 public class RegisterRequest {
 
     private String name;
+    private String surname;
     private String email;
     private String username;
     private String password;
+    private String repeatPassword;
+    private String phoneNumber;
+
 }

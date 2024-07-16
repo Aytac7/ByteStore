@@ -1,4 +1,4 @@
-package com.example.startap.service;
+package com.example.startapp.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

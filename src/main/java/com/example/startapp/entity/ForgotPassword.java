@@ -1,4 +1,4 @@
-package com.example.startap.entity;
+package com.example.startapp.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

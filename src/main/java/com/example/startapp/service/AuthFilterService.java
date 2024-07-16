@@ -1,4 +1,4 @@
-package com.example.startap.service;
+package com.example.startapp.service;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

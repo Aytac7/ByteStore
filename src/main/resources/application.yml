@@ -1,1 +1,31 @@
-spring.application.name=Startapp
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: root
+
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  mail:
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+
+    host: smtp.gmail.com
+    username: aytacr67@gmail.com
+    password: wjzpgjcwmzfcmqqi
+    default-encoding: UTF-8
+    protocol: smtp
+    port: 587

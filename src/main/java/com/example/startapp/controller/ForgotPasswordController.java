@@ -1,13 +1,13 @@
-package com.example.startap.controller;
+package com.example.startapp.controller;
 
 
-import com.example.startap.dto.MailBody;
-import com.example.startap.entity.ForgotPassword;
-import com.example.startap.entity.User;
-import com.example.startap.repository.ForgotPasswordRepository;
-import com.example.startap.repository.UserRepository;
-import com.example.startap.service.EmailService;
-import com.example.startap.util.ChangePassword;
+import com.example.startapp.dto.MailBody;
+import com.example.startapp.entity.ForgotPassword;
+import com.example.startapp.entity.User;
+import com.example.startapp.repository.ForgotPasswordRepository;
+import com.example.startapp.repository.UserRepository;
+import com.example.startapp.service.EmailService;
+import com.example.startapp.util.ChangePassword;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +18,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
-
 @RestController
 @RequestMapping("/forgotPassword")
 public class ForgotPasswordController {
@@ -53,7 +52,7 @@ public class ForgotPasswordController {
 
         ForgotPassword fp = ForgotPassword.builder()
                 .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() + 20 * 1000))
+                .expirationTime(new Date(System.currentTimeMillis() + 3 * 60 * 1000))
                 .user(user)
                 .build();
 

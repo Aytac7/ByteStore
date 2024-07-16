@@ -1,4 +1,4 @@
-package com.example.startap.entity;
+package com.example.startapp.entity;
 
 public enum UserRole {
     USER,

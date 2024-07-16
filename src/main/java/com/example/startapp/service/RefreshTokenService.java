@@ -1,9 +1,9 @@
-package com.example.startap.service;
+package com.example.startapp.service;
 
-import com.example.startap.entity.RefreshToken;
-import com.example.startap.entity.User;
-import com.example.startap.repository.RefreshTokenRepository;
-import com.example.startap.repository.UserRepository;
+import com.example.startapp.entity.RefreshToken;
+import com.example.startapp.entity.User;
+import com.example.startapp.repository.RefreshTokenRepository;
+import com.example.startapp.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 

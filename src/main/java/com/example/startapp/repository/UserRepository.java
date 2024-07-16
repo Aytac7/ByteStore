@@ -1,6 +1,6 @@
-package com.example.startap.repository;
+package com.example.startapp.repository;
 
-import com.example.startap.entity.User;
+import com.example.startapp.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

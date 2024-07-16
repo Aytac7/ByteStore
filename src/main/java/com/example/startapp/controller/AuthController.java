@@ -1,15 +1,15 @@
-package com.example.startap.controller;
+package com.example.startapp.controller;
 
 
-import com.example.startap.entity.RefreshToken;
-import com.example.startap.entity.User;
-import com.example.startap.service.AuthService;
-import com.example.startap.service.JwtService;
-import com.example.startap.service.RefreshTokenService;
-import com.example.startap.util.AuthResponse;
-import com.example.startap.util.LoginRequest;
-import com.example.startap.util.RefreshTokenRequest;
-import com.example.startap.util.RegisterRequest;
+import com.example.startapp.entity.RefreshToken;
+import com.example.startapp.entity.User;
+import com.example.startapp.service.AuthService;
+import com.example.startapp.service.JwtService;
+import com.example.startapp.service.RefreshTokenService;
+import com.example.startapp.util.AuthResponse;
+import com.example.startapp.util.LoginRequest;
+import com.example.startapp.util.RefreshTokenRequest;
+import com.example.startapp.util.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
