@@ -1,4 +1,4 @@
-package com.example.startapp.util;
+package com.example.startapp.dto;
 
 public record ChangePassword(String password, String repeatPassword) {
 }

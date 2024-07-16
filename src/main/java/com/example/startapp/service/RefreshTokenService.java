@@ -2,8 +2,10 @@ package com.example.startapp.service;
 
 import com.example.startapp.entity.RefreshToken;
 import com.example.startapp.entity.User;
+import com.example.startapp.exception.UserNotFoundException;
 import com.example.startapp.repository.RefreshTokenRepository;
 import com.example.startapp.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,7 @@ public class RefreshTokenService {
 
     public RefreshToken createRefreshToken(String username) {
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + username));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(),"User not found with email : " + username));
 
         RefreshToken refreshToken = user.getRefreshToken();
 

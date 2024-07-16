@@ -1,11 +1,10 @@
 package com.example.startapp.entity;
 
-import com.example.startapp.enums.UserStatus;
+import com.example.startapp.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -39,7 +39,6 @@ public class User implements UserDetails {
 
     @NotBlank(message = "The email field can't be blank")
     @Column(unique = true)
-
     @Email(message = "Please enter email in proper format!")
     private String email;
 
@@ -66,9 +65,14 @@ public class User implements UserDetails {
     @NotBlank(message = "The surname field can't be blank")
     private String surname;
 
-//
-//    @Enumerated(EnumType.STRING)
-//    private UserStatus userStatus;
+    @Column(name = "account_non_locked")
+    private boolean accountNonLocked;
+
+    @Column(name = "failed_attempt")
+    private int failedAttempt;
+
+    @Column(name = "lock_time")
+    private Date lockTime;
 
     @CreationTimestamp
     private LocalDateTime createdDate;

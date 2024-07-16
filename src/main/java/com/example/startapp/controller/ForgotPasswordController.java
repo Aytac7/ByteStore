@@ -7,7 +7,7 @@ import com.example.startapp.entity.User;
 import com.example.startapp.repository.ForgotPasswordRepository;
 import com.example.startapp.repository.UserRepository;
 import com.example.startapp.service.EmailService;
-import com.example.startapp.util.ChangePassword;
+import com.example.startapp.dto.ChangePassword;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

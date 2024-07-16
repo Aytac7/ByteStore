@@ -1,18 +1,20 @@
 package com.example.startapp.service;
 
 import com.example.startapp.dto.MailBody;
-import com.example.startapp.entity.UserRole;
+import com.example.startapp.enums.UserRole;
 import com.example.startapp.entity.User;
 
+import com.example.startapp.exception.PasswordInvalidException;
+import com.example.startapp.exception.UserEmailExistsException;
+import com.example.startapp.exception.UserNotFoundException;
 import com.example.startapp.repository.UserRepository;
-import com.example.startapp.util.AuthResponse;
-import com.example.startapp.util.LoginRequest;
-import com.example.startapp.util.RegisterRequest;
+import com.example.startapp.dto.response.AuthResponse;
+import com.example.startapp.dto.request.LoginRequest;
+import com.example.startapp.dto.request.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,7 +34,11 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest registerRequest) {
         if(!registerRequest.getPassword().equals(registerRequest.getRepeatPassword())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match!");
+            throw new PasswordInvalidException(HttpStatus.BAD_REQUEST.name(), "Passwords do not match!");
+        }
+
+        if(userRepository.findByEmail(registerRequest.getEmail()).isPresent()){
+            throw new UserEmailExistsException(HttpStatus.BAD_REQUEST.name(), "Email Exists");
         }
 
         String verificationToken = UUID.randomUUID().toString();
@@ -73,10 +79,14 @@ public class AuthService {
                         )
         );
 
-        var user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(),"User not found!"));
 
         if (!user.isEmailVerified()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email not verified!");
+        }
+
+        if(!user.getPassword().equals(loginRequest.getPassword())){
+            throw new UserNotFoundException(HttpStatus.NOT_FOUND.name(),"Invalid username or password");
         }
 
 
