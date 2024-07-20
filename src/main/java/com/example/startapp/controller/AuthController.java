@@ -1,56 +1,54 @@
 package com.example.startapp.controller;
 
 
-import com.example.startapp.entity.RefreshToken;
-import com.example.startapp.entity.User;
+import com.example.startapp.dto.request.LoginRequest;
+import com.example.startapp.dto.request.UserOtpRequest;
 import com.example.startapp.service.AuthService;
-import com.example.startapp.service.JwtService;
 import com.example.startapp.service.RefreshTokenService;
 import com.example.startapp.dto.response.AuthResponse;
-import com.example.startapp.dto.request.LoginRequest;
 import com.example.startapp.dto.request.RefreshTokenRequest;
 import com.example.startapp.dto.request.RegisterRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth/")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
-    private final JwtService jwtService;
 
-    public AuthController(AuthService authService, RefreshTokenService refreshTokenService, JwtService jwtService) {
+
+    public AuthController(AuthService authService, RefreshTokenService refreshTokenService) {
         this.authService = authService;
         this.refreshTokenService = refreshTokenService;
-        this.jwtService = jwtService;
+
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<AuthResponse> register( @Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity.ok(authService.register(registerRequest));
     }
-
+    @PostMapping("/verify-email/{email}")
+    public ResponseEntity<String> verifyEmail(@PathVariable String email) {
+        authService.verifyEmail(email);
+        return ResponseEntity.ok("verified email,  otp code sent");
+    }
+    @PostMapping("/confirm-register/{otp}/{email}")
+    public ResponseEntity<String> confirmRegistration(@PathVariable String email,
+                                                      @PathVariable Integer otp) {
+        authService.confirmRegistration(email, otp);
+        return ResponseEntity.ok("Registration confirmed!");
+    }
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponse> login( @Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
-
-        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenRequest.getRefreshToken());
-        User user = refreshToken.getUser();
-
-        String accessToken = jwtService.generateToken(user);
-
-        return ResponseEntity.ok(AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getRefreshToken())
-                .build());
+        AuthResponse authResponse = refreshTokenService.refreshToken(refreshTokenRequest.getRefreshToken());
+        return ResponseEntity.ok(authResponse);
     }
 }
