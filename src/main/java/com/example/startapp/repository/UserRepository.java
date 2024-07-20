@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -18,7 +19,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     void updatePassword(String email, String password);
 
 
-    @Query("UPDATE User u SET u.failedAttempt = ?1 WHERE u.email = ?2")
     @Modifying
-    public void updateFailedAttempts(int failAttempts, String email);
+    @Transactional
+    @Query("update User u set u.failedAttempt = ?1 WHERE u.email = ?2")
+    void updateFailedAttempts(int failAttempts, String email);
+
+    @Modifying
+    @Query("UPDATE User u SET u.accountNonLocked = ?1, u.lockTime = ?2 WHERE u.email = ?3")
+    void updateLockStatus(boolean accountNonLocked, Date lockTime, String email);
 }
