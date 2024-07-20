@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "users")
 @Data
@@ -59,11 +60,13 @@ public class User implements UserDetails {
 
     @NotBlank(message = "The phoneNumber field can't be blank")
     @Pattern(regexp = "^\\+?[0-9]{10,15}$",
-            message = "Phone number must be between 10 and 15 digits, optionally starting with '+'.")
+            message = "Phone number must be between 10 and 15 digits, optionally starting with '+'. format=+994551212333")
     private String phoneNumber;
 
     @NotBlank(message = "The surname field can't be blank")
     private String surname;
+
+    private boolean enabled;
 
     @Column(name = "account_non_locked")
     private boolean accountNonLocked;
@@ -76,11 +79,14 @@ public class User implements UserDetails {
 
     @CreationTimestamp
     private LocalDateTime createdDate;
+
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
     private boolean emailVerified;
-    private String verificationToken;
+
+
+
 
 
     @Override
@@ -88,6 +94,14 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
+
+
+    public int getFailedAttempt() {
+        return failedAttempt;
+    }
+    public void setFailedAttempt(int failedAttempt) {
+        this.failedAttempt = failedAttempt;
+    }
     @Override
     public String getPassword() {
         return password;
@@ -105,7 +119,15 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        if (lockTime == null) {
+            return true;  // Account is not locked if lockTime is null
+        }
+
+        long lockTimeInMillis = lockTime.getTime();
+        long currentTimeInMillis = System.currentTimeMillis();
+        long lockDurationInMillis = 60 * 1000;  // 1 minute
+
+        return lockTimeInMillis + lockDurationInMillis < currentTimeInMillis;
     }
 
     @Override
