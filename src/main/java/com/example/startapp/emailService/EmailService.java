@@ -1,4 +1,4 @@
-package com.example.startapp.service;
+package com.example.startapp.emailService;
 
 import com.example.startapp.dto.MailBody;
 import lombok.RequiredArgsConstructor;
