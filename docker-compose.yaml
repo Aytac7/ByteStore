@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  startapp:
+    image: startapp:v1
+    ports:
+      - 8088:8088
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/startapp
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=8888
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=8888
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=startapp
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  pgdata:
