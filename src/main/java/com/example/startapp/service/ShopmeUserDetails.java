@@ -2,6 +2,7 @@ package com.example.startapp.service;
 
 import com.example.startapp.entity.User;
 import com.example.startapp.enums.UserRole;
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,9 +15,10 @@ import java.util.List;
 import java.util.Set;
 
 
+
 @Getter
 public class ShopmeUserDetails implements UserDetails {
-    private  User user;
+    private final User user;
      
     public ShopmeUserDetails(User user) {
         this.user = user;
@@ -73,9 +75,4 @@ public class ShopmeUserDetails implements UserDetails {
         this.user.setName(surname);
     }
 
-    public User getUser(){
-        return this.user;
-    }
-
-    // other overridden methods...
 }

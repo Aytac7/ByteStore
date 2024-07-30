@@ -1,12 +1,9 @@
 package com.example.startapp.dto.request;
 
-import com.example.startapp.entity.ForgotPassword;
-import com.example.startapp.entity.RefreshToken;
-import com.example.startapp.enums.UserRole;
+import com.example.startapp.enums.PhonePrefix;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -42,10 +39,12 @@ public class RegisterRequest {
     @NotBlank(message = "The password field can't be blank")
     private String repeatPassword;
 
+    @NotBlank(message = "The phone prefix field can't be blank")
+    private String phonePrefix;
 
     @NotBlank(message = "The phoneNumber field can't be blank")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$",
-            message = "Phone number must be between 10 and 15 digits, optionally starting with '+'. format=+994551212333")
+    @Pattern(regexp = "^\\d{7}$",
+            message = "Phone number must be 7 numbers")
     private String phoneNumber;
 
 }
