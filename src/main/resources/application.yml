@@ -1,17 +1,21 @@
-server:
-  port: 8080
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/startapp
     username: postgres
-    password: root
+    password: 8888
+
 
   jpa:
     database: postgresql
     show-sql: true
     hibernate:
       ddl-auto: update
+
+  liquibase:
+      enabled: true
+      database-change-log-lock-table: DATABASECHANGELOGLOCK
+      database-change-log-table: DATABASECHANGELOG
+      change-log: "db/changelog/db.changelog-main.yaml"
 
   mail:
     properties:
@@ -24,8 +28,26 @@ spring:
             enable: true
 
     host: smtp.gmail.com
-    username: 
-    password: 
+    username: nazrin.shikhalievaa@gmail.com
+    password: gpzk qidl amjh nutw
     default-encoding: UTF-8
     protocol: smtp
     port: 587
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 983185016956-aaala8q58vmcp07jg840he3hbg1uldl7.apps.googleusercontent.com
+            clientSecret: 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
+            scope:
+              - openid
+              - profile
+              - email
+
+server:
+  port: 8080
+  servlet:
+    context-path: /bytestore

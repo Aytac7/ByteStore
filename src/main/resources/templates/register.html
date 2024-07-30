@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <!-- Add common head elements like CSS, meta tags here -->
+</head>
+<body>
+<div class="container text-center">
+    <div>
+        <h2>Register</h2>
+        <br/>
+    </div>
+    <form th:action="@{/api/v1/auth/register}" method="post" style="max-width: 400px; margin: 0 auto;">
+        <div class="border border-secondary rounded p-3">
+            <div th:if="${param.error}">
+                <p class="text-danger">Error: ${param.error}</p>
+            </div>
+            <div>
+                <p><input type="text" name="name" required class="form-control" placeholder="Name" /></p>
+            </div>
+
+            <div>
+                <p><input type="text" name="surname" required class="form-control" placeholder="Surname" /></p>
+            </div>
+            <div>
+                <p><input type="text" name="username" required class="form-control" placeholder="Username" /></p>
+            </div>
+            <div>
+                <p><input type="email" name="email" required class="form-control" placeholder="E-mail" /></p>
+            </div>
+            <div>
+                <p><input type="text" name="phone_prefix" class="form-control" placeholder="PhonePrefix" /></p>
+            </div>
+            <div>
+                <p><input type="text" name="phone_number" class="form-control" placeholder="Phone Number" /></p>
+            </div>
+            <div>
+                <p><input type="password" name="password" required class="form-control" placeholder="Password" /></p>
+            </div>
+            <div>
+                <p><input type="password" name="repeat_password" required class="form-control" placeholder="Repeat Password" /></p>
+            </div>
+            <div>
+                <p><input type="submit" value="Register" class="btn btn-primary" /></p>
+            </div>
+        </div>
+    </form>
+    <br />
+    <p>Already have an account? <a th:href="@{/login}">Login here</a></p>
+</div>
+</body>
+</html>

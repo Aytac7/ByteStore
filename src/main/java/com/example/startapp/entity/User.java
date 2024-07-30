@@ -17,15 +17,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "users")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class User implements UserDetails {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,11 +57,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @NotBlank(message = "The phoneNumber field can't be blank")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$",
-            message = "Phone number must be between 10 and 15 digits, optionally starting with '+'. format=+994551212333")
-    private String phoneNumber;
-
     @NotBlank(message = "The surname field can't be blank")
     private String surname;
 
@@ -85,9 +79,13 @@ public class User implements UserDetails {
 
     private boolean emailVerified;
 
+    @NotBlank(message = "The phone prefix field can't be blank")
+    private String phonePrefix;
 
-
-
+    @NotBlank(message = "The phone number field can't be blank")
+    @Pattern(regexp = "^\\d{7}$",
+            message = "Phone number must be 7 digits")
+    private String phoneNumber;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -95,13 +93,14 @@ public class User implements UserDetails {
     }
 
 
-
     public int getFailedAttempt() {
         return failedAttempt;
     }
+
     public void setFailedAttempt(int failedAttempt) {
         this.failedAttempt = failedAttempt;
     }
+
     @Override
     public String getPassword() {
         return password;

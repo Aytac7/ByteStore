@@ -7,10 +7,13 @@ import com.example.startapp.dto.response.AuthResponse;
 import com.example.startapp.emailService.EmailService;
 import com.example.startapp.entity.User;
 import com.example.startapp.entity.UserOtp;
+import com.example.startapp.enums.PhonePrefix;
 import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.*;
+import com.example.startapp.mapper.UserMapper;
 import com.example.startapp.repository.UserOtpRepository;
 import com.example.startapp.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,8 +23,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
+
+import static java.lang.System.in;
 
 @Service
 @Slf4j
@@ -29,17 +35,19 @@ import java.util.Random;
 public class AuthService {
 
     public static final int MAX_FAILED_ATTEMPTS = 3;
-    private static final long LOCK_TIME_DURATION =60 * 1000;
+    private static final long LOCK_TIME_DURATION = 60 * 1000;
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserOtpRepository userOtpRepository;
-    private final AuthenticationManager authenticationManager;
+    private final UserMapper userMapper;
     private final EmailService emailService;
 
+    @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
+
         if (!registerRequest.getPassword().equals(registerRequest.getRepeatPassword())) {
             throw new PasswordInvalidException(HttpStatus.BAD_REQUEST.name(), "Passwords do not match!");
         }
@@ -48,23 +56,22 @@ public class AuthService {
             throw new UserEmailExistsException(HttpStatus.BAD_REQUEST.name(), "Email Exists");
         }
 
-
-        var user = User.builder()
-                .name(registerRequest.getName())
-                .surname(registerRequest.getSurname())
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .phoneNumber(registerRequest.getPhoneNumber())
-                .role(UserRole.USER)
-                .emailVerified(false)
-                .enabled(false)
-                .accountNonLocked(true)
-                .failedAttempt(0)
-                .lockTime(null)
-                .build();
+        if (userRepository.existsByPhonePrefixAndPhoneNumber(registerRequest.getPhonePrefix(), registerRequest
+                .getPhoneNumber())) {
+            throw new DuplicatePhoneNumberException("A user with this phone number already exists.");
+        }
+        System.out.println("User Details: " + registerRequest);
 
 
+
+        User user = userMapper.mapToUser(registerRequest);
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRole(UserRole.USER);
+        user.setEmailVerified(false);
+        user.setEnabled(false);
+        user.setAccountNonLocked(true);
+        user.setFailedAttempt(0);
+        user.setLockTime(null);
         User savedUser = userRepository.save(user);
 
         var accessToken = jwtService.generateToken(savedUser);
@@ -75,19 +82,19 @@ public class AuthService {
                 .refreshToken(refreshToken.getRefreshToken())
                 .build();
     }
+
     public ResponseEntity<String> verifyEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(),"Please provide an valid email!" + email));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Please provide an valid email!" + email));
 
         Integer otp = otpGenerator();
 
-        MailBody mailBody = new MailBody(email, "OTP for Registration" ,
-                "This is the OTP for your registration : " + otp );
+        MailBody mailBody = new MailBody(email, "OTP for Registration",
+                "This is the OTP for your registration : " + otp);
 
         UserOtp byUser = userOtpRepository.findByUser(user);
 
         if (byUser != null) {
-            // Mövcud kaydı yeniləmek
 
             byUser.setOtp(otp);
             byUser.setExpirationTime(new Date(System.currentTimeMillis() + 3 * 60 * 1000));
@@ -101,7 +108,6 @@ public class AuthService {
 
         emailService.sendSimpleMessage(mailBody);
         userOtpRepository.save(byUser);
-
         return ResponseEntity.ok("Email sent for verification!");
     }
 
@@ -122,38 +128,37 @@ public class AuthService {
         userRepository.save(user);
     }
 
-public AuthResponse login(LoginRequest loginRequest) {
-    User user = userRepository.findByEmail(loginRequest.getEmail())
-            .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found!"));
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found!"));
 
-    if (!user.isAccountNonLocked()) {
-        if (unlockWhenTimeExpired(user)) {
-            log.info("User account unlocked: {}", user.getEmail());
-            throw new CustomLockedException("Your account has been unlocked. Please try to login again.");
-        } else {
-            log.info("User account is locked: {}", user.getEmail());
-            throw new CustomLockedException("Your account is locked due to multiple failed login attempts. Try again later.");
+        if (!user.isAccountNonLocked()) {
+            if (unlockWhenTimeExpired(user)) {
+                log.info("User account unlocked: {}", user.getEmail());
+                throw new CustomLockedException("Your account has been unlocked. Please try to login again.");
+            } else {
+                log.info("User account is locked: {}", user.getEmail());
+                throw new CustomLockedException("Your account is locked due to multiple failed login attempts. Try again later.");
+            }
         }
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            log.info("Invalid password for user: {}", user.getEmail());
+            handleFailedAttempts(user);
+            throw new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Invalid username or password");
+        }
+
+        resetFailedAttempts(user.getEmail());
+        log.info("User login successful: {}", user.getEmail());
+
+        var accessToken = jwtService.generateToken(user);
+        var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getRefreshToken())
+                .build();
     }
-
-    if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-        log.info("Invalid password for user: {}", user.getEmail());
-        handleFailedAttempts(user);
-        throw new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Invalid username or password");
-    }
-
-    resetFailedAttempts(user.getEmail());
-    log.info("User login successful: {}", user.getEmail());
-
-    var accessToken = jwtService.generateToken(user);
-    var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
-
-    return AuthResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken.getRefreshToken())
-            .build();
-}
-
 
 
     public void handleFailedAttempts(User user) {
@@ -206,6 +211,7 @@ public AuthResponse login(LoginRequest loginRequest) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found!"));
     }
+
     private Integer otpGenerator() {
         Random random = new Random();
         return random.nextInt(100_000, 999_999);
