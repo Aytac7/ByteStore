@@ -2,8 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/startapp
     username: postgres
-    password: 8888
-
+    password:
 
   jpa:
     database: postgresql
@@ -12,10 +11,10 @@ spring:
       ddl-auto: update
 
   liquibase:
-      enabled: true
-      database-change-log-lock-table: DATABASECHANGELOGLOCK
-      database-change-log-table: DATABASECHANGELOG
-      change-log: "db/changelog/db.changelog-main.yaml"
+    enabled: true
+    database-change-log-lock-table: DATABASECHANGELOGLOCK
+    database-change-log-table: DATABASECHANGELOG
+    change-log: "db/changelog/db.changelog-main.yaml"
 
   mail:
     properties:
@@ -28,8 +27,8 @@ spring:
             enable: true
 
     host: smtp.gmail.com
-    username: nazrin.shikhalievaa@gmail.com
-    password: gpzk qidl amjh nutw
+    username:
+    password:
     default-encoding: UTF-8
     protocol: smtp
     port: 587
@@ -40,14 +39,25 @@ spring:
       client:
         registration:
           google:
-            clientId: 983185016956-aaala8q58vmcp07jg840he3hbg1uldl7.apps.googleusercontent.com
-            clientSecret: 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
+            clientId:
+            clientSecret:
             scope:
               - openid
               - profile
               - email
 
 server:
+  error:
+    include-message: always
+    include-exception: true
+    include-stacktrace: never
   port: 8080
-  servlet:
-    context-path: /bytestore
+#  servlet:
+#    context-path: /bytestore
+#
+
+
+
+logging:
+  level:
+    org.springframework.web: "debug"
