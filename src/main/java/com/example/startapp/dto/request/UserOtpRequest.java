@@ -1,7 +1,5 @@
 package com.example.startapp.dto.request;
 
-import com.example.startapp.entity.User;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;

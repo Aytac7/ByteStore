@@ -1,4 +1,4 @@
-package com.example.startapp.service;
+package com.example.startapp.service.usermanagement;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,11 +1,9 @@
-package com.example.startapp.service;
+package com.example.startapp.service.usermanagement;
 
-import com.example.startapp.entity.User;
-import com.example.startapp.exception.UserNotFoundException;
+import com.example.startapp.entity.usermanagement.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;

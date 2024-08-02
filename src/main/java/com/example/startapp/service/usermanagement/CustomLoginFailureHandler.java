@@ -1,6 +1,6 @@
-package com.example.startapp.service;
+package com.example.startapp.service.usermanagement;
 
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.usermanagement.User;
 import com.example.startapp.exception.UserNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

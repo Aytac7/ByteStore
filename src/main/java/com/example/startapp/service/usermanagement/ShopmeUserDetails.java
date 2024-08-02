@@ -1,19 +1,15 @@
-package com.example.startapp.service;
+package com.example.startapp.service.usermanagement;
 
-import com.example.startapp.entity.User;
-import com.example.startapp.enums.UserRole;
-import lombok.Data;
+import com.example.startapp.entity.usermanagement.User;
+import com.example.startapp.enums.usermanagement.UserRole;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-
 
 
 @Getter

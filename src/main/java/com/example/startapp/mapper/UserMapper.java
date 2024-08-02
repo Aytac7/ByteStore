@@ -1,7 +1,7 @@
 package com.example.startapp.mapper;
 
 import com.example.startapp.dto.request.RegisterRequest;
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.usermanagement.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

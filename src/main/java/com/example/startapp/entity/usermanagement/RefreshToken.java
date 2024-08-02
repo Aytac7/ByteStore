@@ -1,4 +1,4 @@
-package com.example.startapp.entity;
+package com.example.startapp.entity.usermanagement;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

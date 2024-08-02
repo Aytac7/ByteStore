@@ -1,7 +1,7 @@
-package com.example.startapp.repository;
+package com.example.startapp.repository.usermanagement;
 
-import com.example.startapp.entity.ForgotPassword;
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.usermanagement.ForgotPassword;
+import com.example.startapp.entity.usermanagement.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

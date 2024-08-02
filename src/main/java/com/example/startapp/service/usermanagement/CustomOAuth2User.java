@@ -1,4 +1,4 @@
-package com.example.startapp.service;
+package com.example.startapp.service.usermanagement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

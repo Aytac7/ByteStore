@@ -1,13 +1,13 @@
-package com.example.startapp.service;
+package com.example.startapp.service.usermanagement;
 
 
 import com.example.startapp.dto.MailBody;
 import com.example.startapp.emailService.EmailService;
-import com.example.startapp.entity.ForgotPassword;
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.usermanagement.ForgotPassword;
+import com.example.startapp.entity.usermanagement.User;
 import com.example.startapp.exception.InvalidOtpException;
-import com.example.startapp.repository.ForgotPasswordRepository;
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.usermanagement.ForgotPasswordRepository;
+import com.example.startapp.repository.usermanagement.UserRepository;
 import com.example.startapp.dto.ChangePassword;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

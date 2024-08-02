@@ -1,19 +1,12 @@
-package com.example.startapp.service;
+package com.example.startapp.service.usermanagement;
 
-import com.example.startapp.entity.User;
-import com.example.startapp.enums.UserRole;
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.usermanagement.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.Map;
 
 
 @Service

@@ -1,7 +1,7 @@
-package com.example.startapp.repository;
+package com.example.startapp.repository.usermanagement;
 
 
-import com.example.startapp.entity.RefreshToken;
+import com.example.startapp.entity.usermanagement.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

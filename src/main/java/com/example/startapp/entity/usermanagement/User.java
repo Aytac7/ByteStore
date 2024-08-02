@@ -1,6 +1,6 @@
-package com.example.startapp.entity;
+package com.example.startapp.entity.usermanagement;
 
-import com.example.startapp.enums.UserRole;
+import com.example.startapp.enums.usermanagement.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -86,6 +86,11 @@ public class User implements UserDetails {
     @Pattern(regexp = "^\\d{7}$",
             message = "Phone number must be 7 digits")
     private String phoneNumber;
+
+
+    @OneToMany(mappedBy = "user")
+    private List<AdEntity> ads;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

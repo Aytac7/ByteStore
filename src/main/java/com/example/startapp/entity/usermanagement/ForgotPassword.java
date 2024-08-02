@@ -1,18 +1,17 @@
-package com.example.startapp.entity;
+package com.example.startapp.entity.usermanagement;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
-@Table(name = "user_otp")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class UserOtp {
+public class ForgotPassword {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,8 @@
 package com.example.startapp.config;
 
-import com.example.startapp.repository.UserRepository;
-import com.example.startapp.service.*;
+import com.example.startapp.repository.usermanagement.UserRepository;
+import com.example.startapp.service.usermanagement.AuthFilterService;
+import com.example.startapp.service.usermanagement.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

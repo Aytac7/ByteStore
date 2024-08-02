@@ -1,7 +1,6 @@
-package com.example.startapp.enums;
+package com.example.startapp.enums.usermanagement;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public enum PhonePrefix {
