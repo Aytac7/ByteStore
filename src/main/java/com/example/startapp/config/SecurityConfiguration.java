@@ -28,7 +28,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/bytestore/auth/**", "/forgotPassword/**", "/oauth2/**", "/login/**", "/home", "/register/**").permitAll()
+                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

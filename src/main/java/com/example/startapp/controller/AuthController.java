@@ -9,6 +9,8 @@ import com.example.startapp.dto.request.RefreshTokenRequest;
 import com.example.startapp.dto.request.RegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +20,16 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final RefreshTokenService refreshTokenService;
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody @Valid RegisterRequest request) {
+        logger.debug("Register request received: {}", request);
+        AuthResponse response = authService.register(request);
+        logger.debug("Register response: {}", response);
+        return ResponseEntity.ok(response);
 
     }
 

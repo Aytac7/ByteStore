@@ -10,7 +10,8 @@ import com.example.startapp.entity.UserOtp;
 import com.example.startapp.enums.PhonePrefix;
 import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.*;
-import com.example.startapp.mapper.UserMapper;
+//import com.example.startapp.mapper.UserMapper;
+//import com.example.startapp.mapper.UserMapper;
 import com.example.startapp.repository.UserOtpRepository;
 import com.example.startapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -42,7 +43,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserOtpRepository userOtpRepository;
-    private final UserMapper userMapper;
+//    private final UserMapper userMapper;
     private final EmailService emailService;
 
     @Transactional
@@ -64,14 +65,29 @@ public class AuthService {
 
 
 
-        User user = userMapper.mapToUser(registerRequest);
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setRole(UserRole.USER);
-        user.setEmailVerified(false);
-        user.setEnabled(false);
-        user.setAccountNonLocked(true);
-        user.setFailedAttempt(0);
-        user.setLockTime(null);
+        User user = User.builder()
+                .email(registerRequest.getEmail())
+                .name(registerRequest.getName())
+                .surname(registerRequest.getSurname())
+                .username(registerRequest.getUsername())
+                .phonePrefix(registerRequest.getPhonePrefix())
+                .phoneNumber(registerRequest.getPhoneNumber())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .role(UserRole.USER)
+                .emailVerified(false)
+                .enabled(false)
+                .accountNonLocked(true)
+                .failedAttempt(0)
+                .lockTime(null)
+                .build();
+//        User user = userMapper.mapToUser(registerRequest);
+//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+//        user.setRole(UserRole.USER);
+//        user.setEmailVerified(false);
+//        user.setEnabled(false);
+//        user.setAccountNonLocked(true);
+//        user.setFailedAttempt(0);
+//        user.setLockTime(null);
         User savedUser = userRepository.save(user);
 
         var accessToken = jwtService.generateToken(savedUser);
