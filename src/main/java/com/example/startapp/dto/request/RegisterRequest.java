@@ -39,12 +39,12 @@ public class RegisterRequest {
     @NotBlank(message = "The password field can't be blank")
     private String repeatPassword;
 
-    @NotBlank(message = "The phone prefix field can't be blank")
-    private String phonePrefix;
-
-    @NotBlank(message = "The phoneNumber field can't be blank")
-    @Pattern(regexp = "^\\d{7}$",
-            message = "Phone number must be 7 numbers")
-    private String phoneNumber;
+//    @NotBlank(message = "The phone prefix field can't be blank")
+//    private String phonePrefix;
+//
+//    @NotBlank(message = "The phoneNumber field can't be blank")
+//    @Pattern(regexp = "^\\d{7}$",
+//            message = "Phone number must be 7 numbers")
+//    private String phoneNumber;
 
 }
