@@ -87,6 +87,11 @@ public class User implements UserDetails {
             message = "Phone number must be 7 digits")
     private String phoneNumber;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    List<Ad> ads;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    List<Favorite> favorites;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
