@@ -31,11 +31,11 @@ databaseChangeLog:
               'ADMIN',
               '+99499',
               '+994558907643',
-              true,  -- enabled
-              true,  -- account_non_locked
-              0,     -- failed_attempt
-              NULL,  -- lock_time (or a specific timestamp if applicable)
-              CURRENT_TIMESTAMP,  -- created_date
-              CURRENT_TIMESTAMP,  -- updated_date
-              true   -- email_verified
+              true, 
+              true,
+              0,   
+              NULL,
+              CURRENT_TIMESTAMP,
+              CURRENT_TIMESTAMP,
+              true
               )
