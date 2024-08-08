@@ -18,8 +18,17 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(nullable = false)
+    private String fileName;
+
+    @Column(nullable = false)
+    private String fileType;
+
+    @Column(nullable = false)
+    private String filePath;
+
     @ManyToOne
-    @JoinColumn
-    Product product;
+    @JoinColumn(name = "ad_id", nullable = false)
+    private Ad ad;
 
 }

@@ -20,6 +20,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    String name;
+
     @ManyToMany
     @JoinTable(name = "categories_brands",
             joinColumns = @JoinColumn(name = "category_id"),

@@ -19,6 +19,8 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    String name;
+
     @ManyToMany
     @JoinTable(name = "categories_brands",
             joinColumns = @JoinColumn(name = "brand_id"),
@@ -26,7 +28,7 @@ public class Brand {
     List<Category>categories;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-    List<Product>products;
+    List<Model> models;
 
 
 }

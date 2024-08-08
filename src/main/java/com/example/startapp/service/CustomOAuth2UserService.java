@@ -26,23 +26,27 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        //return new CustomOAuth2User(oAuth2User);
-        return oAuth2User;
 
-//        String email = oAuth2User.getEmail();
-//
-//        User user = userRepository.findByEmail(email).orElseGet(() -> {
-//            User newUser = new User();
-//            newUser.setEmail(email);
-//            newUser.setRole(UserRole.USER);
-//            return userRepository.save(newUser);
-//        });
-//
-//        String role = user.getRole().name();
-//        return new DefaultOAuth2User(
-//                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-//                customOAuth2User.getAttributes(),
-//                "name");
+
+        String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
+
+        User user = userRepository.findByEmail(email).orElseGet(() -> {
+            User newUser = new User();
+            newUser.setEmail(email);
+            newUser.setName(name);
+            newUser.setPassword(""); // Leave password blank or set a default password if needed
+            newUser.setRole(UserRole.USER); // Set the default role
+            newUser.setEnabled(true);
+            newUser.setAccountNonLocked(true);
+            newUser.setEmailVerified(true);
+            return userRepository.save(newUser);
+        });
+
+        return new DefaultOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())),
+                oAuth2User.getAttributes(),
+                "email");
     }
 }
 

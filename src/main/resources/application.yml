@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/startapp
     username: postgres
-    password:
+    password: 8888
 
   jpa:
     database: postgresql
@@ -27,8 +27,8 @@ spring:
             enable: true
 
     host: smtp.gmail.com
-    username:
-    password:
+    username: nazrin.shikhalievaa@gmail.com
+    password: gpzk qidl amjh nutw
     default-encoding: UTF-8
     protocol: smtp
     port: 587
@@ -39,8 +39,8 @@ spring:
       client:
         registration:
           google:
-            clientId:
-            clientSecret:
+            clientId: 983185016956-aaala8q58vmcp07jg840he3hbg1uldl7.apps.googleusercontent.com
+            clientSecret: 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
             scope:
               - openid
               - profile
@@ -52,12 +52,12 @@ server:
     include-exception: true
     include-stacktrace: never
   port: 8080
-#  servlet:
-#    context-path: /bytestore
-#
+  #  servlet:
+  #    context-path: /bytestore
+
+
+file:
+  upload-dir: /path/to/upload/dir
 
 
 
-logging:
-  level:
-    org.springframework.web: "debug"

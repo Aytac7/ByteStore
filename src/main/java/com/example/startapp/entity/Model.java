@@ -9,24 +9,22 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "products")
+@Table(name = "models")
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    String name;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     Brand brand;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    List<Image> images;
 
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    List<Favorite> favorites;
 }

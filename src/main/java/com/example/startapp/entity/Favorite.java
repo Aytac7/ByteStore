@@ -24,6 +24,5 @@ public class Favorite {
 
     @ManyToOne
     @JoinColumn
-    private Product product;
-    // burda elan olmali yoxsa product hansi dogru ola biler
+    private Ad ad;
 }
