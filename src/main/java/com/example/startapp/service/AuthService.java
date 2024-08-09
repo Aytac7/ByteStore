@@ -57,10 +57,6 @@ public class AuthService {
             throw new UserEmailExistsException(HttpStatus.BAD_REQUEST.name(), "Email Exists");
         }
 
-        if (userRepository.existsByPhonePrefixAndPhoneNumber(registerRequest.getPhonePrefix(), registerRequest
-                .getPhoneNumber())) {
-            throw new DuplicatePhoneNumberException("A user with this phone number already exists.");
-        }
         System.out.println("User Details: " + registerRequest);
 
 
@@ -70,8 +66,6 @@ public class AuthService {
                 .name(registerRequest.getName())
                 .surname(registerRequest.getSurname())
                 .username(registerRequest.getUsername())
-                .phonePrefix(registerRequest.getPhonePrefix())
-                .phoneNumber(registerRequest.getPhoneNumber())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role(UserRole.USER)
                 .emailVerified(false)
