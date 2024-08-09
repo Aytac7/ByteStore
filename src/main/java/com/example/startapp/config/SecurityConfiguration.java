@@ -21,7 +21,7 @@ public class SecurityConfiguration {
 
     private final UserRepository userRepository;
     private final AuthFilterService authFilterService;
-
+//
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(authFilterService, SessionManagementFilter.class);
 
         return http.build();
+
     }
 
     @Bean

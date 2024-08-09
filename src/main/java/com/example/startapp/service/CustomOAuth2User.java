@@ -13,8 +13,6 @@ import java.util.Set;
 public class CustomOAuth2User implements OAuth2User {
     private final OAuth2User oAuth2User;
 
-
-
     @Override
     public Map<String, Object> getAttributes() {
         return oAuth2User.getAttributes();

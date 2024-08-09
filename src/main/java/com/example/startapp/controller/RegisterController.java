@@ -12,10 +12,12 @@ public class RegisterController {
     @GetMapping("/home")
     public String home(Model model,
                        @AuthenticationPrincipal OAuth2User user) {
-        String name = user.getAttribute("name");
-        String email = user.getAttribute("email");
-        model.addAttribute("name", name);
-        model.addAttribute("email", email);
+        if (user != null) {
+            String name = user.getAttribute("name");
+            String email = user.getAttribute("email");
+            model.addAttribute("name", name);
+            model.addAttribute("email", email);
+        }
         return "home";
     }
 
