@@ -1,0 +1,66 @@
+package com.example.startapp.entity;
+
+import com.example.startapp.enums.AdStatus;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "ads")
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Ad {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @Column(nullable = false)
+    Long price;
+
+    @Column(nullable = false)
+    String header;
+
+    @Column(nullable = false)
+    @Size(max = 700)
+    String additionalInfo;
+
+    @Column(nullable = false)
+    Boolean isNew;
+
+    @ManyToOne
+    @JoinColumn
+    User user;
+
+    @ManyToOne
+    @JoinColumn
+    Category category;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    Brand brand;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    Model model;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    AdStatus status;
+
+    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Image> images = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
+    List<Favorite> favorites;
+}
+
+

@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/startapp
     username: postgres
-    password:
+    password: 8888
 
   jpa:
     database: postgresql
@@ -52,12 +52,8 @@ server:
     include-exception: true
     include-stacktrace: never
   port: 8080
-#  servlet:
-#    context-path: /bytestore
-#
+  #  servlet:
+  #    context-path: /bytestore
 
 
 
-logging:
-  level:
-    org.springframework.web: "debug"
