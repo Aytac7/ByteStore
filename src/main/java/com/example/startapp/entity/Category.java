@@ -28,12 +28,9 @@ public class Category {
             inverseJoinColumns = @JoinColumn(name = "brand_id"))
     List<Brand> brands;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Category parent;
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    private List<Subcategory> subCategories;
 
-    @OneToMany(mappedBy = "parent",cascade = CascadeType.ALL)
-    private List<Category> children ;
 
     @OneToMany(mappedBy ="category",cascade = CascadeType.ALL )
     List<Ad> ads;
