@@ -7,11 +7,8 @@ import com.example.startapp.dto.response.AuthResponse;
 import com.example.startapp.emailService.EmailService;
 import com.example.startapp.entity.User;
 import com.example.startapp.entity.UserOtp;
-import com.example.startapp.enums.PhonePrefix;
 import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.*;
-//import com.example.startapp.mapper.UserMapper;
-//import com.example.startapp.mapper.UserMapper;
 import com.example.startapp.repository.UserOtpRepository;
 import com.example.startapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -19,16 +16,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import static java.lang.System.in;
 
 @Service
 @Slf4j
@@ -224,6 +218,7 @@ public class AuthService {
 
     private Integer otpGenerator() {
         Random random = new Random();
-        return random.nextInt(100_000, 999_999);
+        return random.nextInt(1_000, 10_000);
     }
+
 }
