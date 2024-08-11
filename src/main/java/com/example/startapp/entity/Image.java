@@ -31,6 +31,8 @@ public class Image {
     @Column(nullable = false)
     private String filePath;
 
+    String url;
+
     @ManyToOne
     @JoinColumn(name = "ad_id", nullable = false)
     private Ad ad;

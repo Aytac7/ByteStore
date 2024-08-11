@@ -14,7 +14,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdResponse {
 
-     Long id;
      Long price;
      String header;
      String additionalInfo;
@@ -25,7 +24,7 @@ public class AdResponse {
      BrandResponseForAd brandName;
      ModelResponseForAd modelName;
      AdStatus status;
-     List<String> imageUrls;
      LocalDateTime createdAt;
      LocalDateTime updatedAt;
+     List<String> imageUrls;
 }
