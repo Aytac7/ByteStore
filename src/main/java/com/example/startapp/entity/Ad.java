@@ -59,7 +59,7 @@ public class Ad {
     AdStatus status;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Image> images = new ArrayList<>();
+    List<Image> images ;
 
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
@@ -70,6 +70,8 @@ public class Ad {
 
     @UpdateTimestamp
     LocalDateTime updatedAt;
+
+    String phoneNumber;
 }
 
 
