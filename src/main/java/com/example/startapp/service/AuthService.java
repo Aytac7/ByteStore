@@ -53,8 +53,6 @@ public class AuthService {
 
         System.out.println("User Details: " + registerRequest);
 
-
-
         User user = User.builder()
                 .email(registerRequest.getEmail())
                 .name(registerRequest.getName())

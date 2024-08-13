@@ -79,13 +79,13 @@ public class User implements UserDetails {
 
     private boolean emailVerified;
 
-    @NotBlank(message = "The phone prefix field can't be blank")
-    private String phonePrefix;
-
-    @NotBlank(message = "The phone number field can't be blank")
-    @Pattern(regexp = "^\\d{7}$",
-            message = "Phone number must be 7 digits")
-    private String phoneNumber;
+//    @NotBlank(message = "The phone prefix field can't be blank")
+//    private String phonePrefix;
+//
+//    @NotBlank(message = "The phone number field can't be blank")
+//    @Pattern(regexp = "^\\d{7}$",
+//            message = "Phone number must be 7 digits")
+//    private String phoneNumber;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     List<Ad> ads;

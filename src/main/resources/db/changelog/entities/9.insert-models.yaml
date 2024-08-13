@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-models
+      author: bytestore
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO models (name, brand_id) VALUES 
+              ('Galaxy S21', (SELECT id FROM brands WHERE name = 'samsung')),
+              ('iPhone 13', (SELECT id FROM brands WHERE name = 'apple')),
+              ('MacBook Pro', (SELECT id FROM brands WHERE name = 'apple')),
+              ('Galaxy Note 20', (SELECT id FROM brands WHERE name = 'samsung'));

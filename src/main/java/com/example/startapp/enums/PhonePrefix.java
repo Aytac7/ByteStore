@@ -1,9 +1,13 @@
 package com.example.startapp.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Getter
+
 public enum PhonePrefix {
     PREFIX_99410("+99410"),
     PREFIX_99450("+99450"),
@@ -20,7 +24,7 @@ public enum PhonePrefix {
         this.prefix = prefix;
     }
 
-    public static PhonePrefix fromPrefix(String prefix) {
+    public PhonePrefix fromPrefix() {
         for (PhonePrefix phoneNumberPrefix : values()) {
             if (phoneNumberPrefix.getPrefix().equals(prefix)) {
                 return phoneNumberPrefix;
