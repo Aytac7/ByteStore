@@ -1,13 +1,17 @@
 package com.example.startapp.entity;
 
 import com.example.startapp.enums.AdStatus;
+import com.example.startapp.enums.PhonePrefix;
+import jakarta.mail.Multipart;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.stream.ImageInputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +63,7 @@ public class Ad {
     AdStatus status;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Size(max = 10, message = "You can upload a maximum of 10 images.")
     List<Image> images ;
 
 
@@ -70,6 +75,9 @@ public class Ad {
 
     @UpdateTimestamp
     LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    PhonePrefix phonePrefix;
 
     String phoneNumber;
 }

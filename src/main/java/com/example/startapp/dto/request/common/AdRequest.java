@@ -1,6 +1,11 @@
 package com.example.startapp.dto.request.common;
 
+import com.example.startapp.entity.Brand;
+import com.example.startapp.entity.Category;
+import com.example.startapp.entity.Image;
+import com.example.startapp.entity.Model;
 import com.example.startapp.enums.AdStatus;
+import com.example.startapp.enums.PhonePrefix;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -32,18 +37,20 @@ public class AdRequest {
     private Integer userId;
 
     @NotNull
-    private Long categoryId;
+    private Category category_id;
 
     @NotNull
-    private Long brandId;
+    private Brand brand_id;
 
     @NotNull
-    private Long modelId;
+    private Model model_id;
 
     @NotNull
-    private AdStatus status;
+    private List<Image> images;
 
-    private List<MultipartFile> images;
+    @NotNull
+    private PhonePrefix phonePrefix;
 
+    @NotNull
     private String phoneNumber;
 }

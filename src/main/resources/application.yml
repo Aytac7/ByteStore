@@ -1,14 +1,14 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/startapp
-    username: postgres
-    password: root
+    username:
+    password:
 
   jpa:
     database: postgresql
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
   liquibase:
     enabled: true
@@ -39,8 +39,8 @@ spring:
       client:
         registration:
           google:
-            clientId:  983185016956-aaala8q58vmcp07jg840he3hbg1uldl7.apps.googleusercontent.com
-            clientSecret: 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
+            clientId:
+            clientSecret:
             scope:
               - openid
               - profile
@@ -52,6 +52,11 @@ server:
     include-exception: true
     include-stacktrace: never
   port: 8080
+
+
+#logging:
+#  level:
+#    root: DEBUG
   #  servlet:
   #    context-path: /bytestore
 

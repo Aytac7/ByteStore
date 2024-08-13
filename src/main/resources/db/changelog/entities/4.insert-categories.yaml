@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-categories
+      author: bytestore
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO categories (
+              name) VALUES ('phone'), ('laptop'), ('accessories');

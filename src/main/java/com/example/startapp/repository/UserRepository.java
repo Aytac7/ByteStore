@@ -6,16 +6,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.Optional;
 
+
+@Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByEmail(String email);
-
-    @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.phonePrefix = :phonePrefix AND u.phoneNumber = :phoneNumber")
-    boolean existsByPhonePrefixAndPhoneNumber(String phonePrefix, String phoneNumber);
+//
+//    @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.phonePrefix = :phonePrefix AND u.phoneNumber = :phoneNumber")
+//    boolean existsByPhonePrefixAndPhoneNumber(String phonePrefix, String phoneNumber);
 
     @Transactional
     @Modifying
@@ -33,5 +36,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     void updateLockStatus(boolean accountNonLocked, Date lockTime, String email);
 
     @Query("SELECT u FROM User u WHERE u.username = :username")
-    public User getUserByUsername(@Param("username") String username);
+     User getUserByUsername(@Param("username") String username);
 }
