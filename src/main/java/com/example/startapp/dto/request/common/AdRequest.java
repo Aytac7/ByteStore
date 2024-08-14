@@ -37,16 +37,17 @@ public class AdRequest {
     private Integer userId;
 
     @NotNull
-    private Category category_id;
+    private Long categoryId;
 
     @NotNull
-    private Brand brand_id;
+    private Long brandId;
 
     @NotNull
-    private Model model_id;
+    private Long modelId;
 
     @NotNull
-    private List<Image> images;
+//    private List<Image> images;
+    private List<MultipartFile> images;
 
     @NotNull
     private PhonePrefix phonePrefix;
