@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/startapp
-    username:
-    password:
+    username: postgres
+    password: root
 
   jpa:
     database: postgresql
@@ -39,8 +39,8 @@ spring:
       client:
         registration:
           google:
-            clientId:
-            clientSecret:
+            clientId: 983185016956-aaala8q58vmcp07jg840he3hbg1uldl7.apps.googleusercontent.com
+            clientSecret: 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
             scope:
               - openid
               - profile
