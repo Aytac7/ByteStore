@@ -31,9 +31,11 @@ public class Image {
     @Column(nullable = false)
     private String filePath;
 
-    String url;
 
-    @ManyToOne
+    @Column(nullable = false)
+    String imageUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ad_id", nullable = false)
     private Ad ad;
 

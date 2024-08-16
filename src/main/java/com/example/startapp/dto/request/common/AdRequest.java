@@ -1,10 +1,5 @@
 package com.example.startapp.dto.request.common;
 
-import com.example.startapp.entity.Brand;
-import com.example.startapp.entity.Category;
-import com.example.startapp.entity.Image;
-import com.example.startapp.entity.Model;
-import com.example.startapp.enums.AdStatus;
 import com.example.startapp.enums.PhonePrefix;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -34,7 +29,7 @@ public class AdRequest {
     private Boolean isNew;
 
     @NotNull
-    private Integer userId;
+    private Long userId;
 
     @NotNull
     private Long categoryId;
@@ -46,7 +41,7 @@ public class AdRequest {
     private Long modelId;
 
     @NotNull
-//    private List<Image> images;
+    @Size(max = 10)
     private List<MultipartFile> images;
 
     @NotNull
@@ -54,4 +49,6 @@ public class AdRequest {
 
     @NotNull
     private String phoneNumber;
+
 }
+

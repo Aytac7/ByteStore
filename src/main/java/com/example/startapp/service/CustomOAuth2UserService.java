@@ -35,8 +35,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setName(name);
-            newUser.setPassword(""); // Leave password blank or set a default password if needed
-            newUser.setRole(UserRole.USER); // Set the default role
+            newUser.setPassword("");
+            newUser.setRole(UserRole.USER);
             newUser.setEnabled(true);
             newUser.setAccountNonLocked(true);
             newUser.setEmailVerified(true);
