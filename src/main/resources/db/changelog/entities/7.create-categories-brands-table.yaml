@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: admin
+      author: bytestore
+      changes:
+        - createTable:
+            tableName: categories_brands
+            columns:
+              - column:
+                  name: category_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: brand_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_categories_brands_category
+            baseTableName: categories_brands
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            constraintName: fk_categories_brands_brand
+            baseTableName: categories_brands
+            baseColumnNames: brand_id
+            referencedTableName: brands
+            referencedColumnNames: id

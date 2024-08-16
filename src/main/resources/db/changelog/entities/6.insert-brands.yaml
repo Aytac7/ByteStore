@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-brands
+      author: bytestore
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO brands (
+              name) VALUES ('samsung'), ('apple');

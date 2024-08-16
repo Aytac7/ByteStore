@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Date;
 import java.util.Optional;
 
-public interface UserOtpRepository extends JpaRepository<UserOtp, Integer> {
+public interface UserOtpRepository extends JpaRepository<UserOtp, Long> {
     UserOtp findByUser(User user);
 
     @Query("select otp from UserOtp otp where otp.otp = ?1 and otp.user = ?2")

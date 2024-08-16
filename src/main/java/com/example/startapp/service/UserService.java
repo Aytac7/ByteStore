@@ -1,29 +1,22 @@
 package com.example.startapp.service;
 
-import com.example.startapp.dto.request.FileRequestDto;
 import com.example.startapp.entity.User;
-import com.example.startapp.exception.EmptyFileException;
 import com.example.startapp.repository.UserRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.security.Principal;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+//    private final UserRepository userRepository;
+//
+//    public Long findById(@NotNull Long id) {
+//        Optional<User> user = userRepository.findById(id);
+//        return user.get().getUserId();
+//    }
 //    private final UserRepository userRepository;
 //
 //

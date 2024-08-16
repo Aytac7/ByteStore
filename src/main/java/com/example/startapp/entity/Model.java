@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Entity
 @Table(name = "models")
 @Builder
@@ -24,7 +23,6 @@ public class Model {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     Brand brand;
-
 
 
 }

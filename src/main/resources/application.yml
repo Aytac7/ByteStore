@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/startapp
     username: postgres
-    password: 8888
+    password:
 
   jpa:
     database: postgresql
@@ -52,6 +52,22 @@ server:
     include-exception: true
     include-stacktrace: never
   port: 8080
+
+
+cloud:
+  aws:
+    credentials:
+      accessKey:
+      secretKey:
+    region:
+      static:
+    s3:
+      bucket:
+
+  #
+#logging:
+#  level:
+#    root: ERROR
   #  servlet:
   #    context-path: /bytestore
 

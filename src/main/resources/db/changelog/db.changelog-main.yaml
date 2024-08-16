@@ -1,5 +1,33 @@
 databaseChangeLog:
   - include:
       file: db/changelog/moderation/1.create-users-table.yaml
+
   - include:
       file: db/changelog/moderation/2.insert-admin.yaml
+
+  - include:
+      file: db/changelog/entities/3.create-categories-table.yaml
+
+  - include:
+      file: db/changelog/entities/5.create-brands-table.yaml
+
+  - include:
+      file: db/changelog/entities/7.create-categories-brands-table.yaml
+
+  - include:
+      file: db/changelog/entities/8.create-models-table.yaml
+
+  - include:
+      file: db/changelog/entities/10.create-subcategories-table.yaml
+
+  - include:
+      file: db/changelog/entities/4.insert-categories.yaml
+
+  - include:
+      file: db/changelog/entities/6.insert-brands.yaml
+
+  - include:
+      file: db/changelog/entities/9.insert-models.yaml
+
+  - include:
+      file: db/changelog/entities/11.insert-subcategories.yaml

@@ -21,14 +21,14 @@ public class SecurityConfiguration {
 
     private final UserRepository userRepository;
     private final AuthFilterService authFilterService;
-//
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**").permitAll()
+                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

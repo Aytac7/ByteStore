@@ -23,11 +23,11 @@ public class RegisterController {
 
     @GetMapping("/login")
     public String showLoginPage() {
-        return "login"; // Return login page template
+        return "login";
     }
 
     @GetMapping("/register")
     public String showRegisterPage() {
-        return "register"; // Return register page template
+        return "register";
     }
 }
