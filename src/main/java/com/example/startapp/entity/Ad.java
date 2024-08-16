@@ -2,16 +2,13 @@ package com.example.startapp.entity;
 
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.enums.PhonePrefix;
-import jakarta.mail.Multipart;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.stream.ImageInputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,37 +40,36 @@ public class Ad {
     Boolean isNew;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
     @ManyToOne
-    @JoinColumn
-    Category category;
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    Brand brand;
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    Model model;
+    @JoinColumn(name = "model_id", nullable = false)
+    private Model model;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     AdStatus status;
 
+
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true)
     @Size(max = 10, message = "You can upload a maximum of 10 images.")
-    List<Image> images ;
+    private List<Image> images = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
     List<Favorite> favorites;
 
-    @CreationTimestamp
     LocalDateTime createdAt;
 
-    @UpdateTimestamp
     LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)

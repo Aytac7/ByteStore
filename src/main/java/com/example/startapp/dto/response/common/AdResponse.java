@@ -1,6 +1,7 @@
 package com.example.startapp.dto.response.common;
 
 import com.example.startapp.enums.AdStatus;
+import com.example.startapp.enums.PhonePrefix;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,18 +14,17 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdResponse {
-
-     Long price;
-     String header;
-     String additionalInfo;
-     Boolean isNew;
-     String phoneNumber;
-     UserResponseForAd userName;
-     CategoryResponseForAd categoryName;
-     BrandResponseForAd brandName;
-     ModelResponseForAd modelName;
-     AdStatus status;
-     LocalDateTime createdAt;
-     LocalDateTime updatedAt;
-     List<String> imageUrls;
+     private Long id;
+     private Long price;
+     private String header;
+     private String additionalInfo;
+     private Boolean isNew;
+     private Long userId;
+     private Long categoryId;
+     private Long brandId;
+     private Long modelId;
+     private List<String> imageUrls;
+     private PhonePrefix phonePrefix;
+     private String phoneNumber;
+     private String status;
 }

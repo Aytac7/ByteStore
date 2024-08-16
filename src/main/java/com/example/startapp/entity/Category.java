@@ -1,10 +1,7 @@
 package com.example.startapp.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 @Entity
@@ -33,6 +30,5 @@ public class Category {
 
     @OneToMany(mappedBy ="category",cascade = CascadeType.ALL )
     List<Ad> ads;
-
 
 }

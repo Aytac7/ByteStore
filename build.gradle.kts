@@ -55,7 +55,11 @@ dependencies {
     implementation("org.springframework.security:spring-security-oauth2-core")
     implementation("org.springframework.security:spring-security-oauth2-jose")
 
-    implementation("com.amazonaws:aws-java-sdk-s3:1.12.765")
+    implementation("com.amazonaws:aws-java-sdk:1.12.669")
+
+
+
+
 
 
 

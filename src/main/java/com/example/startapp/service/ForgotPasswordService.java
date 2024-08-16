@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
+
 @Service
 public class ForgotPasswordService {
 
@@ -38,11 +39,9 @@ public class ForgotPasswordService {
     }
 
 
-    // send mail for email verification
-
-    public ResponseEntity<String> verifyEmail( String email) {
+    public ResponseEntity<String> verifyEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(),"Please provide an valid email!" + email));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Please provide an valid email!" + email));
 
         int otp = otpGenerator();
         MailBody mailBody = MailBody.builder()
@@ -54,8 +53,6 @@ public class ForgotPasswordService {
         ForgotPassword fp = forgotPasswordRepository.findByUser(user);
 
         if (fp != null) {
-            // Mövcud kaydı yeniləmek
-
             fp.setOtp(otp);
             fp.setExpirationTime(new Date(System.currentTimeMillis() + 3 * 60 * 1000));
         } else {
@@ -72,12 +69,12 @@ public class ForgotPasswordService {
     }
 
 
-    public ResponseEntity<String> verifyOtp( Integer otp,  String email) {
+    public ResponseEntity<String> verifyOtp(Integer otp, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(),"Please provide an valid email!"));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Please provide an valid email!"));
 
         ForgotPassword fp = forgotPasswordRepository.findByOtpAndUser(otp, user)
-                .orElseThrow(() -> new InvalidOtpException(HttpStatus.BAD_REQUEST.name(),"Invalid OTP for email: " + email));
+                .orElseThrow(() -> new InvalidOtpException(HttpStatus.BAD_REQUEST.name(), "Invalid OTP for email: " + email));
 
         if (fp.getExpirationTime().before(Date.from(Instant.now()))) {
             forgotPasswordRepository.deleteById(fp.getFpid());
@@ -88,8 +85,8 @@ public class ForgotPasswordService {
     }
 
 
-    public ResponseEntity<String> changePasswordHandler( ChangePassword changePassword,
-                                                         String email) {
+    public ResponseEntity<String> changePasswordHandler(ChangePassword changePassword,
+                                                        String email) {
         if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
             return new ResponseEntity<>("Please enter the password again!, password and repeated password are not the same", HttpStatus.EXPECTATION_FAILED);
         }

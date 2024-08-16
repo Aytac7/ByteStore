@@ -37,7 +37,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserOtpRepository userOtpRepository;
-//    private final UserMapper userMapper;
     private final EmailService emailService;
 
     @Transactional
@@ -66,14 +65,7 @@ public class AuthService {
                 .failedAttempt(0)
                 .lockTime(null)
                 .build();
-//        User user = userMapper.mapToUser(registerRequest);
-//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-//        user.setRole(UserRole.USER);
-//        user.setEmailVerified(false);
-//        user.setEnabled(false);
-//        user.setAccountNonLocked(true);
-//        user.setFailedAttempt(0);
-//        user.setLockTime(null);
+
         User savedUser = userRepository.save(user);
 
         var accessToken = jwtService.generateToken(savedUser);

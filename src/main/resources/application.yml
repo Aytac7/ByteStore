@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/startapp
     username: postgres
-    password: root
+    password:
 
   jpa:
     database: postgresql
@@ -39,8 +39,8 @@ spring:
       client:
         registration:
           google:
-            clientId: 983185016956-aaala8q58vmcp07jg840he3hbg1uldl7.apps.googleusercontent.com
-            clientSecret: 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
+            clientId:
+            clientSecret:
             scope:
               - openid
               - profile
@@ -54,9 +54,20 @@ server:
   port: 8080
 
 
+cloud:
+  aws:
+    credentials:
+      accessKey:
+      secretKey:
+    region:
+      static:
+    s3:
+      bucket:
+
+  #
 #logging:
 #  level:
-#    root: DEBUG
+#    root: ERROR
   #  servlet:
   #    context-path: /bytestore
 
