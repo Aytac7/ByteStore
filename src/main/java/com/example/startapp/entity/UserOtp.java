@@ -16,7 +16,7 @@ public class UserOtp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer fpid;
+    private Long fpid;
 
     @Column(nullable = false)
     private Integer otp;

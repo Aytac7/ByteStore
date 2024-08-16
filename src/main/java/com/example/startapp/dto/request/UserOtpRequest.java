@@ -14,7 +14,7 @@ import java.util.Date;
 public class UserOtpRequest {
 
 
-    private Integer fpid;
+    private Long fpid;
 
     private Integer otp;
 

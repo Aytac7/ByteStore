@@ -47,7 +47,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
                 }
             }
         } catch (UserNotFoundException e) {
-            // Handle user not found case if necessary
+
         }
 
         super.setDefaultFailureUrl("/login?error");

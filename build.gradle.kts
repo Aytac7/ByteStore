@@ -1,3 +1,4 @@
+
 plugins {
     java
     id("org.springframework.boot") version "3.3.1"
@@ -7,16 +8,17 @@ plugins {
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
+
 repositories {
     mavenCentral()
 }
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -52,6 +54,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.security:spring-security-oauth2-core")
     implementation("org.springframework.security:spring-security-oauth2-jose")
+
+    implementation("com.amazonaws:aws-java-sdk:1.12.669")
+
+
 
 
 
