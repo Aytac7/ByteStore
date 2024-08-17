@@ -2,6 +2,7 @@ package com.example.startapp.controller.common;
 
 import com.example.startapp.dto.request.common.AdRequest;
 
+import com.example.startapp.entity.Ad;
 import com.example.startapp.service.common.AdService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -44,5 +45,30 @@ public class AdController {
             log.error("Error creating advertisement", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating advertisement");
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateAd(@PathVariable Long id,
+                                           @ModelAttribute AdRequest adRequest,
+                                           @RequestParam(required = false) List<MultipartFile> files) {
+        try {
+            adService.updateAd(id, adRequest, files);
+            return ResponseEntity.ok("Ad updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating ad: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<>
+    @GetMapping
+    public ResponseEntity<List<Ad>> getAllAds() {
+        List<Ad> ads = adService.getAds();
+        return ResponseEntity.ok(ads);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAd(@PathVariable Long id) {
+        adService.delete(id);
+        return ResponseEntity.ok("Deleted successfully");
     }
 }

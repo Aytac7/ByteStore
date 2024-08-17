@@ -4,5 +4,6 @@ public enum AdStatus {
     PENDING,
     APPROVED,
     REJECTED,
-    DELETED
+    DELETED,
+    EXPIRED,
 }
