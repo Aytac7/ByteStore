@@ -1,5 +1,6 @@
 package com.example.startapp.service.common;
 
+import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 import com.example.startapp.entity.*;
 import com.example.startapp.enums.AdStatus;
@@ -7,8 +8,11 @@ import com.example.startapp.enums.AdStatus;
 import com.example.startapp.repository.UserRepository;
 import com.example.startapp.repository.common.*;
 import com.example.startapp.service.S3Service;
+import com.example.startapp.service.specification.AdSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -84,6 +88,77 @@ public class AdService {
 
         adRepository.save(ad);
     }
+
+    public List<Ad> getAds(){
+      return   adRepository.findAll();
+    }
+    public List<Ad> getAdsByCriteria(AdCriteriaRequest adCriteriaRequest) {
+        Specification<Ad> spec = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
+        return adRepository.findAll(spec);
+    }
+
+    public void updateAd(Long adId, AdRequest adRequest, List<MultipartFile> files) {
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid ad ID"));
+
+        if (!ad.getStatus().equals(AdStatus.PENDING) && !ad.getStatus().equals(AdStatus.REJECTED)) {
+            throw new IllegalStateException("Only pending or rejected ads can be edited");
+        }
+
+        ad.setHeader(adRequest.getHeader());
+        ad.setAdditionalInfo(adRequest.getAdditionalInfo());
+        ad.setPrice(adRequest.getPrice());
+        ad.setPhonePrefix(adRequest.getPhonePrefix());
+        ad.setPhoneNumber(adRequest.getPhoneNumber());
+        ad.setUpdatedAt(LocalDateTime.now());
+
+        if (files != null && !files.isEmpty()) {
+            List<Image> images = files.stream()
+                    .map(file -> {
+                        String key = "ads/" + adRequest.getUserId() + "/" + file.getOriginalFilename();
+                        String fileUrl;
+                        try {
+                            fileUrl = s3Service.uploadFile(key, file);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Error uploading file: " + file.getOriginalFilename(), e);
+                        }
+
+                        Image image = new Image();
+                        image.setImageUrl(fileUrl);
+                        image.setFileName(file.getOriginalFilename());
+                        image.setFileType(file.getContentType());
+                        image.setFilePath(fileUrl);
+                        image.setAd(ad);
+
+                        return image;
+                    })
+                    .collect(Collectors.toList());
+
+            ad.setImages(images);
+        }
+
+        ad.setStatus(AdStatus.PENDING);
+
+        adRepository.save(ad);
+    }
+
+    public void delete(Long id){
+        Ad expiredAds=adRepository.findByIdAndStatus(id,AdStatus.APPROVED);
+
+        adRepository.delete(expiredAds);
+
+    }
+
+  public void deleteExpired(){
+        List<Ad> expiredAds=adRepository.findAllByStatus(AdStatus.EXPIRED);
+        if(!expiredAds.isEmpty()){
+            adRepository.deleteAll(expiredAds);
+        }
+  }
+    public List<Ad> getExpiredAds() {
+        return adRepository.findAllByStatus(AdStatus.EXPIRED);
+    }
+
 
 //
 //    return AdResponse.builder()
