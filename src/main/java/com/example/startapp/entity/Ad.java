@@ -39,6 +39,8 @@ public class Ad {
     @Column(nullable = false)
     Boolean isNew;
 
+
+    @Size(max = 100)
     String rejectionReason;
 
     LocalDateTime statusChangedAt;

@@ -1,10 +1,7 @@
 package com.example.startapp.enums;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Getter
 
@@ -23,11 +20,15 @@ public enum PhonePrefix {
     PhonePrefix(String prefix) {
         this.prefix = prefix;
     }
+    @JsonValue
+    public String getPrefix() {
+        return prefix;
+    }
 
-    public PhonePrefix fromPrefix() {
-        for (PhonePrefix phoneNumberPrefix : values()) {
-            if (phoneNumberPrefix.getPrefix().equals(prefix)) {
-                return phoneNumberPrefix;
+    public static PhonePrefix fromPrefix(String prefix) {
+        for (PhonePrefix phonePrefix : values()) {
+            if (phonePrefix.getPrefix().equals(prefix)) {
+                return phonePrefix;
             }
         }
         throw new IllegalArgumentException("Unknown phone number prefix: " + prefix);
