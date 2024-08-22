@@ -3,11 +3,11 @@ package com.example.startapp.exception;
 import lombok.Getter;
 
 @Getter
-public class UserNotFoundException extends RuntimeException{
+public class UserNotFoundException extends RuntimeException {
     private final String code;
 
-    public UserNotFoundException(String code,String message){
+    public UserNotFoundException(String code, String message) {
         super(message);
-        this.code=code;
+        this.code = code;
     }
 }

@@ -1,18 +1,5 @@
 package com.example.startapp.mapper;
 
-import com.example.startapp.dto.request.common.AdRequest;
-import com.example.startapp.dto.response.common.AdResponse;
-import com.example.startapp.entity.Ad;
-import com.example.startapp.entity.Image;
-import org.mapstruct.Mapper;
-
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 //
 //@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 //public interface AdMapper {
