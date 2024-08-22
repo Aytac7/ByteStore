@@ -1,27 +1,29 @@
 package com.example.startapp.service.common;
 
+import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
+import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.entity.*;
 import com.example.startapp.enums.AdStatus;
-//import com.example.startapp.mapper.AdMapper;
+import com.example.startapp.exception.AdNotFoundException;
 import com.example.startapp.repository.UserRepository;
 import com.example.startapp.repository.common.*;
 import com.example.startapp.service.S3Service;
+import com.example.startapp.service.specification.AdSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
 public class AdService {
     private final AdRepository adRepository;
     private final UserRepository userRepository;
@@ -85,21 +87,165 @@ public class AdService {
         adRepository.save(ad);
     }
 
-//
-//    return AdResponse.builder()
-//            .id(savedAd.getId())
-//            .price(savedAd.getPrice())
-//            .header(savedAd.getHeader())
-//            .additionalInfo(savedAd.getAdditionalInfo())
-//            .isNew(savedAd.getIsNew())
-//            .userId(savedAd.getUser().getUserId())
-//            .categoryId(savedAd.getCategory().getId())
-//            .brandId(savedAd.getBrand().getId())
-//            .modelId(savedAd.getModel().getId())
-//            .imageUrls(savedAd.getImages())
-//            .phonePrefix(savedAd.getPhonePrefix())
-//            .phoneNumber(savedAd.getPhoneNumber())
-//            .status(savedAd.getStatus().name())
-//            .build();
-//}
+    public List<AdDTO> getAllAds() {
+        return adRepository.findAll().stream().map(
+                ad -> AdDTO.builder()
+                        .id(ad.getId())
+                        .categoryId(ad.getCategory().getId())
+                        .brandId(ad.getBrand().getId())
+                        .modelId(ad.getModel().getId())
+                        .price(ad.getPrice())
+                        .header(ad.getHeader())
+                        .additionalInfo(ad.getAdditionalInfo())
+                        .isNew(ad.getIsNew())
+                        .imageUrls(ad.getImages().stream()
+                                .map(Image::getImageUrl)
+                                .collect(Collectors.toList()))
+                        .userId(ad.getUser().getUserId())
+                        .phonePrefix(ad.getPhonePrefix())
+                        .phoneNumber(ad.getPhoneNumber())
+                        .status(ad.getStatus().toString())
+                        .build()
+        ).collect(Collectors.toList());
+    }
+
+
+    public List<AdDTO> getAdsByUserId(Long userId) {
+        List<Ad> ads = adRepository.findByUser_UserId(userId);
+        return ads.stream().map(ad -> AdDTO.builder()
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .additionalInfo(ad.getAdditionalInfo())
+                .isNew(ad.getIsNew())
+                .categoryId(ad.getCategory().getId())
+                .brandId(ad.getBrand().getId())
+                .modelId(ad.getModel().getId())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .phonePrefix(ad.getPhonePrefix())
+                .phoneNumber(ad.getPhoneNumber())
+                .status(ad.getStatus().toString())
+                .build()
+        ).collect(Collectors.toList());
+    }
+
+    public AdDTO getAdById(Long id) {
+        Ad ad = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));
+        return AdDTO.builder()
+                .id(ad.getId())
+                .userId(ad.getUser().getUserId())
+                .header(ad.getHeader())
+                .price(ad.getPrice())
+                .isNew(ad.getIsNew())
+                .additionalInfo(ad.getAdditionalInfo())
+                .phonePrefix(ad.getPhonePrefix())
+                .phoneNumber(ad.getPhoneNumber())
+                .categoryId(ad.getCategory().getId())
+                .brandId(ad.getBrand().getId())
+                .modelId(ad.getModel().getId())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .status(ad.getStatus().toString())
+                .build();
+
+    }
+
+    public List<AdDTO> getUserAdsByStatus(Long userId, AdStatus status) {
+        List<Ad> ads = adRepository.findByUser_UserIdAndStatus(userId, status);
+        return ads.stream()
+                .map(this::convertToAdDTO)
+                .collect(Collectors.toList());
+    }
+
+    private AdDTO convertToAdDTO(Ad ad) {
+        return AdDTO.builder()
+                .id(ad.getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .additionalInfo(ad.getAdditionalInfo())
+                .isNew(ad.getIsNew())
+                .userId(ad.getUser().getUserId())
+                .categoryId(ad.getCategory().getId())
+                .brandId(ad.getBrand().getId())
+                .modelId(ad.getModel().getId())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .phonePrefix(ad.getPhonePrefix())
+                .phoneNumber(ad.getPhoneNumber())
+                .status(ad.getStatus().toString())
+                .build();
+    }
+
+    public List<Ad> getAdsByCriteria(AdCriteriaRequest adCriteriaRequest) {
+        Specification<Ad> spec = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
+        return adRepository.findAll(spec);
+    }
+
+    public void updateAd(Long adId, AdRequest adRequest, List<MultipartFile> files) {
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));
+
+        Category category = categoryRepository.findById(adRequest.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+
+        Brand brand = brandRepository.findById(adRequest.getBrandId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid brand ID"));
+
+        Model model = modelRepository.findById(adRequest.getModelId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid model ID"));
+
+
+        if (!ad.getStatus().equals(AdStatus.PENDING) && !ad.getStatus().equals(AdStatus.REJECTED)) {
+            throw new IllegalStateException("Only pending or rejected ads can be edited");
+        }
+
+        ad.setCategory(category);
+        ad.setBrand(brand);
+        ad.setModel(model);
+        ad.setHeader(adRequest.getHeader());
+        ad.setAdditionalInfo(adRequest.getAdditionalInfo());
+        ad.setPrice(adRequest.getPrice());
+        ad.setPhonePrefix(adRequest.getPhonePrefix());
+        ad.setPhoneNumber(adRequest.getPhoneNumber());
+        ad.setUpdatedAt(LocalDateTime.now());
+        ad.setIsNew(adRequest.getIsNew());
+
+
+        if (files != null && !files.isEmpty()) {
+            List<Image> images = files.stream()
+                    .map(file -> {
+                        String key = "ads/" + adRequest.getUserId() + "/" + file.getOriginalFilename();
+                        String fileUrl;
+                        try {
+                            fileUrl = s3Service.uploadFile(key, file);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Error uploading file: " + file.getOriginalFilename(), e);
+                        }
+
+                        Image image = new Image();
+                        image.setImageUrl(fileUrl);
+                        image.setFileName(file.getOriginalFilename());
+                        image.setFileType(file.getContentType());
+                        image.setFilePath(fileUrl);
+                        image.setAd(ad);
+
+                        return image;
+                    })
+                    .collect(Collectors.toList());
+
+            ad.setImages(images);
+        }
+
+        ad.setStatus(AdStatus.PENDING);
+
+        adRepository.save(ad);
+    }
+
+    public void deleteAdById(Long id) {
+        adRepository.deleteById(id);
+    }
 }
+

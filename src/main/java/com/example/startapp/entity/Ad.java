@@ -39,6 +39,11 @@ public class Ad {
     @Column(nullable = false)
     Boolean isNew;
 
+
+    @Size(max = 100)
+    String rejectionReason;
+
+    LocalDateTime statusChangedAt;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;
@@ -68,8 +73,10 @@ public class Ad {
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
     List<Favorite> favorites;
 
+    @CreationTimestamp
     LocalDateTime createdAt;
 
+    @UpdateTimestamp
     LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
