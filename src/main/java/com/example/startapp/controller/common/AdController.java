@@ -2,6 +2,10 @@ package com.example.startapp.controller.common;
 
 import com.example.startapp.dto.request.common.AdRequest;
 
+import com.example.startapp.dto.response.common.AdDTO;
+import com.example.startapp.entity.Ad;
+import com.example.startapp.entity.User;
+import com.example.startapp.enums.AdStatus;
 import com.example.startapp.service.common.AdService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,4 +50,52 @@ public class AdController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating advertisement");
         }
     }
+
+    @PutMapping("/update/{adId}")
+    public ResponseEntity<String> updateAd(@PathVariable Long adId,
+                                           @ModelAttribute AdRequest adRequest,
+                                           @RequestParam(required = false) List<MultipartFile> files) {
+        try {
+            adService.updateAd(adId, adRequest, files);
+            return ResponseEntity.ok("Ad updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating ad: " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/getMyAds/{status}")
+    public ResponseEntity<List<AdDTO>> getMyAds(@AuthenticationPrincipal User user, @PathVariable AdStatus status) {
+        List<AdDTO> myAds = adService.getUserAdsByStatus(user.getUserId(), status);
+        return ResponseEntity.ok(myAds);
+    }
+
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<AdDTO>> getAllAds() {
+        List<AdDTO> ads = adService.getAllAds();
+        return ResponseEntity.ok(ads);
+    }
+
+    @GetMapping("/{adId}")
+    public ResponseEntity<AdDTO> getAd(@PathVariable Long adId) {
+        AdDTO ad = adService.getAdById(adId);
+        return ResponseEntity.ok(ad);
+    }
+
+    @GetMapping("/myAds/{userId}/{status}")
+    public ResponseEntity<List<AdDTO>> getMyAdsByStatus(@PathVariable Long userId,
+                                                        @PathVariable AdStatus status) {
+        List<AdDTO> ads = adService.getUserAdsByStatus(userId, status);
+        return ResponseEntity.ok(ads);
+    }
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteAd(@PathVariable Long id) {
+        adService.deleteAdById(id);
+        return ResponseEntity.ok("Ad deleted successfully");
+    }
+
+
 }
