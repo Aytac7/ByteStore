@@ -26,9 +26,7 @@ public class ForgotPasswordService {
 
     private final UserRepository userRepository;
     private final EmailService emailService;
-
     private final ForgotPasswordRepository forgotPasswordRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     public ForgotPasswordService(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository, PasswordEncoder passwordEncoder) {
