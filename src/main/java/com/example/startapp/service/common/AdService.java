@@ -113,6 +113,8 @@ public class AdService {
     public List<AdDTO> getAdsByUserId(Long userId) {
         List<Ad> ads = adRepository.findByUser_UserId(userId);
         return ads.stream().map(ad -> AdDTO.builder()
+                .id(ad.getId())
+                .userId(ad.getUser().getUserId())
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .additionalInfo(ad.getAdditionalInfo())
@@ -183,6 +185,7 @@ public class AdService {
         Specification<Ad> spec = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
         return adRepository.findAll(spec);
     }
+
 
     public void updateAd(Long adId, AdRequest adRequest, List<MultipartFile> files) {
         Ad ad = adRepository.findById(adId)
