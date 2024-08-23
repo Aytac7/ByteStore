@@ -44,6 +44,8 @@ public class Ad {
     String rejectionReason;
 
     LocalDateTime statusChangedAt;
+
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;

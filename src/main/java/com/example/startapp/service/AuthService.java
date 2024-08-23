@@ -175,14 +175,14 @@ public class AuthService {
 
     public void resetFailedAttempts(String email) {
         userRepository.updateFailedAttempts(0, email);
-        System.out.println("Failed attempts reset for email: " + email); // Debug log
+        System.out.println("Failed attempts reset for email: " + email);
     }
 
     public void lock(User user) {
         user.setAccountNonLocked(false);
         user.setLockTime(new Date());
         userRepository.save(user);
-        System.out.println("Lock time set for user: " + user.getEmail()); // Debug log
+        System.out.println("Lock time set for user: " + user.getEmail());
     }
 
     public boolean unlockWhenTimeExpired(User user) {
@@ -194,7 +194,7 @@ public class AuthService {
             user.setLockTime(null);
             user.setFailedAttempt(0);
             userRepository.save(user);
-            System.out.println("User account unlocked: " + user.getEmail()); // Debug log
+            System.out.println("User account unlocked: " + user.getEmail());
             return true;
         }
 
