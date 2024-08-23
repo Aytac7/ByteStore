@@ -6,6 +6,7 @@ import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.entity.Ad;
 import com.example.startapp.entity.User;
 import com.example.startapp.enums.AdStatus;
+import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.service.common.AdService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,6 +29,7 @@ public class AdController {
 
     private final AdService adService;
     private final ObjectMapper objectMapper;
+    private final AdRepository adRepository;
 
     @PostMapping("/create")
     public ResponseEntity<String> createAd(
@@ -71,22 +73,21 @@ public class AdController {
     }
 
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<AdDTO>> getAllAds() {
-        List<AdDTO> ads = adService.getAllAds();
-        return ResponseEntity.ok(ads);
-    }
-
     @GetMapping("/{adId}")
     public ResponseEntity<AdDTO> getAd(@PathVariable Long adId) {
         AdDTO ad = adService.getAdById(adId);
         return ResponseEntity.ok(ad);
     }
 
-    @GetMapping("/myAds/{userId}/{status}")
-    public ResponseEntity<List<AdDTO>> getMyAdsByStatus(@PathVariable Long userId,
-                                                        @PathVariable AdStatus status) {
-        List<AdDTO> ads = adService.getUserAdsByStatus(userId, status);
+    @GetMapping("/getAll")
+    public ResponseEntity<List<AdDTO>> getAllAds() {
+        List<AdDTO> ads = adService.getAllAds();
+        return ResponseEntity.ok(ads);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AdDTO>> getAdByUserId(@PathVariable Long userId) {
+        List<AdDTO>ads = adService.getAdsByUserId(userId);
         return ResponseEntity.ok(ads);
     }
 
