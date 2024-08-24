@@ -23,7 +23,7 @@ public class Favorite {
     Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
