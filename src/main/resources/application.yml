@@ -1,0 +1,85 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/startapp
+    username: postgres
+    password: root
+
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  liquibase:
+    enabled: true
+    database-change-log-lock-table: DATABASECHANGELOGLOCK
+    database-change-log-table: DATABASECHANGELOG
+    change-log: "db/changelog/db.changelog-main.yaml"
+
+  mail:
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+
+    host: smtp.gmail.com
+    username: nazrin.shikhalievaa@gmail.com
+    password: gpzk qidl amjh nutw
+    default-encoding: UTF-8
+    protocol: smtp
+    port: 587
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 983185016956-aaala8q58vmcp07jg840he3hbg1uldl7.apps.googleusercontent.com
+            clientSecret: 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
+            scope:
+              - openid
+              - profile
+              - email
+
+#server:
+#  error:
+#    include-message: always
+#    include-exception: true
+#    include-stacktrace: never
+#  port: 8080
+
+
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIA45Y2RSZK3ATT2XGJ
+      secretKey: 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
+    region:
+      static: us-east-1
+    s3:
+      bucket: bytestore-bucket
+
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    whitelabel:
+      enabled: false
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:

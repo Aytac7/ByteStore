@@ -3,15 +3,19 @@ package com.example.startapp.controller.common;
 import com.example.startapp.dto.request.common.AdRequest;
 
 import com.example.startapp.dto.response.common.AdDTO;
+import com.example.startapp.dto.response.common.AdDTOSpecific;
 import com.example.startapp.entity.Ad;
 import com.example.startapp.entity.User;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.service.common.AdService;
+import com.example.startapp.service.common.FavoriteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +34,10 @@ public class AdController {
     private final AdService adService;
     private final ObjectMapper objectMapper;
     private final AdRepository adRepository;
+
+
+
+
 
     @PostMapping("/create")
     public ResponseEntity<String> createAd(
@@ -53,18 +61,25 @@ public class AdController {
         }
     }
 
-    @PutMapping("/update/{adId}")
-    public ResponseEntity<String> updateAd(@PathVariable Long adId,
-                                           @ModelAttribute AdRequest adRequest,
-                                           @RequestParam(required = false) List<MultipartFile> files) {
-        try {
-            adService.updateAd(adId, adRequest, files);
-            return ResponseEntity.ok("Ad updated successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating ad: " + e.getMessage());
-        }
+
+     @PutMapping("/update/{adId}")
+     public ResponseEntity<String> update(@PathVariable Long adId, @RequestParam("adRequest") String adRequestJson, @RequestParam("files") List<MultipartFile> files) {
+        AdRequest adRequest;
+    try {
+        adRequest = objectMapper.readValue(adRequestJson, AdRequest.class);
+    } catch (IOException e) {
+        log.error("Error parsing adRequest JSON", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request data");
     }
 
+    try {
+        adService.updateAd(adId,adRequest, files);
+        return ResponseEntity.status(HttpStatus.OK).body("Ad changed successfully");
+    } catch (Exception e) {
+        log.error("Error creating advertisement", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating advertisement");
+    }
+}
 
     @GetMapping("/getMyAds/{status}")
     public ResponseEntity<List<AdDTO>> getMyAds(@AuthenticationPrincipal User user, @PathVariable AdStatus status) {
@@ -83,6 +98,16 @@ public class AdController {
     public ResponseEntity<List<AdDTO>> getAllAds() {
         List<AdDTO> ads = adService.getAllAds();
         return ResponseEntity.ok(ads);
+    }
+
+    @GetMapping("/new")
+    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
+        return adService.getAllNewAds(pageable);
+    }
+
+    @GetMapping("/second-hand")
+    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
+        return adService.getAllSecondHandAds(pageable);
     }
 
     @GetMapping("/user/{userId}")
