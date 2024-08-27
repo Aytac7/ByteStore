@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,19 +19,22 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-    @PostMapping("/toggle/{userId}/{adId}")
+    @PostMapping("/{userId}/toggle/{adId}")
     public ResponseEntity<String> toggleFavorite(
             @PathVariable Long userId,
             @PathVariable Long adId) {
-        favoriteService.toggleFavorite(userId, adId);
-        return ResponseEntity.ok("ad added to favorite");
+        try {
+            String result = favoriteService.toggleFavoriteAd(userId, adId);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{userId}")
     public Page<AdDTOSpecific> getFavoritesForUser(
             @PathVariable Long userId,
             Pageable pageable) {
-
         return favoriteService.getFavoritesForUser(userId, pageable);
     }
 }

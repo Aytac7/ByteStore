@@ -1,15 +1,15 @@
 package com.example.startapp.service.common;
 
-import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.dto.response.common.AdDTOSpecific;
 import com.example.startapp.entity.*;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.exception.AdNotFoundException;
+import com.example.startapp.exception.FileSizeExceededException;
 import com.example.startapp.repository.UserRepository;
 import com.example.startapp.repository.common.*;
-import com.example.startapp.service.S3Service;
+import com.example.startapp.service.auth.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -78,7 +78,6 @@ public class AdService {
                     image.setFileType(file.getContentType());
                     image.setFilePath(fileUrl);
                     image.setAd(ad);
-
                     return image;
                 })
                 .collect(Collectors.toList());
@@ -109,10 +108,12 @@ public class AdService {
                         .build()
         ).collect(Collectors.toList());
     }
-    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable){
-        Page<Ad> adPage = adRepository.findByIsNewTrue(pageable);
+
+    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
+        Page<Ad> adPage = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
 
         return adPage.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
                 .modelId(ad.getModel().getId())
                 .price(ad.getPrice())
@@ -125,11 +126,10 @@ public class AdService {
     }
 
 
-
-    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable){
-        Page<Ad> adPage = adRepository.findByIsNewFalse(pageable);
-
+    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
+        Page<Ad> adPage = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
         return adPage.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
                 .modelId(ad.getModel().getId())
                 .price(ad.getPrice())
@@ -211,8 +211,6 @@ public class AdService {
                 .status(ad.getStatus().toString())
                 .build();
     }
-
-
 
 
     public void updateAd(Long adId, AdRequest adRequest, List<MultipartFile> files) {

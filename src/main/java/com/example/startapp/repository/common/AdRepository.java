@@ -29,10 +29,9 @@ public interface AdRepository extends JpaRepository<Ad, Long>,
 
     List<Ad> findByUser_UserIdAndStatus(Long userId, AdStatus status);
 
+    Page<Ad> findByIsNewTrueAndStatus(Pageable pageable, AdStatus status);
 
-    Page<Ad> findByIsNewTrue(Pageable pageable);
-
-    Page<Ad> findByIsNewFalse (Pageable pageable);
+    Page<Ad> findByIsNewFalseAndStatus(Pageable pageable, AdStatus status);
 
 
 }

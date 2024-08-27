@@ -1,4 +1,4 @@
-package com.example.startapp.service;
+package com.example.startapp.service.auth;
 
 import com.example.startapp.dto.response.AuthResponse;
 import com.example.startapp.entity.RefreshToken;
