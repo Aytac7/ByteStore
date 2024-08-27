@@ -2,7 +2,7 @@ package com.example.startapp.controller;
 
 
 import com.example.startapp.dto.ChangePassword;
-import com.example.startapp.service.ForgotPasswordService;
+import com.example.startapp.service.auth.ForgotPasswordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

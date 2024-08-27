@@ -67,7 +67,7 @@ public class Ad {
     AdStatus status;
 
 
-    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL) //orphanRemoval = true)
+    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
     @Size(max = 10, message = "You can upload a maximum of 10 images.")
     private List<Image> images;
 

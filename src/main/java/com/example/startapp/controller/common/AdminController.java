@@ -19,23 +19,20 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
 
-    //    @PutMapping("/ads/{adId}/approve")
-//    public ResponseEntity<String> approveAd(@PathVariable Long adId, @AuthenticationPrincipal User admin) {
-//        adminService.approveAd(adId, admin.getUserId());
-//        return ResponseEntity.ok("Ad approved successfully");
-//    }\
-    @PutMapping("/ads/{adId}/approve")
+    @PutMapping("/{adId}/approve")
     public ResponseEntity<String> approveAd(@PathVariable Long adId,
                                             @AuthenticationPrincipal User admin) {
+
         try {
             adminService.approveAd(adId, admin.getUserId());
-            return ResponseEntity.ok("Ad approved successfully.");
+            return ResponseEntity.ok("Ad approved successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error approving ad: " + e.getMessage());
+
         }
     }
 
-    @PutMapping("/ads/{adId}/reject")
+    @PutMapping("/{adId}/reject")
     public ResponseEntity<String> rejectAd(@PathVariable Long adId,
                                            @RequestParam String rejectionReason,
                                            @AuthenticationPrincipal User admin) throws EmptyRejectionException {

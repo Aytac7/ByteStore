@@ -1,4 +1,4 @@
-package com.example.startapp.service;
+package com.example.startapp.service.auth;
 
 import com.example.startapp.entity.User;
 import com.example.startapp.exception.UserNotFoundException;

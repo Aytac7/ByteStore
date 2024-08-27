@@ -10,6 +10,7 @@ import com.example.startapp.repository.UserRepository;
 import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.exception.EmptyRejectionException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

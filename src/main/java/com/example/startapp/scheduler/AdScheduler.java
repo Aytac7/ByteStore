@@ -1,4 +1,4 @@
-package com.example.startapp.service.scheduler;
+package com.example.startapp.scheduler;
 
 import com.example.startapp.entity.Ad;
 import com.example.startapp.enums.AdStatus;
