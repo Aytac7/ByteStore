@@ -1,18 +1,19 @@
 package com.example.startapp.service.common;
 
-import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 import com.example.startapp.dto.response.common.AdDTO;
+import com.example.startapp.dto.response.common.AdDTOSpecific;
 import com.example.startapp.entity.*;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.exception.AdNotFoundException;
+import com.example.startapp.exception.FileSizeExceededException;
 import com.example.startapp.repository.UserRepository;
 import com.example.startapp.repository.common.*;
-import com.example.startapp.service.S3Service;
-import com.example.startapp.service.specification.AdSpecification;
+import com.example.startapp.service.auth.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -77,7 +78,6 @@ public class AdService {
                     image.setFileType(file.getContentType());
                     image.setFilePath(fileUrl);
                     image.setAd(ad);
-
                     return image;
                 })
                 .collect(Collectors.toList());
@@ -109,6 +109,37 @@ public class AdService {
         ).collect(Collectors.toList());
     }
 
+    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
+        Page<Ad> adPage = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
+
+        return adPage.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+    }
+
+
+    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
+        Page<Ad> adPage = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
+        return adPage.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+    }
 
     public List<AdDTO> getAdsByUserId(Long userId) {
         List<Ad> ads = adRepository.findByUser_UserId(userId);
@@ -179,11 +210,6 @@ public class AdService {
                 .phoneNumber(ad.getPhoneNumber())
                 .status(ad.getStatus().toString())
                 .build();
-    }
-
-    public List<Ad> getAdsByCriteria(AdCriteriaRequest adCriteriaRequest) {
-        Specification<Ad> spec = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
-        return adRepository.findAll(spec);
     }
 
 

@@ -3,15 +3,19 @@ package com.example.startapp.controller.common;
 import com.example.startapp.dto.request.common.AdRequest;
 
 import com.example.startapp.dto.response.common.AdDTO;
+import com.example.startapp.dto.response.common.AdDTOSpecific;
 import com.example.startapp.entity.Ad;
 import com.example.startapp.entity.User;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.service.common.AdService;
+import com.example.startapp.service.common.FavoriteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,11 +35,34 @@ public class AdController {
     private final ObjectMapper objectMapper;
     private final AdRepository adRepository;
 
+
     @PostMapping("/create")
     public ResponseEntity<String> createAd(
             @RequestParam("adRequest") String adRequestJson,
             @RequestParam("files") List<MultipartFile> files) {
 
+        if (adRequestJson == null || adRequestJson.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Elan haqqında məlumat yoxdu");
+        }
+
+        if (files == null || files.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Şəkil əlavə olunmayıb");
+        }
+
+        try {
+            AdRequest adRequest = objectMapper.readValue(adRequestJson, AdRequest.class);
+            adService.createAd(adRequest, files);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Ad added successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid adRequest data");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating advertisement");
+        }
+    }
+
+
+    @PutMapping("/update/{adId}")
+    public ResponseEntity<String> update(@PathVariable Long adId, @RequestParam("adRequest") String adRequestJson, @RequestParam("files") List<MultipartFile> files) {
         AdRequest adRequest;
         try {
             adRequest = objectMapper.readValue(adRequestJson, AdRequest.class);
@@ -45,28 +72,15 @@ public class AdController {
         }
 
         try {
-            adService.createAd(adRequest, files);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Ad added successfully");
+            adService.updateAd(adId, adRequest, files);
+            return ResponseEntity.status(HttpStatus.OK).body("Ad changed successfully");
         } catch (Exception e) {
             log.error("Error creating advertisement", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating advertisement");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating advertisement");
         }
     }
 
-    @PutMapping("/update/{adId}")
-    public ResponseEntity<String> updateAd(@PathVariable Long adId,
-                                           @ModelAttribute AdRequest adRequest,
-                                           @RequestParam(required = false) List<MultipartFile> files) {
-        try {
-            adService.updateAd(adId, adRequest, files);
-            return ResponseEntity.ok("Ad updated successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating ad: " + e.getMessage());
-        }
-    }
-
-
-    @GetMapping("/getMyAds/{status}")
+    @GetMapping("/myAds/{status}")
     public ResponseEntity<List<AdDTO>> getMyAds(@AuthenticationPrincipal User user, @PathVariable AdStatus status) {
         List<AdDTO> myAds = adService.getUserAdsByStatus(user.getUserId(), status);
         return ResponseEntity.ok(myAds);
@@ -79,18 +93,27 @@ public class AdController {
         return ResponseEntity.ok(ad);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/all")
     public ResponseEntity<List<AdDTO>> getAllAds() {
         List<AdDTO> ads = adService.getAllAds();
         return ResponseEntity.ok(ads);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AdDTO>> getAdByUserId(@PathVariable Long userId) {
-        List<AdDTO>ads = adService.getAdsByUserId(userId);
-        return ResponseEntity.ok(ads);
+    @GetMapping("/new")
+    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
+        return adService.getAllNewAds(pageable);
     }
 
+    @GetMapping("/secondhand")
+    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
+        return adService.getAllSecondHandAds(pageable);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AdDTO>> getAdByUserId(@PathVariable Long userId) {
+        List<AdDTO> ads = adService.getAdsByUserId(userId);
+        return ResponseEntity.ok(ads);
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAd(@PathVariable Long id) {

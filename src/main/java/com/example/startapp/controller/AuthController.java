@@ -2,8 +2,8 @@ package com.example.startapp.controller;
 
 
 import com.example.startapp.dto.request.LoginRequest;
-import com.example.startapp.service.AuthService;
-import com.example.startapp.service.RefreshTokenService;
+import com.example.startapp.service.auth.AuthService;
+import com.example.startapp.service.auth.RefreshTokenService;
 import com.example.startapp.dto.response.AuthResponse;
 import com.example.startapp.dto.request.RefreshTokenRequest;
 import com.example.startapp.dto.request.RegisterRequest;

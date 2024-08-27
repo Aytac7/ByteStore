@@ -57,6 +57,7 @@ dependencies {
 
     implementation("com.amazonaws:aws-java-sdk:1.12.669")
 
+    implementation("io.swagger:swagger-annotations:1.6.4")
 
 
 
