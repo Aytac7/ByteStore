@@ -12,19 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AdDTO {
+public class AdDTOSpecific {
      Long id;
      Long price;
-     Long userId;
      Long modelId;
-     Long brandId;
      String header;
-     Boolean isNew;
-     String status;
      Long categoryId;
-     String phoneNumber;
-     String additionalInfo;
-     List<String> imageUrls;
      LocalDateTime createdAt;
-     PhonePrefix phonePrefix;
+     List<String> imageUrls;
+
 }

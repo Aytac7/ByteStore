@@ -1,7 +1,8 @@
 package com.example.startapp.config;
 
 import com.example.startapp.repository.UserRepository;
-import com.example.startapp.service.*;
+import com.example.startapp.service.auth.AuthFilterService;
+import com.example.startapp.service.auth.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload", "/admin/**").permitAll()
+                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload", "/admin/**", "/favorites/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

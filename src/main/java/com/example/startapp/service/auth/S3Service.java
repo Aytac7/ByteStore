@@ -1,4 +1,4 @@
-package com.example.startapp.service;
+package com.example.startapp.service.auth;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;

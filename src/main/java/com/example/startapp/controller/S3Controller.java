@@ -1,6 +1,6 @@
 package com.example.startapp.controller;
 
-import com.example.startapp.service.S3Service;
+import com.example.startapp.service.auth.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
