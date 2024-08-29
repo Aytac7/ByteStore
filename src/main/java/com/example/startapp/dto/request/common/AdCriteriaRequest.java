@@ -1,10 +1,14 @@
 package com.example.startapp.dto.request.common;
 
+import com.example.startapp.entity.Brand;
+import com.example.startapp.entity.Model;
 import com.example.startapp.enums.AdStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +17,11 @@ import lombok.Setter;
 
 public class AdCriteriaRequest {
 
-    Long userId;
-    AdStatus status;
-    String header;
+    double priceTo;
+    double priceFrom;
+    List<Long> brandIds;
+    List<Long> modelIds;
+    boolean sortByNewest;
+    Boolean isNew;
+
 }

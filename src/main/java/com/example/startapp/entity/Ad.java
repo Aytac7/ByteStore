@@ -27,7 +27,7 @@ public class Ad {
     Long id;
 
     @Column(nullable = false)
-    Long price;
+    double price;
 
     @Column(nullable = false)
     String header;
