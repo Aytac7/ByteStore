@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.example.startapp.dto.response.common.AdDTO;
 
@@ -19,6 +20,9 @@ import java.util.Optional;
 @Repository
 public interface AdRepository extends JpaRepository<Ad, Long>,
         PagingAndSortingRepository<Ad, Long>, JpaSpecificationExecutor<Ad> {
+
+    @Query("SELECT a FROM Ad a WHERE (LOWER(a.brand.name) LIKE LOWER(CONCAT('%', :searchQuery, '%')) OR LOWER(a.model.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))) AND a.status = 'APPROVED'")
+    Page<Ad> findSuggestions(@Param("searchQuery") String searchQuery, Pageable pageable);
 
 
     List<Ad> findAllByStatus(AdStatus status);
