@@ -1,5 +1,6 @@
 package com.example.startapp.controller.common;
 
+import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 
 import com.example.startapp.dto.response.common.AdDTO;
@@ -36,6 +37,33 @@ public class AdController {
     private final AdRepository adRepository;
 
 
+    @GetMapping("/search/suggestions")
+    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
+        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
+
+        if (suggestions.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Heç bir uyğun nəticə tapılmadı.");
+        }
+
+        return ResponseEntity.ok(suggestions);
+    }
+    @GetMapping("/filter")
+    public ResponseEntity<Page<AdDTOSpecific>> getAdsWithFilter(
+            AdCriteriaRequest adCriteriaRequest,
+            Pageable pageable) {
+
+        Page<AdDTOSpecific> ads = adService.getAdsWithFilter(adCriteriaRequest, pageable);
+
+        if (ads.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(ads);
+    }
+//    @PostMapping("/search")
+//    public Page<AdDTOSpecific> search(@RequestBody String searchQuery, Pageable pageable){
+//        return adService.search(searchQuery,pageable);
+//    }
     @PostMapping("/create")
     public ResponseEntity<String> createAd(
             @RequestParam("adRequest") String adRequestJson,
@@ -59,7 +87,6 @@ public class AdController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating advertisement");
         }
     }
-
 
     @PutMapping("/update/{adId}")
     public ResponseEntity<String> update(@PathVariable Long adId, @RequestParam("adRequest") String adRequestJson, @RequestParam("files") List<MultipartFile> files) {

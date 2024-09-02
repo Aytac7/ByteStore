@@ -14,7 +14,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdDTO {
      Long id;
-     Long price;
+     double price;
      Long userId;
      Long modelId;
      Long brandId;
