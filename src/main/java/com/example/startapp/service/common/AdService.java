@@ -1,5 +1,6 @@
 package com.example.startapp.service.common;
 
+import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.dto.response.common.AdDTOSpecific;
@@ -10,15 +11,20 @@ import com.example.startapp.exception.FileSizeExceededException;
 import com.example.startapp.repository.UserRepository;
 import com.example.startapp.repository.common.*;
 import com.example.startapp.service.auth.S3Service;
+import com.example.startapp.service.specification.AdSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +38,62 @@ public class AdService {
     private final BrandRepository brandRepository;
     private final ModelRepository modelRepository;
     private final S3Service s3Service;
+
+
+
+
+    public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
+        Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
+
+        System.out.println("SearchQuery " +searchQuery);
+
+        return suggestions.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+    }
+
+    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){
+        Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
+        Page<Ad> ads=adRepository.findAll(specification,pageable);
+        return ads.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+
+    }
+//
+//    public Page<AdDTOSpecific> search(String searchQuery, Pageable pageable){
+//        Specification<Ad> specification = AdSpecification.searchByBrandOrModel(searchQuery);
+//        Page<Ad> ads=adRepository.findAll(specification,pageable);
+//
+//        return ads.map(ad -> AdDTOSpecific.builder()
+//                .id(ad.getId())
+//                .categoryId(ad.getCategory().getId())
+//                .modelId(ad.getModel().getId())
+//                .price(ad.getPrice())
+//                .header(ad.getHeader())
+//                .createdAt(ad.getCreatedAt())
+//                .imageUrls(ad.getImages().stream()
+//                        .map(Image::getImageUrl)
+//                        .collect(Collectors.toList()))
+//                .build());
+//    }
+
 
     public void createAd(AdRequest adRequest, List<MultipartFile> files) {
         User user = userRepository.findById(adRequest.getUserId())

@@ -14,7 +14,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdDTOSpecific {
      Long id;
-     Long price;
+     double price;
      Long modelId;
      String header;
      Long categoryId;
