@@ -1,6 +1,6 @@
 package com.example.startapp.service.auth;
 
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.enums.UserRole;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

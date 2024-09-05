@@ -1,16 +1,16 @@
 package com.example.startapp.service.auth;
 
-import com.example.startapp.dto.MailBody;
-import com.example.startapp.dto.request.LoginRequest;
-import com.example.startapp.dto.request.RegisterRequest;
-import com.example.startapp.dto.response.AuthResponse;
+import com.example.startapp.dto.response.auth.MailBody;
+import com.example.startapp.dto.request.auth.LoginRequest;
+import com.example.startapp.dto.request.auth.RegisterRequest;
+import com.example.startapp.dto.response.auth.AuthResponse;
 import com.example.startapp.emailService.EmailService;
-import com.example.startapp.entity.User;
-import com.example.startapp.entity.UserOtp;
+import com.example.startapp.entity.auth.User;
+import com.example.startapp.entity.auth.UserOtp;
 import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.*;
-import com.example.startapp.repository.UserOtpRepository;
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.auth.UserOtpRepository;
+import com.example.startapp.repository.auth.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
