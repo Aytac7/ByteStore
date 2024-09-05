@@ -1,13 +1,13 @@
 package com.example.startapp.service.auth;
 
-import com.example.startapp.dto.response.AuthResponse;
-import com.example.startapp.entity.RefreshToken;
-import com.example.startapp.entity.User;
+import com.example.startapp.dto.response.auth.AuthResponse;
+import com.example.startapp.entity.auth.RefreshToken;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.exception.RefreshTokenExpiredException;
 import com.example.startapp.exception.RefreshTokenNotFoundException;
 import com.example.startapp.exception.UserNotFoundException;
-import com.example.startapp.repository.RefreshTokenRepository;
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.auth.RefreshTokenRepository;
+import com.example.startapp.repository.auth.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

@@ -1,16 +1,15 @@
 package com.example.startapp.service.common;
 
-import com.example.startapp.entity.Ad;
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.common.Ad;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.AdNotFoundException;
 import com.example.startapp.exception.UnauthorizedException;
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.exception.EmptyRejectionException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

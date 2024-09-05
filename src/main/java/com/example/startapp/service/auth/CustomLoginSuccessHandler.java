@@ -1,6 +1,6 @@
 package com.example.startapp.service.auth;
 
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.auth.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

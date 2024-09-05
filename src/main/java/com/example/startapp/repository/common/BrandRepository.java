@@ -1,9 +1,12 @@
 package com.example.startapp.repository.common;
 
-import com.example.startapp.entity.Brand;
+import com.example.startapp.entity.common.Brand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
+
+
+
 }
