@@ -46,6 +46,8 @@ public class Ad {
     LocalDateTime statusChangedAt;
 
 
+
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;

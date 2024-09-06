@@ -6,6 +6,7 @@ import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.dto.response.common.AdDTOSpecific;
 import com.example.startapp.entity.*;
 import com.example.startapp.enums.AdStatus;
+import com.example.startapp.enums.PhonePrefix;
 import com.example.startapp.exception.AdNotFoundException;
 import com.example.startapp.exception.FileSizeExceededException;
 import com.example.startapp.repository.UserRepository;
@@ -17,14 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,12 +38,10 @@ public class AdService {
     private final S3Service s3Service;
 
 
-
-
     public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
         Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
 
-        System.out.println("SearchQuery " +searchQuery);
+        System.out.println("SearchQuery " + searchQuery);
 
         return suggestions.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
@@ -60,9 +56,9 @@ public class AdService {
                 .build());
     }
 
-    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){
+    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest, Pageable pageable) {
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
-        Page<Ad> ads=adRepository.findAll(specification,pageable);
+        Page<Ad> ads = adRepository.findAll(specification, pageable);
         return ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
@@ -107,6 +103,17 @@ public class AdService {
 
         Model model = modelRepository.findById(adRequest.getModelId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid model ID"));
+        PhonePrefix phonePrefix;
+        String phoneNumber;
+
+        if (user.getPhonePrefix() != null && user.getPhoneNumber() != null) {
+            phonePrefix = user.getPhonePrefix();
+            phoneNumber = user.getPhoneNumber();
+        } else {
+            phonePrefix = adRequest.getPhonePrefix();
+            phoneNumber = adRequest.getPhoneNumber();
+        }
+
 
         Ad ad = Ad.builder()
                 .category(category)
@@ -120,8 +127,8 @@ public class AdService {
                 .status(AdStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .phonePrefix(adRequest.getPhonePrefix())
-                .phoneNumber(adRequest.getPhoneNumber())
+                .phonePrefix(phonePrefix)
+                .phoneNumber(phoneNumber)
                 .build();
 
         List<Image> images = files.stream()
@@ -292,6 +299,7 @@ public class AdService {
         if (!ad.getStatus().equals(AdStatus.PENDING) && !ad.getStatus().equals(AdStatus.REJECTED)) {
             throw new IllegalStateException("Only pending or rejected ads can be edited");
         }
+
 
         ad.setCategory(category);
         ad.setBrand(brand);
