@@ -1,8 +1,10 @@
 package com.example.startapp.service.auth;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,7 @@ public class S3Service {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+
     public String uploadFile(String fileName, MultipartFile file) throws IOException {
         File fileToUpload = convertMultipartFileToFile(file);
         s3client.putObject(new PutObjectRequest(bucketName, fileName, fileToUpload));
@@ -36,8 +39,18 @@ public class S3Service {
         }
         return convertedFile;
     }
+
     public S3Object getFile(String keyName) {
         return s3client.getObject(bucketName, keyName);
     }
 
+    public void deleteFile(String fileKey) {
+        try {
+            s3client.deleteObject(bucketName, fileKey);
+        } catch (
+                AmazonServiceException e) {
+            throw new RuntimeException("Profil şəklinin silinməsi uğursuz oldu", e);
+        }
+
+    }
 }

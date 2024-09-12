@@ -56,12 +56,17 @@ dependencies {
     implementation("org.springframework.security:spring-security-oauth2-jose")
 
     implementation("com.amazonaws:aws-java-sdk:1.12.669")
+//    implementation("com.amazonaws:aws-java-sdk-s3:1.12.767")
+
 
    // implementation("io.swagger:swagger-annotations:1.6.4")
     implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
 
 
-
+//    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.3.2")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
 
 
