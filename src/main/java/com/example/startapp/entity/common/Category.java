@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+
 @Entity
 @Table(name = "categories")
 @Builder
@@ -24,11 +25,11 @@ public class Category {
             inverseJoinColumns = @JoinColumn(name = "brand_id"))
     List<Brand> brands;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Subcategory> subCategories;
 
 
-    @OneToMany(mappedBy ="category",cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     List<Ad> ads;
 
 }

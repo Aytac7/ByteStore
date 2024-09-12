@@ -81,7 +81,11 @@ databaseChangeLog:
                   type: BOOLEAN
                   defaultValue: false
 
-#        - addUniqueConstraint:
-#            tableName: users
-#            columnNames: phone_prefix, phone_number
-#            constraintName: unique_phone_prefix_number
+              - column:
+                  name: phone_prefix
+                  type: VARCHAR(50)
+
+              - column:
+                  name: phone_number
+                  type: VARCHAR(50)
+
