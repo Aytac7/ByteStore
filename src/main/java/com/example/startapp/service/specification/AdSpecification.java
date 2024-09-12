@@ -1,9 +1,7 @@
 package com.example.startapp.service.specification;
 
 import com.example.startapp.dto.request.common.AdCriteriaRequest;
-import com.example.startapp.entity.Ad;
-import com.example.startapp.entity.Brand;
-import com.example.startapp.entity.Model;
+import com.example.startapp.entity.common.Ad;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;

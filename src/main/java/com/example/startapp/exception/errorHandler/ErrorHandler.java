@@ -97,6 +97,54 @@ public class ErrorHandler {
                 .build();
     }
 
+
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerCategoryNotFoundException(Exception exception) {
+        log.error("handlerCategoryNotFoundException{}", exception.getMessage());
+
+        return ErrorResponse.builder()
+                .code(HttpStatus.NOT_FOUND.name())
+                .message(exception.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(ModelNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerModelNotFoundException(Exception exception) {
+        log.error("handlerModelNotFoundException{}", exception.getMessage());
+
+        return ErrorResponse.builder()
+                .code(HttpStatus.NOT_FOUND.name())
+                .message(exception.getMessage())
+                .build();
+    }
+    @ExceptionHandler(BrandNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerBrandNotFoundException(Exception exception) {
+        log.error("handlerBrandNotFoundException{}", exception.getMessage());
+
+        return ErrorResponse.builder()
+                .code(HttpStatus.NOT_FOUND.name())
+                .message(exception.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(SubcategoryNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerSubcategoryNotFoundException(Exception exception) {
+        log.error("handlerSubcategoryNotFoundException{}", exception.getMessage());
+
+        return ErrorResponse.builder()
+                .code(HttpStatus.NOT_FOUND.name())
+                .message(exception.getMessage())
+                .build();
+    }
+
+
+
+
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
 //    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {

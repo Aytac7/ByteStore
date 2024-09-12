@@ -1,9 +1,8 @@
 package com.example.startapp.controller.common;
 
-import com.example.startapp.entity.Ad;
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.common.Ad;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.exception.EmptyRejectionException;
-import com.example.startapp.service.common.AdService;
 import com.example.startapp.service.common.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

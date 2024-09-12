@@ -1,6 +1,6 @@
 package com.example.startapp.service.auth;
 
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.auth.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,14 +1,11 @@
 package com.example.startapp.scheduler;
 
-import com.example.startapp.entity.Ad;
-import com.example.startapp.enums.AdStatus;
+import com.example.startapp.entity.common.Ad;
 import com.example.startapp.repository.common.AdRepository;
-import com.example.startapp.service.common.AdService;
 import com.example.startapp.service.common.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.management.Notification;
 import java.time.LocalDateTime;
 import java.util.List;
 
