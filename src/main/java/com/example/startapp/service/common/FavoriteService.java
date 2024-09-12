@@ -1,27 +1,20 @@
 package com.example.startapp.service.common;
 
-import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.dto.response.common.AdDTOSpecific;
-import com.example.startapp.entity.Ad;
-import com.example.startapp.entity.Favorite;
-import com.example.startapp.entity.Image;
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.common.Ad;
+import com.example.startapp.entity.common.Favorite;
+import com.example.startapp.entity.common.Image;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.exception.AdNotFoundException;
-import com.example.startapp.exception.UserNotFoundException;
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.repository.common.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

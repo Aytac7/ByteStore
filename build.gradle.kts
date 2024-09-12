@@ -59,7 +59,9 @@ dependencies {
 //    implementation("com.amazonaws:aws-java-sdk-s3:1.12.767")
 
 
-    implementation("io.swagger:swagger-annotations:1.6.4")
+   // implementation("io.swagger:swagger-annotations:1.6.4")
+    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+
 
 //    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
