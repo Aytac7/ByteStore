@@ -1,5 +1,6 @@
 package com.example.startapp.entity.common;
 
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.entity.common.Ad;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,6 @@ public class Image {
     @UpdateTimestamp
     LocalDateTime updatedAt;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ad_id", nullable = true)
     private Ad ad;
@@ -50,5 +50,4 @@ public class Image {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)
     private User user;
-
 }
