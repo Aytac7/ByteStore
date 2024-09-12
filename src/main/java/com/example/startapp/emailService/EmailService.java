@@ -1,12 +1,9 @@
 package com.example.startapp.emailService;
 
-import com.example.startapp.dto.MailBody;
-import lombok.RequiredArgsConstructor;
+import com.example.startapp.dto.response.auth.MailBody;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import java.util.Properties;
 
 @Service
 

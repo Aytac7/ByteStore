@@ -3,14 +3,10 @@ package com.example.startapp.controller.common;
 import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 
-import com.example.startapp.dto.response.common.AdDTO;
-import com.example.startapp.dto.response.common.AdDTOSpecific;
-import com.example.startapp.entity.Ad;
-import com.example.startapp.entity.User;
+import com.example.startapp.dto.response.common.*;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.enums.AdStatus;
-import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.service.common.AdService;
-import com.example.startapp.service.common.FavoriteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +30,13 @@ public class AdController {
 
     private final AdService adService;
     private final ObjectMapper objectMapper;
-    private final AdRepository adRepository;
+
+
+    @GetMapping("/model/{modelId}")
+    public ResponseEntity<List<AdDTO>> getAdsByModel(@PathVariable Long modelId) {
+        List<AdDTO> ads = adService.getAdsByModel(modelId);
+        return ResponseEntity.ok(ads);
+    }
 
 
     @GetMapping("/search/suggestions")
@@ -60,6 +62,9 @@ public class AdController {
 
         return ResponseEntity.ok(ads);
     }
+
+
+
 //    @PostMapping("/search")
 //    public Page<AdDTOSpecific> search(@RequestBody String searchQuery, Pageable pageable){
 //        return adService.search(searchQuery,pageable);

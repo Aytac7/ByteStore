@@ -1,8 +1,8 @@
 package com.example.startapp.service.auth;
 
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.enums.UserRole;
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.auth.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
