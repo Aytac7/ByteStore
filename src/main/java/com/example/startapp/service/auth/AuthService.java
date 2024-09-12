@@ -49,7 +49,6 @@ public class AuthService {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new UserEmailExistsException(HttpStatus.BAD_REQUEST.name(), "Email Exists");
         }
-
         System.out.println("User Details: " + registerRequest);
 
         User user = User.builder()
