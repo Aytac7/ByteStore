@@ -2,6 +2,8 @@ package com.example.startapp.entity.auth;
 
 import com.example.startapp.entity.common.Ad;
 import com.example.startapp.entity.common.Favorite;
+import com.example.startapp.entity.common.Image;
+import com.example.startapp.enums.PhonePrefix;
 import com.example.startapp.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -26,8 +28,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -37,6 +37,8 @@ public class User implements UserDetails {
 
     @NotBlank(message = "The username field can't be blank")
     @Column(unique = true)
+    @Pattern(regexp = "[a-zA-Z]",
+            message = "İstifadəçi adı hərflərdən ibarət olmalıdır.")
     private String username;
 
     @NotBlank(message = "The email field can't be blank")
@@ -86,6 +88,22 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     List<Favorite> favorites;
+
+    @Enumerated(EnumType.STRING)
+    PhonePrefix phonePrefix;
+
+    String phoneNumber;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_photo_id")
+    private Image profilePhoto;
+
+    public void setProfilePhoto(Image profilePhoto) {
+        this.profilePhoto = profilePhoto;
+        if (profilePhoto != null) {
+            profilePhoto.setUser(this);
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

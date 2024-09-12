@@ -5,3 +5,4 @@ public class ConstraintViolationException extends RuntimeException {
         super(message);
     }
 }
+

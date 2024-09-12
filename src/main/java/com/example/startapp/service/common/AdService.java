@@ -6,6 +6,7 @@ import com.example.startapp.dto.response.common.*;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.entity.common.*;
 import com.example.startapp.enums.AdStatus;
+import com.example.startapp.enums.PhonePrefix;
 import com.example.startapp.exception.AdNotFoundException;
 import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.repository.common.*;
@@ -127,6 +128,16 @@ public class AdService {
 
         Model model = modelRepository.findById(adRequest.getModelId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid model ID"));
+        PhonePrefix phonePrefix;
+        String phoneNumber;
+
+        if (user.getPhonePrefix() != null && user.getPhoneNumber() != null) {
+            phonePrefix = user.getPhonePrefix();
+            phoneNumber = user.getPhoneNumber();
+        } else {
+            phonePrefix = adRequest.getPhonePrefix();
+            phoneNumber = adRequest.getPhoneNumber();
+        }
 
         Ad ad = Ad.builder()
                 .category(category)
@@ -140,8 +151,8 @@ public class AdService {
                 .status(AdStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .phonePrefix(adRequest.getPhonePrefix())
-                .phoneNumber(adRequest.getPhoneNumber())
+                .phonePrefix(phonePrefix)
+                .phoneNumber(phoneNumber)
                 .build();
 
         List<Image> images = files.stream()

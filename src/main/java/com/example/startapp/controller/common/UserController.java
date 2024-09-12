@@ -2,7 +2,7 @@ package com.example.startapp.controller.common;
 
 import com.example.startapp.dto.request.UserInfoRequest;
 import com.example.startapp.dto.request.common.AdRequest;
-import com.example.startapp.entity.User;
+import com.example.startapp.entity.auth.User;
 import com.example.startapp.service.auth.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
@@ -36,6 +36,7 @@ public class UserController {
         }
 
     }
+
 
     @PutMapping("/delete")
     public ResponseEntity<String> deletePP(@AuthenticationPrincipal User user) {
