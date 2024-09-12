@@ -1,6 +1,6 @@
 package com.example.startapp.config;
 
-import com.example.startapp.repository.UserRepository;
+import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.service.auth.AuthFilterService;
 import com.example.startapp.service.auth.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -29,24 +29,31 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload", "/admin/**", "/favorites/**", "/user/**").permitAll()
+                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload", "/admin/**", "/favorites/**", "/categories/**").permitAll()
+                        .requestMatchers(permitSwagger).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/home", true)
-                        .successHandler(oAuth2LoginSuccessHandler())
-                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/login")
+//                        .defaultSuccessUrl("/home", true)
+//                        .successHandler(oAuth2LoginSuccessHandler())
+//                )
                 .addFilterBefore(authFilterService, SessionManagementFilter.class);
 
         return http.build();
 
     }
-
+    public static String[] permitSwagger = {
+            "swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/webjars/**"
+    };
     @Bean
     public AuthenticationSuccessHandler oAuth2LoginSuccessHandler() {
         return new OAuth2LoginSuccessHandler(userRepository);

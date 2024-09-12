@@ -18,7 +18,9 @@ databaseChangeLog:
               lock_time,
               created_date,
               updated_date,
-              email_verified
+              email_verified,
+              phone_prefix, 
+              phone_number
               )
               VALUES (
               'Admin',
@@ -33,5 +35,7 @@ databaseChangeLog:
               NULL,
               CURRENT_TIMESTAMP,
               CURRENT_TIMESTAMP,
-              true
+              true,
+              'PREFIX_99410',
+              '2346543'
               )
