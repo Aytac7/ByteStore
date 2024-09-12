@@ -20,7 +20,7 @@ import java.util.List;
 
 public class CategoryController {
 
-    private  final CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @GetMapping("/all-categories")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
@@ -35,7 +35,7 @@ public class CategoryController {
     }
 
     @GetMapping("/models/{brandId}")
-    public ResponseEntity<List<ModelDTO> > getModelsByBrand(@PathVariable Long brandId) {
+    public ResponseEntity<List<ModelDTO>> getModelsByBrand(@PathVariable Long brandId) {
         List<ModelDTO> models = categoryService.getModelsByBrand(brandId);
         return ResponseEntity.ok(models);
     }

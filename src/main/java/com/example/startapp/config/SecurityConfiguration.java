@@ -29,7 +29,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload", "/admin/**", "/favorites/**").permitAll()
+                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload", "/admin/**", "/favorites/**", "/categories/**").permitAll()
                         .requestMatchers(permitSwagger).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -27,29 +27,30 @@ public class CategoryService {
     private final BrandRepository brandRepository;
 
 
-    public List<CategoryDTO> getAllCategories(){
-        List<Category> categories=categoryRepository.findAll();
+    public List<CategoryDTO> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
         return categories.stream()
                 .map(CategoryMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<BrandDTO> getBrandsByCategory(Long categoryId){
-        Category category=categoryRepository.findById(categoryId).orElseThrow(()->new CategoryNotFoundException("Kateqoriya tapilmadi"));
+    public List<BrandDTO> getBrandsByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
         return category.getBrands().stream()
                 .map(BrandMapper::brandDTO)
                 .collect(Collectors.toList());
 
     }
 
-    public List<ModelDTO> getModelsByBrand(Long brandId){
-        Brand brand=brandRepository.findById(brandId).orElseThrow(()->new BrandNotFoundException("Marka tapilmadi"));
+    public List<ModelDTO> getModelsByBrand(Long brandId) {
+        Brand brand = brandRepository.findById(brandId).orElseThrow(() -> new BrandNotFoundException("Marka tapilmadi"));
         return brand.getModels().stream()
                 .map(ModelMapper::modelDTO)
                 .collect(Collectors.toList());
     }
-    public List<SubcategoryDTO> getSubcategory(Long categoryId){
-        Category category=categoryRepository.findById(categoryId).orElseThrow(()->new CategoryNotFoundException("Kateqoriya tapilmadi"));
+
+    public List<SubcategoryDTO> getSubcategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
         return category.getSubCategories().stream()
                 .map(SubcategoryMapper::subcategoryDTO)
                 .collect(Collectors.toList());
