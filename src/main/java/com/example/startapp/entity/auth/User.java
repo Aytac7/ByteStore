@@ -32,13 +32,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @NotBlank(message = "The name field can't be blank")
+
     private String name;
 
-    @NotBlank(message = "The username field can't be blank")
-    @Column(unique = true)
-    @Pattern(regexp = "[a-zA-Z]",
-            message = "İstifadəçi adı hərflərdən ibarət olmalıdır.")
+
     private String username;
 
     @NotBlank(message = "The email field can't be blank")
@@ -61,7 +58,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @NotBlank(message = "The surname field can't be blank")
+
     private String surname;
 
     private boolean enabled;
