@@ -6,6 +6,7 @@ import com.example.startapp.service.auth.AuthFilterService;
 import com.example.startapp.service.auth.JwtService;
 import com.example.startapp.service.auth.OAuth2LoginSuccessHandler;
 import com.example.startapp.service.auth.RefreshTokenService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,17 +16,20 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.SessionManagementFilter;
 
 
-//@Configuration
-//@EnableWebSecurity
-//@RequiredArgsConstructor
-//public class SecurityConfiguration {
-//
-//    private final UserRepository userRepository;
-//    private final AuthFilterService authFilterService;
-//
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfiguration {
+
+    private final UserRepository userRepository;
+    private final AuthFilterService authFilterService;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
+
 //
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,28 +61,6 @@ import org.springframework.security.web.session.SessionManagementFilter;
 //            "/swagger-ui.html",
 //            "/webjars/**"
 //    };
-//    @Bean
-//    public AuthenticationSuccessHandler oAuth2LoginSuccessHandler() {
-//        return new OAuth2LoginSuccessHandler(userRepository);
-//    }
-//}
-
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-
-
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfiguration {
-
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final AuthFilterService authFilterService;
-    private final RefreshTokenService refreshTokenService;
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -131,103 +113,23 @@ public class SecurityConfiguration {
             "/security/v1/api-docs/**",
             "swagger/**",
 
-            "/v1/api/auth/register",
-            "/v1/api/auth/verify-email/{email}",
-            "/v1/api/auth/confirm-register/{otp}/{email}",
-            "/v1/api/auth/login",
-            "/v1/api/auth/refresh",
+            "/auth/register",
+            "/auth/confirm-register/{otp}/{email}",
+            "/auth/login",
+            "/auth/refresh",
 
             "/forgotPassword/verifyMail/{email}",
             "/forgotPassword/verifyOtp/{otp}/{email}",
             "/forgotPassword/changePassword/{email}",
 
-            "/v1/api/activity-categories",
 
-            "/v1/api/activities",
-            "/v1/api/activities/find/{id}",
-
-            "/v1/api/home-hotels/find/{id}",
-            "/v1/api/home-hotels",
-
-            "/v1/api/notifications/find/{id}",
-            "/v1/api/notifications",
-
-            "/v1/api/regions",
-            "/v1/api/regions/find/{id}",
-
-            "/v1/api/restaurant",
-            "/v1/api/restaurant/find/{id}",
-
-            "/v1/api/room",
-            "/v1/api/room/find/{id}",
-
-            "/v1/api/roomReservations/reservation{id}",
-            "/v1/api/roomReservations/reservationHistory{id}",
-
-            "/v1/api/scenicSpot",
-            "/v1/api/scenicSpot/find/{id}",
-
-            "/v1/api/zone"
     };
     public static String[] ADMIN = {
-            "/v1/api/activity-categories/create",
-            "/v1/api/activity-categories/update/{id}",
-            "/v1/api/activity-categories/delete/{id}",
 
-            "/v1/api/activities/create",
-            "/v1/api/activities/update/{id}",
-            "/v1/api/activities/delete/{id}",
-
-            "/v1/api/home-hotels/create",
-            "/v1/api/home-hotels/update/{id}",
-            "/v1/api/home-hotels/delete/{id}",
-
-            "/v1/api/notifications/update/{id}",
-            "/v1/api/notifications/delete/{id}",
-            "/v1/api/notifications/create",
-
-            "/v1/api/images/addPhoto",
-            "/v1/api/images/delete/{id}",
-
-            "/v1/api/regions/create",
-            "/v1/api/regions/delete/{id}",
-
-            "/v1/api/restaurant/create",
-            "/v1/api/restaurant/update/{id}",
-            "/v1/api/restaurant/delete/{id}",
-
-            "/v1/api/room/create",
-            "/v1/api/room/update/{id}",
-            "/v1/api/room/delete/{id}",
-
-            "/v1/api/scenicSpot/create",
-            "/v1/api/scenicSpot/approve/{id}",
-            "/v1/api/scenicSpot/delete/{id}",
-
-            "/v1/api/zone/create",
-            "/v1/api/zone/update/{id}",
-            "/v1/api/zone/delete/{id}"
     };
     public static String[] USER = {
 
-            "/v1/api/activities/like/{id}",
-            "/v1/api/activities/averageRating/{id}",
 
-            "/v1/api/home-hotels/rate/{id}",
-            "/v1/api/home-hotels/like/{id}",
-
-            "/v1/api/restaurant/like/{id}",
-            "/v1/api/restaurant/rate/{id}",
-
-            "/v1/api/review/upload",
-            "/v1/api/review/home-hotel",
-            "/v1/api/review/scenic-spot",
-            "/v1/api/review/restaurant",
-
-            "/v1/api/roomReservations/create",
-
-            "/v1/api/scenicSpot/like/{id}",
-            "/v1/api/scenicSpot/rate/{id}"
     };
 
 }

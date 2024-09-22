@@ -38,12 +38,11 @@ public class User implements UserDetails {
 
     private String username;
 
-    @NotBlank(message = "The email field can't be blank")
     @Column(unique = true)
     @Email(message = "Please enter email in proper format!")
     private String email;
 
-    @NotBlank(message = "The password field can't be blank")
+
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{7,}$",
             message = "Password must be at least 7 characters long, contain at least one uppercase letter, one lowercase letter, and one number.")
     private String password;
