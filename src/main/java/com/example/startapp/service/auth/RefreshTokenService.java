@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -21,38 +23,37 @@ public class RefreshTokenService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
-
     private final RefreshTokenRepository refreshTokenRepository;
-
 
 
     public RefreshToken createRefreshToken(String username) {
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(),"User not found with email : " + username));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found with email : " + username));
 
         RefreshToken refreshToken = user.getRefreshToken();
-
         if (refreshToken == null) {
-            long refreshTokenValidity = 30 * 1000;
+
             refreshToken = RefreshToken.builder()
                     .refreshToken(UUID.randomUUID().toString())
-                    .expirationTime(Instant.now().plusMillis(refreshTokenValidity))
+                    .expirationTime(Instant.now().plus(Duration.ofMinutes(30)))
                     .user(user)
                     .build();
 
             refreshTokenRepository.save(refreshToken);
+        } else if (refreshToken.getExpirationTime().compareTo(Instant.now()) < 0) {
+            refreshToken.setExpirationTime(Instant.now().plus(Duration.ofMinutes(30)));
+            refreshTokenRepository.save(refreshToken);
         }
-
         return refreshToken;
     }
 
     public RefreshToken verifyRefreshToken(String refreshToken) {
         RefreshToken refToken = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new RefreshTokenNotFoundException(HttpStatus.NOT_FOUND.name(),"Refresh token not found!"));
+                .orElseThrow(() -> new RefreshTokenNotFoundException(HttpStatus.NOT_FOUND.name(), "Refresh token not found!"));
 
         if (refToken.getExpirationTime().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(refToken);
-            throw new RefreshTokenExpiredException(HttpStatus.UNAUTHORIZED.name(),"Refresh Token expired");
+            throw new RefreshTokenExpiredException(HttpStatus.UNAUTHORIZED.name(), "Refresh Token expired, please login");
         }
 
         return refToken;
