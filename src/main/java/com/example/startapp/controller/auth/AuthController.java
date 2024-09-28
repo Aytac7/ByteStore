@@ -33,11 +33,11 @@ public class AuthController {
 
     }
 
-    @PostMapping("/verify-email/{email}")
-    public ResponseEntity<String> verifyEmail(@PathVariable String email) {
-        authService.verifyEmail(email);
-        return ResponseEntity.ok("verified email,  otp code sent");
-    }
+//    @PostMapping("/verify-email/{email}")
+//    public ResponseEntity<String> verifyEmail(@PathVariable String email) {
+//        authService.verifyEmail(email);
+//        return ResponseEntity.ok("verified email,  otp code sent");
+//    }
 
     @PostMapping("/confirm-register/{otp}/{email}")
     public ResponseEntity<String> confirmRegistration(@PathVariable String email,

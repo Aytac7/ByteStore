@@ -1,41 +1,71 @@
+
+
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login</title>
-    <!-- Add common head elements like CSS, meta tags here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #tokenDisplay {
+            margin-top: 20px;
+        }
+
+        #tokenValue {
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+    <title>Login Success</title>
+    <div>
+        <h4><a th:href="@{/oauth2/authorization/google}">Login with Google</a></h4>
+    </div>
 </head>
 <body>
 <div class="container text-center">
     <div>
-        <h2>Please Login</h2>
+        <h2>Login Successful!</h2>
         <br/>
     </div>
-    <div>
-        <h4><a th:href="@{/oauth2/authorization/google}">Login with Google</a></h4>
-    </div>
-    <div><p>OR</p></div>
 
-    <form th:action="@{/login}" method="post" style="max-width: 400px; margin: 0 auto;">
-        <div class="border border-secondary rounded p-3">
-            <div th:if="${param.error}">
-                <p class="text-danger">Invalid username or password.</p>
-            </div>
-            <div th:if="${param.logout}">
-                <p class="text-warning">You have been logged out.</p>
-            </div>
-            <div>
-                <p><input type="email" name="email" required class="form-control" placeholder="E-mail" /></p>
-            </div>
-            <div>
-                <p><input type="password" name="pass" required class="form-control" placeholder="Password" /></p>
-            </div>
-            <div>
-                <p><input type="submit" value="Login" class="btn btn-primary" /></p>
-            </div>
-        </div>
-    </form>
-    <br />
-    <p>Don't have an account? <a th:href="@{/register}">Register here</a></p>
+    <div id="tokenDisplay">
+        <h3>Your Tokens:</h3>
+        <p>Token: <span id="tokenValue"></span></p>
+        <p>Refresh Token: <span id="refreshTokenValue"></span></p>
+    </div>
+
+    <br/>
+    <div>
+        <h4><a href="/swagger-ui/index.html">Go to Swagger</a></h4>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const refreshToken = urlParams.get('refreshToken');
+
+        if (token) {
+            document.getElementById('tokenValue').textContent = token;
+        } else {
+            document.getElementById('tokenValue').textContent = 'Token not found';
+        }
+
+        if (refreshToken) {
+            document.getElementById('refreshTokenValue').textContent = refreshToken;
+        } else {
+            document.getElementById('refreshTokenValue').textContent = 'Refresh Token not found';
+        }
+    });
+</script>
+
 </body>
 </html>

@@ -32,21 +32,17 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @NotBlank(message = "The name field can't be blank")
+
     private String name;
 
-    @NotBlank(message = "The username field can't be blank")
-    @Column(unique = true)
-    @Pattern(regexp = "[a-zA-Z]",
-            message = "İstifadəçi adı hərflərdən ibarət olmalıdır.")
+
     private String username;
 
-    @NotBlank(message = "The email field can't be blank")
     @Column(unique = true)
     @Email(message = "Please enter email in proper format!")
     private String email;
 
-    @NotBlank(message = "The password field can't be blank")
+
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{7,}$",
             message = "Password must be at least 7 characters long, contain at least one uppercase letter, one lowercase letter, and one number.")
     private String password;
@@ -61,7 +57,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @NotBlank(message = "The surname field can't be blank")
+
     private String surname;
 
     private boolean enabled;
