@@ -50,5 +50,11 @@ public class AdRequest {
     @NotNull
     private String phoneNumber;
 
+    @NotNull
+    private String name;
+
+    @NotNull
+    private String surname;
+
 }
 
