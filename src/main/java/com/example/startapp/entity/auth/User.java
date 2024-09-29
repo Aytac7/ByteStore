@@ -35,6 +35,7 @@ public class User implements UserDetails {
 
     private String name;
 
+    private String surname;
 
     private String username;
 
@@ -56,9 +57,6 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
-
-
-    private String surname;
 
     private boolean enabled;
 

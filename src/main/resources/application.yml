@@ -58,7 +58,7 @@ server:
     include-message: always
     include-exception: true
     include-stacktrace: never
-  port: 8081
+  port: 8082
 
 
 cloud:
