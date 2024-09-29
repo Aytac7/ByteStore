@@ -124,10 +124,14 @@ public class SecurityConfiguration {
 
     };
     public static String[] ADMIN = {
+            "/feedbacks"
 
     };
     public static String[] USER = {
-
+            "/ads/create",
+            "/ads/update/**",
+            "/ads/delete/**",
+            "/ads/myAds/**"
 
     };
 

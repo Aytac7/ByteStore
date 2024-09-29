@@ -11,7 +11,7 @@ spring:
       ddl-auto: update
 
   liquibase:
-    enabled: true
+    enabled: false
     database-change-log-lock-table: DATABASECHANGELOGLOCK
     database-change-log-table: DATABASECHANGELOG
     change-log: "db/changelog/db.changelog-main.yaml"
