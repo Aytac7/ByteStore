@@ -2,6 +2,8 @@ package com.example.startapp.controller.common;
 
 import com.example.startapp.entity.common.Ad;
 import com.example.startapp.entity.auth.User;
+import com.example.startapp.entity.common.Feedbacks;
+
 import com.example.startapp.exception.EmptyRejectionException;
 import com.example.startapp.service.common.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -61,4 +63,11 @@ public class AdminController {
         List<Ad> approvedAds = adminService.getApprovedAds();
         return ResponseEntity.ok(approvedAds);
     }
+
+    @GetMapping("/feedbacks")
+    public ResponseEntity<List<Feedbacks>> getFeedbacks() {
+        List<Feedbacks> feedbacks = adminService.getFeedbacks();
+        return ResponseEntity.ok(feedbacks);
+    }
+
 }

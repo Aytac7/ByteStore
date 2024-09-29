@@ -65,8 +65,8 @@ public class AdService {
 
     public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
         Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
+        System.out.println("SearchQuery " + searchQuery);
 
-        System.out.println("SearchQuery " +searchQuery);
 
         return suggestions.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
@@ -80,6 +80,7 @@ public class AdService {
                         .collect(Collectors.toList()))
                 .build());
     }
+
 
     public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
@@ -130,13 +131,22 @@ public class AdService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid model ID"));
         PhonePrefix phonePrefix;
         String phoneNumber;
-
+        String name;
+        String surname;
         if (user.getPhonePrefix() != null && user.getPhoneNumber() != null) {
             phonePrefix = user.getPhonePrefix();
             phoneNumber = user.getPhoneNumber();
         } else {
             phonePrefix = adRequest.getPhonePrefix();
             phoneNumber = adRequest.getPhoneNumber();
+        }
+
+        if (user.getName() != null && user.getSurname() != null) {
+            name = user.getName();
+            surname = user.getSurname();
+        } else {
+            name = adRequest.getName();
+            surname = adRequest.getSurname();
         }
 
         Ad ad = Ad.builder()
@@ -153,6 +163,8 @@ public class AdService {
                 .updatedAt(LocalDateTime.now())
                 .phonePrefix(phonePrefix)
                 .phoneNumber(phoneNumber)
+                .name(name)
+                .surname(surname)
                 .build();
 
         List<Image> images = files.stream()
@@ -334,6 +346,9 @@ public class AdService {
         ad.setPhoneNumber(adRequest.getPhoneNumber());
         ad.setUpdatedAt(LocalDateTime.now());
         ad.setIsNew(adRequest.getIsNew());
+        ad.setName(adRequest.getName());
+        ad.setSurname(adRequest.getSurname());
+
 
 
         if (files != null && !files.isEmpty()) {
