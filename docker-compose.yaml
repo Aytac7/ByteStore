@@ -1,15 +1,32 @@
 version: '3.8'
 services:
-  database:
+  postgres:
     image: postgres:latest
+    restart: always
     environment:
       - POSTGRES_PASSWORD=8888
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=startapp
+      - POSTGRES_DB=atl
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
 
+  bytestore:
+    image: nazrinasg/bytestore:v2
+    ports:
+      - 8081:8081
+    environment:
+      - POSTGRES_PASSWORD=8888
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=bytestore
+      - POSTGRE_URL=postgres
+    volumes:
+      - bytestore-data:/var/lib/bytestore
+
+
+
 volumes:
   pgdata:
+  bytestore-data:
+
