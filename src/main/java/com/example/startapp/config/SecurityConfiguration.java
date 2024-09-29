@@ -122,9 +122,6 @@ public class SecurityConfiguration {
             "/forgotPassword/verifyOtp/{otp}/{email}",
             "/forgotPassword/changePassword/{email}",
 
-            "/feedbacks"
-
-
     };
     public static String[] ADMIN = {
 

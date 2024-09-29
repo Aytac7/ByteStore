@@ -65,8 +65,8 @@ public class AdService {
 
     public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
         Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
-
         System.out.println("SearchQuery " + searchQuery);
+
 
         return suggestions.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
@@ -81,9 +81,10 @@ public class AdService {
                 .build());
     }
 
-    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest, Pageable pageable) {
+
+    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
-        Page<Ad> ads = adRepository.findAll(specification, pageable);
+        Page<Ad> ads=adRepository.findAll(specification,pageable);
         return ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
@@ -132,7 +133,6 @@ public class AdService {
         String phoneNumber;
         String name;
         String surname;
-
         if (user.getPhonePrefix() != null && user.getPhoneNumber() != null) {
             phonePrefix = user.getPhonePrefix();
             phoneNumber = user.getPhoneNumber();
@@ -148,6 +148,7 @@ public class AdService {
             name = adRequest.getName();
             surname = adRequest.getSurname();
         }
+
         Ad ad = Ad.builder()
                 .category(category)
                 .brand(brand)
@@ -165,7 +166,6 @@ public class AdService {
                 .name(name)
                 .surname(surname)
                 .build();
-
 
         List<Image> images = files.stream()
                 .map(file -> {
@@ -348,6 +348,7 @@ public class AdService {
         ad.setIsNew(adRequest.getIsNew());
         ad.setName(adRequest.getName());
         ad.setSurname(adRequest.getSurname());
+
 
 
         if (files != null && !files.isEmpty()) {

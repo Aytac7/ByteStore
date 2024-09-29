@@ -4,7 +4,7 @@ import com.example.startapp.entity.auth.User;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.enums.PhonePrefix;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,8 +33,8 @@ public class Ad {
     @Column(nullable = false)
     private String surname;
 
-
     @Column(nullable = false)
+
     double price;
 
     @Column(nullable = false)

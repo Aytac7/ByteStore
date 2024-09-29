@@ -1,9 +1,8 @@
 package com.example.startapp.service.common;
 
-import com.amazonaws.services.guardduty.model.Feedback;
+import com.example.startapp.entity.common.Feedbacks;
 import com.example.startapp.entity.common.Ad;
 import com.example.startapp.entity.auth.User;
-import com.example.startapp.entity.common.Feedbacks;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.AdNotFoundException;
@@ -14,6 +13,7 @@ import com.example.startapp.exception.EmptyRejectionException;
 import com.example.startapp.repository.common.FeedbacksRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +26,7 @@ public class AdminService {
     private final AdRepository adRepository;
     private final UserRepository userRepository;
     private final FeedbacksRepository feedbackRepository;
+
 
     public void approveAd(Long adId, Long adminId) {
         Ad ad = adRepository.findById(adId)
