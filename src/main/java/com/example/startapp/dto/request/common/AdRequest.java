@@ -56,5 +56,9 @@ public class AdRequest {
     @NotNull
     private String surname;
 
+    @NotNull
+    String city;
+
+
 }
 

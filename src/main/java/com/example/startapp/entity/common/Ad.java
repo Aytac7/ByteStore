@@ -91,6 +91,9 @@ public class Ad {
     PhonePrefix phonePrefix;
 
     String phoneNumber;
+
+    @Column(nullable = false)
+    String city;
 }
 
 

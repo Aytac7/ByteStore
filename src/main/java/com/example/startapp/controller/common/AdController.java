@@ -31,7 +31,6 @@ public class AdController {
     private final AdService adService;
     private final ObjectMapper objectMapper;
 
-
     @GetMapping("/model/{modelId}")
     public ResponseEntity<List<AdDTO>> getAdsByModel(@PathVariable Long modelId) {
         List<AdDTO> ads = adService.getAdsByModel(modelId);
@@ -49,6 +48,7 @@ public class AdController {
 
         return ResponseEntity.ok(suggestions);
     }
+
     @GetMapping("/filter")
     public ResponseEntity<Page<AdDTOSpecific>> getAdsWithFilter(
             AdCriteriaRequest adCriteriaRequest,
@@ -63,12 +63,6 @@ public class AdController {
         return ResponseEntity.ok(ads);
     }
 
-
-
-//    @PostMapping("/search")
-//    public Page<AdDTOSpecific> search(@RequestBody String searchQuery, Pageable pageable){
-//        return adService.search(searchQuery,pageable);
-//    }
     @PostMapping("/create")
     public ResponseEntity<String> createAd(
             @RequestParam("adRequest") String adRequestJson,

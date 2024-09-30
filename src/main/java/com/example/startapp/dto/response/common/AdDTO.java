@@ -27,4 +27,5 @@ public class AdDTO {
      List<String> imageUrls;
      LocalDateTime createdAt;
      PhonePrefix phonePrefix;
+     String city;
 }

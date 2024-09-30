@@ -5,16 +5,16 @@ import com.example.startapp.service.common.FeedbacksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
-
+@RequestMapping("/feedbacks")
 public class FeedbacksController {
     private final FeedbacksService feedbackService;
 
     @PostMapping("/add")
     public void addFeedback(@RequestBody FeedbackRequest feedback) {
         feedbackService.addFeedback(feedback);
-
     }
 
 

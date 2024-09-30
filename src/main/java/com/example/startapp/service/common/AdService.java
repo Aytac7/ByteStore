@@ -51,6 +51,7 @@ public class AdService {
                 .header(ad.getHeader())
                 .additionalInfo(ad.getAdditionalInfo())
                 .isNew(ad.getIsNew())
+                .city(ad.getCity())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -158,6 +159,7 @@ public class AdService {
                 .additionalInfo(adRequest.getAdditionalInfo())
                 .isNew(adRequest.getIsNew())
                 .user(user)
+                .city(adRequest.getCity())
                 .status(AdStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -202,6 +204,7 @@ public class AdService {
                         .price(ad.getPrice())
                         .header(ad.getHeader())
                         .additionalInfo(ad.getAdditionalInfo())
+                        .city(ad.getCity())
                         .isNew(ad.getIsNew())
                         .imageUrls(ad.getImages().stream()
                                 .map(Image::getImageUrl)
@@ -264,6 +267,7 @@ public class AdService {
                 .phonePrefix(ad.getPhonePrefix())
                 .phoneNumber(ad.getPhoneNumber())
                 .status(ad.getStatus().toString())
+                .city(ad.getCity())
                 .build()
         ).collect(Collectors.toList());
     }
@@ -282,6 +286,7 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .city(ad.getCity())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -308,6 +313,7 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .city(ad.getCity())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -348,8 +354,7 @@ public class AdService {
         ad.setIsNew(adRequest.getIsNew());
         ad.setName(adRequest.getName());
         ad.setSurname(adRequest.getSurname());
-
-
+        ad.setCity(adRequest.getCity());
 
         if (files != null && !files.isEmpty()) {
             List<Image> images = files.stream()
