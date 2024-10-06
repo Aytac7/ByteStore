@@ -8,6 +8,7 @@ public class SubcategoryMapper {
     public static SubcategoryDTO subcategoryDTO(Subcategory subcategory){
         return SubcategoryDTO.builder()
                 .name(subcategory.getName())
+                .id(subcategory.getId())
                 .build();
     }
 }

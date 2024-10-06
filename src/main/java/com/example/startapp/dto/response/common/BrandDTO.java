@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class BrandDTO {
 
     private String name;
+    private Long id;
 }

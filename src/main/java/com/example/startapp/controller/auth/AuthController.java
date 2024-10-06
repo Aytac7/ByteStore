@@ -25,9 +25,9 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<String> registerUser(@RequestBody @Valid RegisterRequest request) {
         logger.debug("Register request received: {}", request);
-        AuthResponse response = authService.register(request);
+        String response = authService.register(request);
         logger.debug("Register response: {}", response);
         return ResponseEntity.ok(response);
 
@@ -40,10 +40,10 @@ public class AuthController {
 //    }
 
     @PostMapping("/confirm-register/{otp}/{email}")
-    public ResponseEntity<String> confirmRegistration(@PathVariable String email,
-                                                      @PathVariable Integer otp) {
-        authService.confirmRegistration(email, otp);
-        return ResponseEntity.ok("Registration confirmed!");
+    public AuthResponse confirmRegistration(@PathVariable String email,
+                                            @PathVariable Integer otp) {
+        return  authService.confirmRegistration(email, otp);
+
     }
 
     @PostMapping("/login")

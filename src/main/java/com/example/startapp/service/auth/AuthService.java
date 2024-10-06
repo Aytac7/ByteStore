@@ -40,7 +40,7 @@ public class AuthService {
     private final EmailService emailService;
 
     @Transactional
-    public AuthResponse register(RegisterRequest registerRequest) {
+    public String register(RegisterRequest registerRequest) {
 
         if (!registerRequest.getPassword().equals(registerRequest.getRepeatPassword())) {
             throw new PasswordInvalidException(HttpStatus.BAD_REQUEST.name(), "Passwords do not match!");
@@ -69,13 +69,7 @@ public class AuthService {
 
         verifyEmail(savedUser.getEmail());
 
-        var accessToken = jwtService.generateToken(savedUser);
-        var refreshToken = refreshTokenService.createRefreshToken(savedUser.getEmail());
-
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getRefreshToken())
-                .build();
+      return "Otp kodu mailinizə göndərildi";
     }
 
     public ResponseEntity<String> verifyEmail(String email) {
@@ -106,7 +100,7 @@ public class AuthService {
         return ResponseEntity.ok("Email sent for verification!");
     }
 
-    public void confirmRegistration(String email, Integer otp) {
+    public AuthResponse confirmRegistration(String email, Integer otp) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Email not found: " + email));
 
@@ -121,6 +115,14 @@ public class AuthService {
         user.setEmailVerified(true);
         user.setEnabled(true);
         userRepository.save(user);
+
+        String accessToken = jwtService.generateToken(user);
+        String refreshToken = refreshTokenService.createRefreshToken(user.getEmail()).getRefreshToken();
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public AuthResponse login(LoginRequest loginRequest) {

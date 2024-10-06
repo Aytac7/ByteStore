@@ -8,6 +8,7 @@ public class BrandMapper {
     public static BrandDTO brandDTO(Brand brand){
        return BrandDTO.builder()
                .name(brand.getName())
+               .id(brand.getId())
                 .build();
     }
 }

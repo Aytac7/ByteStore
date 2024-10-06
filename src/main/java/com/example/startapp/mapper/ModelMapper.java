@@ -8,6 +8,7 @@ public class ModelMapper {
     public static ModelDTO modelDTO(Model model){
         return ModelDTO.builder()
                 .name(model.getName())
+                .id(model.getId())
                 .build();
     }
 }
