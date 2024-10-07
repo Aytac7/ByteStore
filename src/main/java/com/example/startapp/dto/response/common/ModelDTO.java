@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModelDTO {
     private String name;
+    private Long id;
 }

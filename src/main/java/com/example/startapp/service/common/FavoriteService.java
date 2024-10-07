@@ -42,6 +42,7 @@ public class FavoriteService {
 
         } else {
             Favorite favorite = Favorite.builder()
+                    .id(adId)
                     .user(user)
                     .ad(ad)
                     .build();

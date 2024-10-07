@@ -21,4 +21,5 @@ public class AdDTOSpecific {
      LocalDateTime createdAt;
      List<String> imageUrls;
 
+
 }
