@@ -1,6 +1,7 @@
 package com.example.startapp.service.auth;
 
 import com.example.startapp.dto.request.UserInfoRequest;
+import com.example.startapp.dto.response.auth.UserDTO;
 import com.example.startapp.entity.common.Image;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.repository.auth.UserRepository;
@@ -86,5 +87,20 @@ public class UserService {
         } else {
             throw new RuntimeException("Profil şəkli yoxdu");
         }
+    }
+
+    public UserDTO getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Istidafəçi tapılmadı"));
+        return UserDTO.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .phonePrefix(user.getPhonePrefix())
+                .phoneNumber(user.getPhoneNumber())
+                .profilePhoto(user.getProfilePhoto())
+                .username(user.getUsername())
+                .email(user.getEmail()).build();
+
+
     }
 }

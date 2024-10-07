@@ -1,5 +1,6 @@
 package com.example.startapp.dto.response.common;
 
+import com.example.startapp.entity.common.Favorite;
 import com.example.startapp.enums.PhonePrefix;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,4 +29,5 @@ public class AdDTO {
      LocalDateTime createdAt;
      PhonePrefix phonePrefix;
      String city;
+     Favorite favorite;
 }

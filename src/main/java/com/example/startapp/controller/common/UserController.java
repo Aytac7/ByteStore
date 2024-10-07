@@ -2,6 +2,7 @@ package com.example.startapp.controller.common;
 
 import com.example.startapp.dto.request.UserInfoRequest;
 import com.example.startapp.dto.request.common.AdRequest;
+import com.example.startapp.dto.response.auth.UserDTO;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.service.auth.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,12 @@ public class UserController {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long userId) {
+        UserDTO user = userService.getUserInfo(userId);
+        return ResponseEntity.ok(user);
+    }
     @PutMapping("/update")
     public ResponseEntity<String> updateUser(@AuthenticationPrincipal User user, @RequestParam("userInfoRequest") String userInfoRequestJson, @RequestParam("file") MultipartFile file) {
         try {

@@ -31,3 +31,6 @@ databaseChangeLog:
 
   - include:
       file: db/changelog/entities/11.insert-subcategories.yaml
+
+  - include:
+      file: db/changelog/entities/12.insert-categories-brands.yaml

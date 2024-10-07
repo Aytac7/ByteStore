@@ -32,7 +32,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-
     private String name;
 
     private String surname;
