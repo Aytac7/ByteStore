@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   bytestore:
-    image: nazrinasg/bytestore:v5
+    image: nazrinasg/bytestore:v1
     ports:
       - 8082:8082
     environment:
