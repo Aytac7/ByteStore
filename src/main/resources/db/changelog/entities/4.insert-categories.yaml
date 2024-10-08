@@ -6,5 +6,4 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO categories (
-              name) VALUES ('Telefonlar'), ('Kompüter və Notbuklar'), 
-              ('Planşetlər'), ('Smart saat və qolbaqlar'), ('Oyun konsolları'), ('Aksesuarlar');
+              name) VALUES ('phone'), ('laptop'), ('accessories');

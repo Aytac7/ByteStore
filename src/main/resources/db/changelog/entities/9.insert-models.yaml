@@ -6,12 +6,7 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO models (name, brand_id) VALUES 
-              ('Galaxy Tab S', 1),
-              ('Galaxy Tab A', 1),
-              ('iPhone 13', 2),
-              ('MacBook Pro', 2),
-              ('Galaxy Watch', 1),
-              ('Macbook Air M1', 2),
-              ('Macbook Air M2', 2),
-              ('Macbook M1 Pro', 2);              
-            
+              ('Galaxy S21', (SELECT id FROM brands WHERE name = 'samsung')),
+              ('iPhone 13', (SELECT id FROM brands WHERE name = 'apple')),
+              ('MacBook Pro', (SELECT id FROM brands WHERE name = 'apple')),
+              ('Galaxy Note 20', (SELECT id FROM brands WHERE name = 'samsung'));

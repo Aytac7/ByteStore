@@ -1,15 +1,15 @@
 version: '3.8'
 services:
-#  bytestore:
-#    image: nazrinasg/bytestore:v3
-#    ports:
-#      - 8082:8082
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bytestore
-#      - SPRING_DATASOURCE_USERNAME=postgres
-#      - SPRING_DATASOURCE_PASSWORD=8888
-#    volumes:
-#      - bytestore-data:/var/lib/bytestore
+  bytestore:
+    image: nazrinasg/bytestore:v8
+    ports:
+      - 8082:8082
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bytestore
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=8888
+    volumes:
+      - bytestore-data:/var/lib/bytestore
 
 
   postgres:
@@ -27,5 +27,5 @@ services:
 
 volumes:
   pgdata:
-#  bytestore-data:
+  bytestore-data:
 
