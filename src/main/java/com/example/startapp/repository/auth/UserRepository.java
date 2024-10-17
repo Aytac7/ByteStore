@@ -17,11 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
     Optional<User> findUserByEmail(String email);
-
-//
-//    @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.phonePrefix = :phonePrefix AND u.phoneNumber = :phoneNumber")
-//    boolean existsByPhonePrefixAndPhoneNumber(String phonePrefix, String phoneNumber);
-
+    
     @Transactional
     @Modifying
     @Query("update User u set u.password = ?2 where u.email = ?1")
@@ -39,4 +35,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.username = :username")
      User getUserByUsername(@Param("username") String username);
+
+    Optional<User> findByUsername(String username);
 }

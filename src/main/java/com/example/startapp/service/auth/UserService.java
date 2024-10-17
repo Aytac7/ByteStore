@@ -2,12 +2,16 @@ package com.example.startapp.service.auth;
 
 import com.example.startapp.dto.request.UserInfoRequest;
 import com.example.startapp.dto.response.auth.UserDTO;
+import com.example.startapp.dto.response.auth.UserDtoSpecific;
 import com.example.startapp.entity.common.Image;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.repository.common.ImageRepository;
+import io.jsonwebtoken.Jwt;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,18 +93,38 @@ public class UserService {
         }
     }
 
-    public UserDTO getUserInfo(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Istidafəçi tapılmadı"));
-        return UserDTO.builder()
+//    public UserDTO getUserInfo(Long userId) {
+//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Istidafəçi tapılmadı"));
+//        return UserDTO.builder()
+//                .userId(user.getUserId())
+//                .name(user.getName())
+//                .surname(user.getSurname())
+//                .phonePrefix(user.getPhonePrefix())
+//                .phoneNumber(user.getPhoneNumber())
+//                .profilePhoto(user.getProfilePhoto())
+//                .username(user.getUsername())
+//                .email(user.getEmail()).build();
+//
+//
+//    }
+
+    public UserDtoSpecific getUserInfo() {
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı"));
+
+        return UserDtoSpecific.builder()
                 .userId(user.getUserId())
                 .name(user.getName())
                 .surname(user.getSurname())
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .phonePrefix(user.getPhonePrefix())
                 .phoneNumber(user.getPhoneNumber())
                 .profilePhoto(user.getProfilePhoto())
-                .username(user.getUsername())
-                .email(user.getEmail()).build();
-
-
+                .role(user.getRole())
+                .build();
     }
+
 }

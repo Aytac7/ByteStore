@@ -3,7 +3,6 @@ package com.example.startapp.controller.common;
 import com.example.startapp.dto.response.common.BrandDTO;
 import com.example.startapp.dto.response.common.CategoryDTO;
 import com.example.startapp.dto.response.common.ModelDTO;
-import com.example.startapp.dto.response.common.SubcategoryDTO;
 import com.example.startapp.service.common.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +39,4 @@ public class CategoryController {
         return ResponseEntity.ok(models);
     }
 
-    @GetMapping("/subcategories/{categoryId}")
-    public ResponseEntity<List<SubcategoryDTO>> getSubcategoriesByCategory(@PathVariable Long categoryId) {
-        List<SubcategoryDTO> subcategories = categoryService.getSubcategory(categoryId);
-        return ResponseEntity.ok(subcategories);
-    }
 }

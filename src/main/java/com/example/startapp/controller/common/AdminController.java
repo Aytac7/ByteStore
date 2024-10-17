@@ -21,11 +21,10 @@ public class AdminController {
     private final AdminService adminService;
 
     @PutMapping("/{adId}/approve")
-    public ResponseEntity<String> approveAd(@PathVariable Long adId,
-                                            @AuthenticationPrincipal User admin) {
+    public ResponseEntity<String> approveAd(@PathVariable Long adId) {
 
         try {
-            adminService.approveAd(adId, admin.getUserId());
+            adminService.approveAd(adId);
             return ResponseEntity.ok("Ad approved successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error approving ad: " + e.getMessage());
@@ -35,10 +34,9 @@ public class AdminController {
 
     @PutMapping("/{adId}/reject")
     public ResponseEntity<String> rejectAd(@PathVariable Long adId,
-                                           @RequestParam String rejectionReason,
-                                           @AuthenticationPrincipal User admin) throws EmptyRejectionException {
+                                           @RequestParam String rejectionReason) throws EmptyRejectionException {
         try {
-            adminService.rejectAd(adId, admin.getUserId(), rejectionReason);
+            adminService.rejectAd(adId, rejectionReason);
             return ResponseEntity.ok("Ad rejected successfully with reason: " + rejectionReason);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error rejecting ad: " + e.getMessage());

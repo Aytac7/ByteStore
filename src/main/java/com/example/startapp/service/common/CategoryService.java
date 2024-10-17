@@ -3,7 +3,6 @@ package com.example.startapp.service.common;
 import com.example.startapp.dto.response.common.BrandDTO;
 import com.example.startapp.dto.response.common.CategoryDTO;
 import com.example.startapp.dto.response.common.ModelDTO;
-import com.example.startapp.dto.response.common.SubcategoryDTO;
 import com.example.startapp.entity.common.Brand;
 import com.example.startapp.entity.common.Category;
 import com.example.startapp.exception.BrandNotFoundException;
@@ -11,7 +10,6 @@ import com.example.startapp.exception.CategoryNotFoundException;
 import com.example.startapp.mapper.BrandMapper;
 import com.example.startapp.mapper.CategoryMapper;
 import com.example.startapp.mapper.ModelMapper;
-import com.example.startapp.mapper.SubcategoryMapper;
 import com.example.startapp.repository.common.BrandRepository;
 import com.example.startapp.repository.common.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,11 +47,6 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    public List<SubcategoryDTO> getSubcategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
-        return category.getSubCategories().stream()
-                .map(SubcategoryMapper::subcategoryDTO)
-                .collect(Collectors.toList());
-    }
+
 
 }

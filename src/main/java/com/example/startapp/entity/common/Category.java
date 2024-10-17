@@ -26,10 +26,6 @@ public class Category {
     List<Brand> brands;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Subcategory> subCategories;
-
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     List<Ad> ads;
 
 }

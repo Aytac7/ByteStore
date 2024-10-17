@@ -6,7 +6,176 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO models (name, brand_id) VALUES 
-              ('Galaxy S21', (SELECT id FROM brands WHERE name = 'samsung')),
-              ('iPhone 13', (SELECT id FROM brands WHERE name = 'apple')),
-              ('MacBook Pro', (SELECT id FROM brands WHERE name = 'apple')),
-              ('Galaxy Note 20', (SELECT id FROM brands WHERE name = 'samsung'));
+              ('Macbook Air M1', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Macbook Air M2', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Macbook M1', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Macbook M2', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Macbook M1 Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iMac', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Mac mini', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Mac studio', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 11', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 11 Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 12', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 12 Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 12 Pro Max', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 12 Mini', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 13', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 13 Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 13 Pro Max', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 13 Mini', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 14', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 14 Plus', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 14 Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 14 Pro Max', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 15', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 15 Plus', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 15 Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 15 Pro Max', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 16', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 16 Plus', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 16 Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone 16 Pro Max', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('iPhone Digər', (SELECT id FROM brands WHERE name = 'Apple')),
+              
+              ('Samsung A05', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung A05S', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung A06', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung A15', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung A24', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung A25', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung S20', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung S21', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung S22', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung S23', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung S24', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung Z Flip 5', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung Z Flip 6', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung Z Fold 5', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung Z Fold 6', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Samsung Digər', (SELECT id FROM brands WHERE name = 'Samsung')),
+              
+              ('Mi Redmi 13c', (SELECT id FROM brands WHERE name = 'Mi')),
+              ('Mi Note 13', (SELECT id FROM brands WHERE name = 'Mi')),
+              ('Mi Note 13 Pro', (SELECT id FROM brands WHERE name = 'Mi')),
+              ('Mi 13T Pro', (SELECT id FROM brands WHERE name = 'Mi')),
+              ('Mi 14', (SELECT id FROM brands WHERE name = 'Mi')),
+              ('Mi 14 Ultra', (SELECT id FROM brands WHERE name = 'Mi')),
+              ('Mi Redmi A3', (SELECT id FROM brands WHERE name = 'Mi')),
+              ('Mi Digər', (SELECT id FROM brands WHERE name = 'Mi')),
+              
+              ('Huawei Nova 12S', (SELECT id FROM brands WHERE name = 'Huawei')),
+              ('Huawei Nova 12SE', (SELECT id FROM brands WHERE name = 'Huawei')),
+              ('Huawei Nova 12i', (SELECT id FROM brands WHERE name = 'Huawei')),
+              ('Huawei Nova Y72', (SELECT id FROM brands WHERE name = 'Huawei')),
+              ('Huawei Digər', (SELECT id FROM brands WHERE name = 'Huawei')),
+              
+              
+              ('Pavilion', (SELECT id FROM brands WHERE name = 'HP')),
+              ('Envy', (SELECT id FROM brands WHERE name = 'HP')),
+              ('Omen', (SELECT id FROM brands WHERE name = 'HP')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'HP')),
+              
+              ('Xps', (SELECT id FROM brands WHERE name = 'Dell')),
+              ('Indpiron', (SELECT id FROM brands WHERE name = 'Dell')),
+              ('Latitude', (SELECT id FROM brands WHERE name = 'Dell')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Dell')),
+              
+              ('Thinkpad', (SELECT id FROM brands WHERE name = 'Lenovo')),
+              ('Ideapad', (SELECT id FROM brands WHERE name = 'Lenovo')),
+              ('Legion', (SELECT id FROM brands WHERE name = 'Lenovo')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Lenovo')),
+              
+              ('Aspire', (SELECT id FROM brands WHERE name = 'Acer')),
+              ('Predator', (SELECT id FROM brands WHERE name = 'Acer')),
+              ('Swift', (SELECT id FROM brands WHERE name = 'Acer')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Acer')),
+              
+              ('ZenBook', (SELECT id FROM brands WHERE name = 'ASUS')),
+              ('VivoBook', (SELECT id FROM brands WHERE name = 'ASUS')),
+              ('Rog', (SELECT id FROM brands WHERE name = 'ASUS')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'ASUS')),
+              
+              ('Qulaqlıqlar', (SELECT id FROM brands WHERE name = 'Telefon aksesuarları')),
+              ('Şüşə qoruyucular', (SELECT id FROM brands WHERE name = 'Telefon aksesuarları')),
+              ('Kabrolar', (SELECT id FROM brands WHERE name = 'Telefon aksesuarları')),
+              ('Powerbanklar', (SELECT id FROM brands WHERE name = 'Telefon aksesuarları')),
+              ('Adapter', (SELECT id FROM brands WHERE name = 'Telefon aksesuarları')),
+              
+              
+              ('Klaviatura', (SELECT id FROM brands WHERE name = 'Kompüter aksesuarları')),
+              ('Mouse', (SELECT id FROM brands WHERE name = 'Kompüter aksesuarları')),
+              ('Monitor', (SELECT id FROM brands WHERE name = 'Kompüter aksesuarları')),
+              ('Web kamera', (SELECT id FROM brands WHERE name = 'Kompüter aksesuarları')),
+              
+              
+              ('Honor 200', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor 200 Lite', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor 200 Pro', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor Magic 5 Pro', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor X5 Plus', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor X6B', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor X7B', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor X8B', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor X9B', (SELECT id FROM brands WHERE name = 'Honor')),
+              ('Honor Digər', (SELECT id FROM brands WHERE name = 'Honor')),
+
+              ('Poco X3 Pro', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco X3', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco M4', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco M2', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco C40', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco C40+', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco M4 Pro', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco X5', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco X5 Pro', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco M6', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco C65', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco X6 Pro', (SELECT id FROM brands WHERE name = 'Poco')),
+              ('Poco Digər', (SELECT id FROM brands WHERE name = 'Poco')),
+              
+              ('Ipad Air', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Ipad Pro', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Ipad Mini', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Apple')),
+              
+              ('Galaxy Tab S', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Galaxy Tab A', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Samsung')),
+              
+              ('MatePad', (SELECT id FROM brands WHERE name = 'Huawei')),
+              
+              ('Tab P', (SELECT id FROM brands WHERE name = 'Lenovo')),
+              ('Tab M', (SELECT id FROM brands WHERE name = 'Lenovo')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Lenovo')),
+              
+              ('Mi Pad', (SELECT id FROM brands WHERE name = 'Xiaomi')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Xiaomi')),
+              
+              ('Playstation 3', (SELECT id FROM brands WHERE name = 'Sony')),
+              ('Playstation 4', (SELECT id FROM brands WHERE name = 'Sony')),
+              ('Playstation 5', (SELECT id FROM brands WHERE name = 'Sony')),
+              
+              ('Xbox One', (SELECT id FROM brands WHERE name = 'Microsoft')),
+              ('Xbox Series', (SELECT id FROM brands WHERE name = 'Microsoft')),
+                            
+              ('Apple Watch Series', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Apple Watch SE', (SELECT id FROM brands WHERE name = 'Apple')),
+              ('Apple Watch Ultra', (SELECT id FROM brands WHERE name = 'Apple')),
+              
+              ('Galaxy Watch', (SELECT id FROM brands WHERE name = 'Samsung')),
+              ('Digər', (SELECT id FROM brands WHERE name = 'Samsung')),
+              
+              ('Amazfit', (SELECT id FROM brands WHERE name = 'Xiaomi')),
+              ('Mi Watch', (SELECT id FROM brands WHERE name = 'Xiaomi')),
+              ('Redmi', (SELECT id FROM brands WHERE name = 'Xiaomi')),
+              
+              ('Huawei Watch GT', (SELECT id FROM brands WHERE name = 'Huawei')),
+              ('Huawei Watch Fit', (SELECT id FROM brands WHERE name = 'Huawei')),
+              ('Huawei Watch 3', (SELECT id FROM brands WHERE name = 'Huawei'));           
+                          
+                          
+                  
+              
+  

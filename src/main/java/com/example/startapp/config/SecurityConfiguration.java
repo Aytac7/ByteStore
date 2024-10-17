@@ -200,7 +200,8 @@ public class SecurityConfiguration {
 
     };
     public static String[] ADMIN = {
-            "/admin/**"
+            "/admin/**",
+            "/user/info"
 
     };
     public static String[] USER = {

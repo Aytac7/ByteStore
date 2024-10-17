@@ -18,9 +18,6 @@ databaseChangeLog:
       file: db/changelog/entities/8.create-models-table.yaml
 
   - include:
-      file: db/changelog/entities/10.create-subcategories-table.yaml
-
-  - include:
       file: db/changelog/entities/4.insert-categories.yaml
 
   - include:
@@ -30,4 +27,6 @@ databaseChangeLog:
       file: db/changelog/entities/9.insert-models.yaml
 
   - include:
-      file: db/changelog/entities/11.insert-subcategories.yaml
+      file: db/changelog/entities/10.insert-categories-brands.yaml
+
+

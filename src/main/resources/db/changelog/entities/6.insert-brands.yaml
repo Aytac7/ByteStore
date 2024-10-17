@@ -6,4 +6,6 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO brands (
-              name) VALUES ('samsung'), ('apple');
+              name) VALUES ('Samsung'), ('Apple'), ('HP'), ('Dell'), ('Lenovo'),
+              ('ASUS'), ('Acer'), ('Xiaomi'), ('Huawei'), ('Mi'), ('Honor'), ('Poco'), ('Sony'), ('Microsoft'), ('Digər'), ('Telefon aksesuarları'), ('Kompüter aksesuarları'), ('Digər aksesuarları');
+          

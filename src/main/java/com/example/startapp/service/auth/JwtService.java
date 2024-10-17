@@ -1,14 +1,18 @@
 package com.example.startapp.service.auth;
 
 
+import com.example.startapp.dto.response.auth.UserDTO;
 import com.example.startapp.entity.auth.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +36,7 @@ public class JwtService {
         String role = extractClaim(token, claims -> claims.get("role", String.class));
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -45,6 +50,7 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -54,6 +60,7 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
+
     public String generateToken(Map<String, Object> extraClaims,
                                 UserDetails userDetails) {
         User userEntity = (User) userDetails;

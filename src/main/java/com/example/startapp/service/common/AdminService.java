@@ -28,23 +28,16 @@ public class AdminService {
     private final FeedbacksRepository feedbackRepository;
 
 
-    public void approveAd(Long adId, Long adminId) {
+    public void approveAd(Long adId) {
         Ad ad = adRepository.findById(adId)
                 .orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));
-
-        User admin = userRepository.findById(adminId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid admin ID"));
-
-        if (admin.getRole() != UserRole.ADMIN){
-            throw new UnauthorizedException("Only admins can approve ads");
-        }
 
         ad.setStatus(AdStatus.APPROVED);
         ad.setStatusChangedAt(LocalDateTime.now());
         adRepository.save(ad);
     }
 
-    public void rejectAd(Long adId, Long adminId, String rejectionReason) throws EmptyRejectionException {
+    public void rejectAd(Long adId, String rejectionReason) throws EmptyRejectionException {
         if (rejectionReason == null || rejectionReason.trim().isEmpty()) {
             throw new EmptyRejectionException("Rejection reason must not be empty");
         }
@@ -52,12 +45,6 @@ public class AdminService {
         Ad ad = adRepository.findById(adId)
                 .orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));
 
-        User admin = userRepository.findById(adminId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid admin ID"));
-
-        if (admin.getRole() != UserRole.ADMIN) {
-            throw new UnauthorizedException("Only admins can reject ads");
-        }
 
         ad.setStatus(AdStatus.REJECTED);
         ad.setRejectionReason(rejectionReason);

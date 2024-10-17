@@ -3,6 +3,7 @@ package com.example.startapp.controller.common;
 import com.example.startapp.dto.request.UserInfoRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 import com.example.startapp.dto.response.auth.UserDTO;
+import com.example.startapp.dto.response.auth.UserDtoSpecific;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.service.auth.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,15 +22,17 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final UserService userService;
 
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long userId) {
-        UserDTO user = userService.getUserInfo(userId);
-        return ResponseEntity.ok(user);
+    @GetMapping("/info")
+    public ResponseEntity<UserDtoSpecific> getUserInfo() {
+        UserDtoSpecific userDto = userService.getUserInfo();
+        return ResponseEntity.ok(userDto);
     }
+
+
     @PutMapping("/update")
     public ResponseEntity<String> updateUser(@AuthenticationPrincipal User user, @RequestParam("userInfoRequest") String userInfoRequestJson, @RequestParam("file") MultipartFile file) {
         try {
@@ -45,13 +48,13 @@ public class UserController {
     }
 
 
-    @PutMapping("/delete")
-    public ResponseEntity<String> deletePP(@AuthenticationPrincipal User user) {
-        try {
-            userService.deleteProfilePhoto(user.getUserId());
-            return ResponseEntity.status(HttpStatus.OK).body("Profil şəkli uğurla silindi");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Profil şəklini silərkən xəta yarandı " + e.getMessage());
-        }
+@PutMapping("/delete")
+public ResponseEntity<String> deletePP(@AuthenticationPrincipal User user) {
+    try {
+        userService.deleteProfilePhoto(user.getUserId());
+        return ResponseEntity.status(HttpStatus.OK).body("Profil şəkli uğurla silindi");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Profil şəklini silərkən xəta yarandı " + e.getMessage());
+    }
     }
 }
