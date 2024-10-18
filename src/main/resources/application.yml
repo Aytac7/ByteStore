@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/startup
+    url: jdbc:postgresql://localhost:5432/bytestore
     username: postgres
     password: 8888
 
