@@ -64,23 +64,24 @@ public class AdService {
         ).collect(Collectors.toList());
     }
 
-    public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
-        Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
-        System.out.println("SearchQuery " + searchQuery);
+//    public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
+//        Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
+//        System.out.println("SearchQuery " + searchQuery);
+//
+//
+//        return suggestions.map(ad -> AdDTOSpecific.builder()
+//                .id(ad.getId())
+//                .categoryId(ad.getCategory().getId())
+//                .modelId(ad.getModel().getId())
+//                .price(ad.getPrice())
+//                .header(ad.getHeader())
+//                .createdAt(ad.getCreatedAt())
+//                .imageUrls(ad.getImages().stream()
+//                        .map(Image::getImageUrl)
+//                        .collect(Collectors.toList()))
+//                .build());
+//    }
 
-
-        return suggestions.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
-    }
 
 
     public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){

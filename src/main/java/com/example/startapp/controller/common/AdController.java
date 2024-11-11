@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -37,21 +38,9 @@ public class AdController {
         return ResponseEntity.ok(ads);
     }
 
-
-    @GetMapping("/search/suggestions")
-    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
-        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
-
-        if (suggestions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Heç bir uyğun nəticə tapılmadı.");
-        }
-
-        return ResponseEntity.ok(suggestions);
-    }
-
     @GetMapping("/filter")
     public ResponseEntity<Page<AdDTOSpecific>> getAdsWithFilter(
-            AdCriteriaRequest adCriteriaRequest,
+           @RequestParam AdCriteriaRequest adCriteriaRequest,
             Pageable pageable) {
 
         Page<AdDTOSpecific> ads = adService.getAdsWithFilter(adCriteriaRequest, pageable);
@@ -63,7 +52,7 @@ public class AdController {
         return ResponseEntity.ok(ads);
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createAd(
             @RequestParam("adRequest") String adRequestJson,
             @RequestParam("files") List<MultipartFile> files) {
@@ -148,4 +137,16 @@ public class AdController {
     }
 
 
+
+
+    //    @GetMapping("/search/suggestions")
+//    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
+//        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
+//
+//        if (suggestions.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Heç bir uyğun nəticə tapılmadı.");
+//        }
+//
+//        return ResponseEntity.ok(suggestions);
+//    }
 }
