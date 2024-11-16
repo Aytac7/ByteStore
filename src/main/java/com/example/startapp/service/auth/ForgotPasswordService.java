@@ -9,10 +9,18 @@ import com.example.startapp.exception.InvalidOtpException;
 import com.example.startapp.repository.auth.ForgotPasswordRepository;
 import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.dto.response.auth.ChangePassword;
+import com.example.startapp.util.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.startapp.exception.UserNotFoundException;
+import org.springframework.http.ResponseEntity;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
+
 
 import org.springframework.stereotype.Service;
 
@@ -28,12 +36,14 @@ public class ForgotPasswordService {
     private final EmailService emailService;
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public ForgotPasswordService(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository, PasswordEncoder passwordEncoder) {
+    public ForgotPasswordService(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository, PasswordEncoder passwordEncoder,JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.forgotPasswordRepository = forgotPasswordRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil=jwtUtil;
     }
 
 
@@ -67,7 +77,7 @@ public class ForgotPasswordService {
     }
 
 
-    public ResponseEntity<String> verifyOtp(Integer otp, String email) {
+    public ResponseEntity<String> verifyOtp(Integer otp, String email) throws IOException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Please provide an valid email!"));
 
@@ -79,12 +89,32 @@ public class ForgotPasswordService {
             return new ResponseEntity<>("OTP has expired!", HttpStatus.EXPECTATION_FAILED);
         }
 
-        return ResponseEntity.ok("OTP verified!");
+        String token = jwtUtil.generateToken(user.getUsername(), user.getEmail());
+
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("statusCode", 200);
+        response.put("message", "OTP verified");
+        response.put("token", token);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(response);
+        return ResponseEntity.ok(jsonResponse);
+
+
+
+
     }
 
 
     public ResponseEntity<String> changePasswordHandler(ChangePassword changePassword,
-                                                        String email) {
+                                                       String token) {
+
+        String email = jwtUtil.getEmailFromToken(token);  // Tokeni analiz et və emaili al
+        if (email == null || !jwtUtil.validatePasswordResetToken(token)) {
+            // Token etibarsızdırsa, səhv mesajı göndəririk
+            return new ResponseEntity<>("Invalid or expired token", HttpStatus.BAD_REQUEST);
+        }
         if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
             return new ResponseEntity<>("Please enter the password again!, password and repeated password are not the same", HttpStatus.EXPECTATION_FAILED);
         }

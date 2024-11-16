@@ -38,9 +38,10 @@ public class AdController {
         return ResponseEntity.ok(ads);
     }
 
+
     @GetMapping("/filter")
     public ResponseEntity<Page<AdDTOSpecific>> getAdsWithFilter(
-           @RequestParam AdCriteriaRequest adCriteriaRequest,
+           AdCriteriaRequest adCriteriaRequest,
             Pageable pageable) {
 
         Page<AdDTOSpecific> ads = adService.getAdsWithFilter(adCriteriaRequest, pageable);

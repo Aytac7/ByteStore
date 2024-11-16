@@ -6,6 +6,8 @@ import com.example.startapp.service.auth.ForgotPasswordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/forgotPassword")
 
@@ -27,15 +29,15 @@ public class ForgotPasswordController {
 
     }
     @PostMapping("/verifyOtp/{otp}/{email}")
-    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) {
+    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) throws IOException {
             return forgotPasswordService.verifyOtp(otp, email);
 
     }
 
-    @PostMapping("/changePassword/{email}")
+    @PostMapping("/changePassword/{token}")
     public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
-                                                        @PathVariable String email) {
-       return forgotPasswordService.changePasswordHandler(changePassword,email);
+                                                        @PathVariable String token) {
+       return forgotPasswordService.changePasswordHandler(changePassword,token);
     }
 
 }

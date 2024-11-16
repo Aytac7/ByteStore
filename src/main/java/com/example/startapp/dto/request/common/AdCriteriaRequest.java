@@ -15,8 +15,8 @@ public class AdCriteriaRequest {
     Long categoryId;
     List<Long> brandIds;
     List<Long> modelIds;
-    double minPrice;
-    double maxPrice;
+    Double minPrice;
+    Double maxPrice;
 
 
     String searchText;
