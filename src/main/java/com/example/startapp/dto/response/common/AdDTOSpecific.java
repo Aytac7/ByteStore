@@ -18,6 +18,7 @@ public class AdDTOSpecific {
      Long modelId;
      String header;
      Long categoryId;
+     boolean isFavorite;
      LocalDateTime createdAt;
      List<String> imageUrls;
 

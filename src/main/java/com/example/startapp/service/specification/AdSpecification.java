@@ -35,12 +35,12 @@ public class AdSpecification implements Specification<Ad> {
 //                predicates.add(root.get("brand").get("id").in(criteriaRequest.getBrandIds()));
 //            }
 
-            // Filter by categoryId if provided
+
             if (criteriaRequest.getCategoryId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("category").get("id"), criteriaRequest.getCategoryId()));
             }
 
-            // If both categoryId and brandIds are provided, use subquery to match brand
+
             if (criteriaRequest.getCategoryId() != null && criteriaRequest.getBrandIds() != null && !criteriaRequest.getBrandIds().isEmpty()) {
                 Subquery<Long> brandSubquery = query.subquery(Long.class);
                 Root<Brand> brandRoot = brandSubquery.from(Brand.class);
@@ -51,11 +51,11 @@ public class AdSpecification implements Specification<Ad> {
 
                 predicates.add(root.get("brand").get("id").in(brandSubquery));
             } else if (criteriaRequest.getBrandIds() != null && !criteriaRequest.getBrandIds().isEmpty()) {
-                // If only brandIds are provided, filter by brandIds
+
                 predicates.add(root.get("brand").get("id").in(criteriaRequest.getBrandIds()));
             }
 
-            // If both categoryId, brandIds, and modelIds are provided, apply model filter as well
+
             if (criteriaRequest.getCategoryId() != null && criteriaRequest.getBrandIds() != null && !criteriaRequest.getBrandIds().isEmpty() && criteriaRequest.getModelIds() != null && !criteriaRequest.getModelIds().isEmpty()) {
                 Subquery<Long> modelSubquery = query.subquery(Long.class);
                 Root<Model> modelRoot = modelSubquery.from(Model.class);
@@ -79,7 +79,7 @@ public class AdSpecification implements Specification<Ad> {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), criteriaRequest.getMaxPrice()));
             }
 
-            // new and secondhand filtering
+
             if (criteriaRequest.getNewSelected() != null && criteriaRequest.getNewSelected()) {
                 predicates.add(criteriaBuilder.equal(root.get("isNew"), true));
             }
@@ -88,7 +88,7 @@ public class AdSpecification implements Specification<Ad> {
                 predicates.add(criteriaBuilder.equal(root.get("isNew"), false));
             }
 
-            // search text filtering
+
             if (criteriaRequest.getSearchText() != null && !criteriaRequest.getSearchText().isEmpty()) {
                 Predicate brandSearch = criteriaBuilder.like(criteriaBuilder.lower(root.get("brand").get("name")),
                         "%" + criteriaRequest.getSearchText().toLowerCase() + "%");
@@ -108,7 +108,7 @@ public class AdSpecification implements Specification<Ad> {
 //                query.orderBy(criteriaBuilder.desc(root.get("createdAt"))); // Newest First
 //            }
 
-            // price sorting (ascending or descending)
+
             if (criteriaRequest.getSortByPriceAsc() != null && criteriaRequest.getSortByPriceAsc()) {
                 query.orderBy(criteriaBuilder.asc(root.get("price")));
             }
@@ -117,7 +117,7 @@ public class AdSpecification implements Specification<Ad> {
                 query.orderBy(criteriaBuilder.desc(root.get("price")));
             }
 
-            // Apply the predicates (filters) to the query
+
             query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
             return query.getRestriction();

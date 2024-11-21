@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 //    boolean existsByUserAndAd(User user, Ad ad);
@@ -14,6 +16,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     boolean existsByUserUserIdAndAdId(Long userId, Long adId);
     void deleteByUserUserIdAndAdId(Long userId, Long adId);
     Page<Favorite> findByUserUserId(Long userId, Pageable pageable);
+    List<Favorite> findByUserUserId (Long userId);
 
 }
 

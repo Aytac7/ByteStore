@@ -32,6 +32,13 @@ public class AdController {
     private final AdService adService;
     private final ObjectMapper objectMapper;
 
+    @GetMapping("/getAllWithFavorite")
+    public ResponseEntity<Page<AdDTOSpecific>> getAdsWithFavorite(Long userId, Pageable pageable){
+        Page<AdDTOSpecific> ads=  adService.getAllAdsWithFavorite(userId,pageable);
+        return ResponseEntity.ok(ads);
+
+    }
+
     @GetMapping("/model/{modelId}")
     public ResponseEntity<List<AdDTO>> getAdsByModel(@PathVariable Long modelId) {
         List<AdDTO> ads = adService.getAdsByModel(modelId);

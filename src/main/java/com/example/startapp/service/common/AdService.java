@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -37,6 +38,51 @@ public class AdService {
     private final BrandRepository brandRepository;
     private final ModelRepository modelRepository;
     private final S3Service s3Service;
+    private final FavoriteRepository favoriteRepository;
+
+
+
+    public Page<AdDTOSpecific> getAllAdsWithFavorite(Long userId, Pageable pageable) {
+
+        Page<Ad> ads=adRepository.findAllAdByStatus(pageable,AdStatus.APPROVED);
+
+        //Page<Favorite> favorites=favoriteRepository.findByUserUserId(userId,pageable);
+        List<Favorite> favorites= favoriteRepository.findByUserUserId(userId);
+
+        Set<Long> favoritesAdIds=favorites.stream()
+                .map(fav-> fav.getAd().getId())
+                .collect(Collectors.toSet());
+
+        return ads.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .isFavorite(favoritesAdIds.contains(ad.getId()))
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+    }
+
+    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){
+        Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
+        Page<Ad> ads=adRepository.findAll(specification,pageable);
+        return ads.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+
+    }
 
 
     public List<AdDTO> getAdsByModel(Long modelId) {
@@ -64,59 +110,10 @@ public class AdService {
         ).collect(Collectors.toList());
     }
 
-//    public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
-//        Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
-//        System.out.println("SearchQuery " + searchQuery);
-//
-//
-//        return suggestions.map(ad -> AdDTOSpecific.builder()
-//                .id(ad.getId())
-//                .categoryId(ad.getCategory().getId())
-//                .modelId(ad.getModel().getId())
-//                .price(ad.getPrice())
-//                .header(ad.getHeader())
-//                .createdAt(ad.getCreatedAt())
-//                .imageUrls(ad.getImages().stream()
-//                        .map(Image::getImageUrl)
-//                        .collect(Collectors.toList()))
-//                .build());
-//    }
 
 
 
-    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){
-        Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
-        Page<Ad> ads=adRepository.findAll(specification,pageable);
-        return ads.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
 
-    }
-//
-//    public Page<AdDTOSpecific> search(String searchQuery, Pageable pageable){
-//        Specification<Ad> specification = AdSpecification.searchByBrandOrModel(searchQuery);
-//        Page<Ad> ads=adRepository.findAll(specification,pageable);
-//
-//        return ads.map(ad -> AdDTOSpecific.builder()
-//                .id(ad.getId())
-//                .categoryId(ad.getCategory().getId())
-//                .modelId(ad.getModel().getId())
-//                .price(ad.getPrice())
-//                .header(ad.getHeader())
-//                .createdAt(ad.getCreatedAt())
-//                .imageUrls(ad.getImages().stream()
-//                        .map(Image::getImageUrl)
-//                        .collect(Collectors.toList()))
-//                .build());
-//    }
 
 
     public void createAd(AdRequest adRequest, List<MultipartFile> files) {
@@ -390,5 +387,42 @@ public class AdService {
     public void deleteAdById(Long id) {
         adRepository.deleteById(id);
     }
+
+    //    public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
+//        Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
+//        System.out.println("SearchQuery " + searchQuery);
+//
+//
+//        return suggestions.map(ad -> AdDTOSpecific.builder()
+//                .id(ad.getId())
+//                .categoryId(ad.getCategory().getId())
+//                .modelId(ad.getModel().getId())
+//                .price(ad.getPrice())
+//                .header(ad.getHeader())
+//                .createdAt(ad.getCreatedAt())
+//                .imageUrls(ad.getImages().stream()
+//                        .map(Image::getImageUrl)
+//                        .collect(Collectors.toList()))
+//                .build());
+//    }
+
+    //
+//    public Page<AdDTOSpecific> search(String searchQuery, Pageable pageable){
+//        Specification<Ad> specification = AdSpecification.searchByBrandOrModel(searchQuery);
+//        Page<Ad> ads=adRepository.findAll(specification,pageable);
+//
+//        return ads.map(ad -> AdDTOSpecific.builder()
+//                .id(ad.getId())
+//                .categoryId(ad.getCategory().getId())
+//                .modelId(ad.getModel().getId())
+//                .price(ad.getPrice())
+//                .header(ad.getHeader())
+//                .createdAt(ad.getCreatedAt())
+//                .imageUrls(ad.getImages().stream()
+//                        .map(Image::getImageUrl)
+//                        .collect(Collectors.toList()))
+//                .build());
+//    }
+
 }
 
