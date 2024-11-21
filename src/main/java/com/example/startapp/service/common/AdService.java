@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,34 +43,20 @@ public class AdService {
 
 
 
-    public Page<AdDTOSpecific> getAllAdsWithFavorite(Long userId, Pageable pageable) {
-
-        Page<Ad> ads=adRepository.findAllAdByStatus(pageable,AdStatus.APPROVED);
-
-        //Page<Favorite> favorites=favoriteRepository.findByUserUserId(userId,pageable);
-        List<Favorite> favorites= favoriteRepository.findByUserUserId(userId);
-
-        Set<Long> favoritesAdIds=favorites.stream()
-                .map(fav-> fav.getAd().getId())
-                .collect(Collectors.toSet());
-
-        return ads.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .isFavorite(favoritesAdIds.contains(ad.getId()))
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
-    }
-
-    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest,Pageable pageable){
+    public Page<AdDTOSpecific> getAdsWithFilter(Long userId,AdCriteriaRequest adCriteriaRequest,Pageable pageable){
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
         Page<Ad> ads=adRepository.findAll(specification,pageable);
+
+        Set<Long> favoriteAdIds;
+        if(userId!=null){
+            List<Favorite> favorites= favoriteRepository.findByUserUserId(userId);
+            favoriteAdIds = favorites.stream()
+                    .map(fav -> fav.getAd().getId())
+                    .collect(Collectors.toSet());
+        } else {
+            favoriteAdIds = new HashSet<>();
+        }
+
         return ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
@@ -77,6 +64,7 @@ public class AdService {
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
+                .isFavorite(userId != null && favoriteAdIds.contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
