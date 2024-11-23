@@ -23,9 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -43,7 +41,7 @@ public class AdService {
 
 
 
-    public Page<AdDTOSpecific> getAdsWithFilter(Long userId,AdCriteriaRequest adCriteriaRequest,Pageable pageable){
+    public Map<String, Object> getAdsWithFilter(Long userId, AdCriteriaRequest adCriteriaRequest, Pageable pageable){
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
         Page<Ad> ads=adRepository.findAll(specification,pageable);
 
@@ -57,10 +55,13 @@ public class AdService {
             favoriteAdIds = new HashSet<>();
         }
 
-        return ads.map(ad -> AdDTOSpecific.builder()
+
+        Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
@@ -70,17 +71,24 @@ public class AdService {
                         .collect(Collectors.toList()))
                 .build());
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adDTOSpecificPage);
+        return response;
+
     }
 
-    public Page<AdDTOSpecific> getAllNewAds(Long userId,Pageable pageable) {
-        Page<Ad> adPage = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
+    public Map<String,Object> getAllNewAds(Long userId,Pageable pageable) {
+        Page<Ad> ads = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
 
         getFavoriteAdIds(userId);
 
-        return adPage.map(ad -> AdDTOSpecific.builder()
+        Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
@@ -89,16 +97,22 @@ public class AdService {
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
                 .build());
+        Map<String,Object> response= new  HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adDTOSpecificPage);
+        return response;
     }
 
-        public Page<AdDTOSpecific> getAllSecondHandAds(Long userId,Pageable pageable) {
-        Page<Ad> adPage = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
+        public Map<String,Object> getAllSecondHandAds(Long userId,Pageable pageable) {
+        Page<Ad> ads = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
 
             getFavoriteAdIds(userId);
-        return adPage.map(ad -> AdDTOSpecific.builder()
+         Page<AdDTOSpecific>adDTOSpecificPage= ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
@@ -107,6 +121,10 @@ public class AdService {
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
                 .build());
+            Map<String,Object> response= new  HashMap<>();
+            response.put("totalCount", ads.getTotalElements());
+            response.put("page", adDTOSpecificPage);
+            return response;
     }
 
     private Set<Long> getFavoriteAdIds(Long userId) {
@@ -263,10 +281,6 @@ public class AdService {
     public List<AdDTO> getAdsByUserId(Long userId) {
         List<Ad> ads = adRepository.findByUser_UserId(userId);
 
-        List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
-        Set<Long> favoriteAdIds = favorites.stream()
-                .map(favorite -> favorite.getAd().getId())
-                .collect(Collectors.toSet());
 
         return ads.stream().map(ad -> AdDTO.builder()
                 .id(ad.getId())
@@ -278,6 +292,9 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .brandName(ad.getBrand().getName())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -303,6 +320,9 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .brandName(ad.getBrand().getName())
                 .city(ad.getCity())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
@@ -330,6 +350,9 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .brandName(ad.getBrand().getName())
                 .city(ad.getCity())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)

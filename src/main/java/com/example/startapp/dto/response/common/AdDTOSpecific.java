@@ -16,8 +16,10 @@ public class AdDTOSpecific {
      Long id;
      double price;
      Long modelId;
+     String modelName;
      String header;
      Long categoryId;
+     String categoryName;
      boolean isFavorite;
      LocalDateTime createdAt;
      List<String> imageUrls;

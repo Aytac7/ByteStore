@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -41,12 +41,12 @@ public class AdController {
 
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<AdDTOSpecific>> getAdsWithFilter(
+    public ResponseEntity<Map<String, Object>> getAdsWithFilter(
             @RequestParam (value="userId", required = false) Long userId,
             AdCriteriaRequest adCriteriaRequest,
             Pageable pageable) {
 
-        Page<AdDTOSpecific> ads = adService.getAdsWithFilter(userId, adCriteriaRequest, pageable);
+        Map<String, Object> ads = adService.getAdsWithFilter(userId, adCriteriaRequest, pageable);
 
         if (ads.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -118,14 +118,14 @@ public class AdController {
 //    }
 
     @GetMapping("/new")
-    public Page<AdDTOSpecific> getAllNewAds(
+    public Map<String, Object> getAllNewAds(
             @RequestParam (value="userId", required = false) Long userId,
             Pageable pageable) {
         return adService.getAllNewAds(userId,pageable);
     }
 
     @GetMapping("/secondhand")
-    public Page<AdDTOSpecific> getAllSecondHandAds(
+    public Map<String, Object> getAllSecondHandAds(
             @RequestParam (value = "userId",required = false) Long userId,
             Pageable pageable) {
         return adService.getAllSecondHandAds(userId,pageable);
