@@ -72,6 +72,54 @@ public class AdService {
 
     }
 
+    public Page<AdDTOSpecific> getAllNewAds(Long userId,Pageable pageable) {
+        Page<Ad> adPage = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
+
+        getFavoriteAdIds(userId);
+
+        return adPage.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .isFavorite(userId != null && getFavoriteAdIds(userId).contains(ad.getId()))
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+    }
+
+        public Page<AdDTOSpecific> getAllSecondHandAds(Long userId,Pageable pageable) {
+        Page<Ad> adPage = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
+
+            getFavoriteAdIds(userId);
+        return adPage.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .isFavorite(userId != null && getFavoriteAdIds(userId).contains(ad.getId()))
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+    }
+
+    private Set<Long> getFavoriteAdIds(Long userId) {
+        if (userId != null) {
+            List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
+            return favorites.stream()
+                    .map(favorite -> favorite.getAd().getId())
+                    .collect(Collectors.toSet());
+        } else {
+            return new HashSet<>();
+        }
+    }
+
 
     public List<AdDTO> getAdsByModel(Long modelId) {
         List<Ad> ads = adRepository.findByModelIdAndStatus(modelId, AdStatus.APPROVED);
@@ -180,63 +228,46 @@ public class AdService {
         adRepository.save(ad);
     }
 
-    public List<AdDTO> getAllAds() {
-        return adRepository.findAll().stream().map(
-                ad -> AdDTO.builder()
-                        .id(ad.getId())
-                        .categoryId(ad.getCategory().getId())
-                        .brandId(ad.getBrand().getId())
-                        .modelId(ad.getModel().getId())
-                        .price(ad.getPrice())
-                        .header(ad.getHeader())
-                        .additionalInfo(ad.getAdditionalInfo())
-                        .city(ad.getCity())
-                        .isNew(ad.getIsNew())
-                        .imageUrls(ad.getImages().stream()
-                                .map(Image::getImageUrl)
-                                .collect(Collectors.toList()))
-                        .userId(ad.getUser().getUserId())
-                        .phonePrefix(ad.getPhonePrefix())
-                        .phoneNumber(ad.getPhoneNumber())
-                        .status(ad.getStatus().toString())
-                        .build()
-        ).collect(Collectors.toList());
-    }
-
-    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
-        Page<Ad> adPage = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
-
-        return adPage.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
-    }
+//    public List<AdDTO> getAllAds() {
+//        return adRepository.findAll().stream().map(
+//                ad -> AdDTO.builder()
+//                        .id(ad.getId())
+//                        .categoryId(ad.getCategory().getId())
+//                        .brandId(ad.getBrand().getId())
+//                        .modelId(ad.getModel().getId())
+//                        .price(ad.getPrice())
+//                        .header(ad.getHeader())
+//                        .additionalInfo(ad.getAdditionalInfo())
+//                        .city(ad.getCity())
+//                        .isNew(ad.getIsNew())
+//                        .imageUrls(ad.getImages().stream()
+//                                .map(Image::getImageUrl)
+//                                .collect(Collectors.toList()))
+//                        .userId(ad.getUser().getUserId())
+//                        .phonePrefix(ad.getPhonePrefix())
+//                        .phoneNumber(ad.getPhoneNumber())
+//                        .status(ad.getStatus().toString())
+//                        .build()
+//        ).collect(Collectors.toList());
+//    }
 
 
-    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
-        Page<Ad> adPage = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
-        return adPage.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
-    }
+
+
+
+
+
+
+
 
     public List<AdDTO> getAdsByUserId(Long userId) {
         List<Ad> ads = adRepository.findByUser_UserId(userId);
+
+        List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
+        Set<Long> favoriteAdIds = favorites.stream()
+                .map(favorite -> favorite.getAd().getId())
+                .collect(Collectors.toSet());
+
         return ads.stream().map(ad -> AdDTO.builder()
                 .id(ad.getId())
                 .userId(ad.getUser().getUserId())
@@ -375,6 +406,40 @@ public class AdService {
     public void deleteAdById(Long id) {
         adRepository.deleteById(id);
     }
+
+    //    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
+//        Page<Ad> adPage = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
+//        return adPage.map(ad -> AdDTOSpecific.builder()
+//                .id(ad.getId())
+//                .categoryId(ad.getCategory().getId())
+//                .modelId(ad.getModel().getId())
+//                .price(ad.getPrice())
+//                .header(ad.getHeader())
+//                .createdAt(ad.getCreatedAt())
+//                .imageUrls(ad.getImages().stream()
+//                        .map(Image::getImageUrl)
+//                        .collect(Collectors.toList()))
+//                .build());
+//    }
+
+
+    //
+//    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
+//        Page<Ad> adPage = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
+//
+//        return adPage.map(ad -> AdDTOSpecific.builder()
+//                .id(ad.getId())
+//                .categoryId(ad.getCategory().getId())
+//                .modelId(ad.getModel().getId())
+//                .price(ad.getPrice())
+//                .header(ad.getHeader())
+//                .createdAt(ad.getCreatedAt())
+//                .imageUrls(ad.getImages().stream()
+//                        .map(Image::getImageUrl)
+//                        .collect(Collectors.toList()))
+//                .build());
+//    }
+
 
     //    public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
 //        Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);

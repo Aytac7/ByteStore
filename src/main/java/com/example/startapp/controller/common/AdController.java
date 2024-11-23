@@ -111,20 +111,24 @@ public class AdController {
         return ResponseEntity.ok(ad);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<AdDTO>> getAllAds() {
-        List<AdDTO> ads = adService.getAllAds();
-        return ResponseEntity.ok(ads);
-    }
+//    @GetMapping("/all")
+//    public ResponseEntity<List<AdDTO>> getAllAds() {
+//        List<AdDTO> ads = adService.getAllAds();
+//        return ResponseEntity.ok(ads);
+//    }
 
     @GetMapping("/new")
-    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
-        return adService.getAllNewAds(pageable);
+    public Page<AdDTOSpecific> getAllNewAds(
+            @RequestParam (value="userId", required = false) Long userId,
+            Pageable pageable) {
+        return adService.getAllNewAds(userId,pageable);
     }
 
     @GetMapping("/secondhand")
-    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
-        return adService.getAllSecondHandAds(pageable);
+    public Page<AdDTOSpecific> getAllSecondHandAds(
+            @RequestParam (value = "userId",required = false) Long userId,
+            Pageable pageable) {
+        return adService.getAllSecondHandAds(userId,pageable);
     }
 
     @GetMapping("/user/{userId}")
