@@ -1,9 +1,7 @@
 package com.example.startapp.dto.request.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -11,14 +9,25 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdCriteriaRequest {
 
-    double priceTo;
-    double priceFrom;
+    Long categoryId;
     List<Long> brandIds;
     List<Long> modelIds;
-    boolean sortByNewest;
-    Boolean isNew;
+    Double minPrice;
+    Double maxPrice;
+
+
+    String searchText;
+
+
+    Boolean newSelected = false;
+    Boolean secondhandSelected = false;
+
+    Boolean sortByPriceAsc = false;
+    Boolean sortByPriceDesc = false;
+
+    Boolean sortByDate = false;
 
 }

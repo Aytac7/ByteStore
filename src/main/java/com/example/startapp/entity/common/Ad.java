@@ -94,6 +94,9 @@ public class Ad {
 
     @Column(nullable = false)
     String city;
+
+    @Transient
+    boolean isFavorite;
 }
 
 

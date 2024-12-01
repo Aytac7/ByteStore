@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -47,103 +47,123 @@ public class AdService {
     private final S3Service s3Service;
     private final JwtService jwtService;
     private static final Logger log = LoggerFactory.getLogger(AdService.class);
+    private final FavoriteRepository favoriteRepository;
 
 
-    public List<AdDTO> getAdsByModel(Long modelId) {
-        List<Ad> ads = adRepository.findByModelIdAndStatus(modelId, AdStatus.APPROVED);
 
-        return ads.stream().map(ad -> AdDTO.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .brandId(ad.getBrand().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .additionalInfo(ad.getAdditionalInfo())
-                .isNew(ad.getIsNew())
-                .city(ad.getCity())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .userId(ad.getUser().getUserId())
-                .phonePrefix(ad.getPhonePrefix())
-                .phoneNumber(ad.getPhoneNumber())
-                .createdAt(ad.getCreatedAt())
-
-                .build()
-        ).collect(Collectors.toList());
-    }
-
-    public Page<AdDTOSpecific> getSuggestions(String searchQuery, Pageable pageable) {
-        Page<Ad> suggestions = adRepository.findSuggestions(searchQuery, pageable);
-        System.out.println("SearchQuery " + searchQuery);
-
-
-        return suggestions.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
-    }
-
-
-    public Page<AdDTOSpecific> getAdsWithFilter(AdCriteriaRequest adCriteriaRequest, Pageable pageable) {
+    public Map<String, Object> getAdsWithFilter(Long userId, AdCriteriaRequest adCriteriaRequest, Pageable pageable){
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
-        Page<Ad> ads = adRepository.findAll(specification, pageable);
-        return ads.map(ad -> AdDTOSpecific.builder()
+        Page<Ad> ads=adRepository.findAll(specification,pageable);
+
+        Set<Long> favoriteAdIds;
+        if(userId!=null){
+            List<Favorite> favorites= favoriteRepository.findByUserUserId(userId);
+            favoriteAdIds = favorites.stream()
+                    .map(fav -> fav.getAd().getId())
+                    .collect(Collectors.toSet());
+        } else {
+            favoriteAdIds = new HashSet<>();
+        }
+
+
+        Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
+                .isFavorite(userId != null && favoriteAdIds.contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
                 .build());
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adDTOSpecificPage);
+        return response;
+
     }
 
-    //
-//    public Page<AdDTOSpecific> search(String searchQuery, Pageable pageable){
-//        Specification<Ad> specification = AdSpecification.searchByBrandOrModel(searchQuery);
-//        Page<Ad> ads=adRepository.findAll(specification,pageable);
-//
-//        return ads.map(ad -> AdDTOSpecific.builder()
-//                .id(ad.getId())
-//                .categoryId(ad.getCategory().getId())
-//                .modelId(ad.getModel().getId())
-//                .price(ad.getPrice())
-//                .header(ad.getHeader())
-//                .createdAt(ad.getCreatedAt())
-//                .imageUrls(ad.getImages().stream()
-//                        .map(Image::getImageUrl)
-//                        .collect(Collectors.toList()))
-//                .build());
-//    }
-//    public void deleteAdById(Long adId, String token) {
-//        Long userId = jwtService.extractUserId(token);
-//
-//        Ad ad = adRepository.findById(adId)
-//                .orElseThrow(() -> new AdNotFoundException("Ad not found with ID: " + adId));
-//
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-//
-//        if (user.getRole().equals("ADMIN") || (user.getRole().equals("USER") && ad.getUser().getUserId().equals(userId))) {
-//            adRepository.delete(ad);
-//        } else {
-//            throw new SecurityException("Elan silməyə icazəniz yoxdur");
-//
-//        }
-//
-//    }
+    public Map<String,Object> getAllNewAds(Long userId,Pageable pageable) {
+        Page<Ad> ads = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
+
+        getFavoriteAdIds(userId);
+
+        Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .isFavorite(userId != null && getFavoriteAdIds(userId).contains(ad.getId()))
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+        Map<String,Object> response= new  HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adDTOSpecificPage);
+        return response;
+    }
+
+        public Map<String,Object> getAllSecondHandAds(Long userId,Pageable pageable) {
+        Page<Ad> ads = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
+
+    public Map<String, Object> getAdsWithFilter(Long userId, AdCriteriaRequest adCriteriaRequest, Pageable pageable){
+        Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
+        Page<Ad> ads=adRepository.findAll(specification,pageable);
+
+        Set<Long> favoriteAdIds;
+        if(userId!=null){
+            List<Favorite> favorites= favoriteRepository.findByUserUserId(userId);
+            favoriteAdIds = favorites.stream()
+                    .map(fav -> fav.getAd().getId())
+                    .collect(Collectors.toSet());
+        } else {
+            favoriteAdIds = new HashSet<>();
+        }
+
+
+        Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .createdAt(ad.getCreatedAt())
+                .isFavorite(userId != null && favoriteAdIds.contains(ad.getId()))
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .build());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adDTOSpecificPage);
+        return response;
+
+    }
+          
+    private Set<Long> getFavoriteAdIds(Long userId) {
+        if (userId != null) {
+            List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
+            return favorites.stream()
+                    .map(favorite -> favorite.getAd().getId())
+                    .collect(Collectors.toSet());
+        } else {
+            return new HashSet<>();
+        }
+    }
+
     public void deleteAdById(Long adId, String token) {
         Long userId = jwtService.extractUserId(token);
         Ad ad = adRepository.findById(adId)
@@ -301,40 +321,12 @@ public class AdService {
         ).collect(Collectors.toList());
     }
 
-    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
-        Page<Ad> adPage = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
 
-        return adPage.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
-    }
-
-
-    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
-        Page<Ad> adPage = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
-        return adPage.map(ad -> AdDTOSpecific.builder()
-                .id(ad.getId())
-                .categoryId(ad.getCategory().getId())
-                .modelId(ad.getModel().getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .createdAt(ad.getCreatedAt())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .build());
-    }
 
     public List<AdDTO> getAdsByUserId(Long userId) {
         List<Ad> ads = adRepository.findByUser_UserId(userId);
+
+
         return ads.stream().map(ad -> AdDTO.builder()
                 .id(ad.getId())
                 .userId(ad.getUser().getUserId())
@@ -345,6 +337,9 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .brandName(ad.getBrand().getName())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -370,6 +365,9 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .brandName(ad.getBrand().getName())
                 .city(ad.getCity())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
@@ -397,6 +395,9 @@ public class AdService {
                 .categoryId(ad.getCategory().getId())
                 .brandId(ad.getBrand().getId())
                 .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .brandName(ad.getBrand().getName())
                 .city(ad.getCity())
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
@@ -408,21 +409,75 @@ public class AdService {
     }
 
 
-//        User currentUser = jwtService.getCurrentUserFromToken();
-//        Ad ad = adRepository.findById(id)
-//                .orElseThrow(() -> new AdNotFoundException("Ad not found with ID: " + id));
-//
-//        // Check if the current user has an admin role
-//        boolean isAdmin = jwtService.extractAuthorities(jwtService.getTokenFromSecurityContext())
-//                .stream()
-//                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-//
-//        // Allow admins to delete any ad; otherwise, allow users to delete only their own ads
-//        if (isAdmin || ad.getUser().getUserId().equals(currentUser.getUserId())) {
-//            adRepository.delete(ad);
-//        } else {
-//            throw new AccessDeniedException("You do not have permission to delete this ad.");
-//        }
-//    }
+
+    public void updateAd(Long adId, AdRequest adRequest, List<MultipartFile> files) {
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));
+
+        Category category = categoryRepository.findById(adRequest.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+
+        Brand brand = brandRepository.findById(adRequest.getBrandId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid brand ID"));
+
+        Model model = modelRepository.findById(adRequest.getModelId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid model ID"));
+
+
+        if (!ad.getStatus().equals(AdStatus.PENDING) && !ad.getStatus().equals(AdStatus.REJECTED)) {
+            throw new IllegalStateException("Only pending or rejected ads can be edited");
+        }
+
+        ad.setCategory(category);
+        ad.setBrand(brand);
+        ad.setModel(model);
+        ad.setHeader(adRequest.getHeader());
+        ad.setAdditionalInfo(adRequest.getAdditionalInfo());
+        ad.setPrice(adRequest.getPrice());
+        ad.setPhonePrefix(adRequest.getPhonePrefix());
+        ad.setPhoneNumber(adRequest.getPhoneNumber());
+        ad.setUpdatedAt(LocalDateTime.now());
+        ad.setIsNew(adRequest.getIsNew());
+        ad.setName(adRequest.getName());
+        ad.setSurname(adRequest.getSurname());
+        ad.setCity(adRequest.getCity());
+
+        if (files != null && !files.isEmpty()) {
+            List<Image> images = files.stream()
+                    .map(file -> {
+                        String key = "ads/" + adRequest.getUserId() + "/" + file.getOriginalFilename();
+                        String fileUrl;
+                        try {
+                            fileUrl = s3Service.uploadFile(key, file);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Error uploading file: " + file.getOriginalFilename(), e);
+                        }
+
+                        Image image = new Image();
+                        image.setImageUrl(fileUrl);
+                        image.setFileName(file.getOriginalFilename());
+                        image.setFileType(file.getContentType());
+                        image.setFilePath(fileUrl);
+                        image.setAd(ad);
+
+                        return image;
+                    })
+                    .collect(Collectors.toList());
+
+            ad.setImages(images);
+        }
+
+        ad.setStatus(AdStatus.PENDING);
+
+        adRepository.save(ad);
+    }
+
+    public void deleteAdById(Long id) {
+        adRepository.deleteById(id);
+    }
+
+
+
+
 }
 
