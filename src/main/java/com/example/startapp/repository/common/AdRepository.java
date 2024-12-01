@@ -22,18 +22,17 @@ public interface AdRepository extends JpaRepository<Ad, Long>,
     Page<Ad> findSuggestions(@Param("searchQuery") String searchQuery, Pageable pageable);
 
     List<Ad> findByModelIdAndStatus(Long modelId,AdStatus adStatus);
-    List<Ad> findAllByStatus(AdStatus status);
 
     List<Ad> findAllByCreatedAtBefore(LocalDateTime createdAt);
 
     List<Ad> findByUser_UserId(Long userId);
 
-    List<Ad> findByUser_UserIdAndStatus(Long userId, AdStatus status);
+    List<Ad> findAdsByStatus(AdStatus status);
 
     Page<Ad> findByIsNewTrueAndStatus(Pageable pageable, AdStatus status);
 
     Page<Ad> findByIsNewFalseAndStatus(Pageable pageable, AdStatus status);
     Page<Ad> findAllAdByStatus(Pageable pageable, AdStatus status);
 
-
+    void deleteAdById(Long id);
 }

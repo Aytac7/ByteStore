@@ -75,6 +75,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -83,6 +84,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.core.convert.converter.Converter;
 
 
 @Configuration
@@ -95,37 +97,6 @@ public class SecurityConfiguration {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
-    //
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/auth/**", "/forgotPassword/**", "/oauth2/**", "/login", "/register/**", "/ads/**", "/s3/upload", "/admin/**", "/favorites/**", "/categories/**", "/user/**").permitAll()
-//                        .requestMatchers(permitSwagger).permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .sessionManagement(session -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//                )
-//                .formLogin(AbstractHttpConfigurer::disable)
-////                .oauth2Login(oauth2 -> oauth2
-////                        .loginPage("/login")
-////                        .defaultSuccessUrl("/home", true)
-////                        .successHandler(oAuth2LoginSuccessHandler())
-////                )
-//                .addFilterBefore(authFilterService, SessionManagementFilter.class);
-//
-//        return http.build();
-//
-//    }
-//    public static String[] permitSwagger = {
-//            "swagger-ui/**",
-//            "/v3/api-docs/**",
-//            "/swagger-resources/**",
-//            "/swagger-ui.html",
-//            "/webjars/**"
-//    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -154,7 +125,16 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
+//    @Bean
+//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+//        grantedAuthoritiesConverter.setAuthorityPrefix("");
+//        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
+//
+//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+//        return jwtAuthenticationConverter;
+//    }
 
     @Bean
     public AuthenticationSuccessHandler oAuth2LoginSuccessHandler() {
@@ -201,21 +181,22 @@ public class SecurityConfiguration {
     };
     public static String[] ADMIN = {
             "/admin/**",
-            "/user/info"
+            "/ads/**",
+//            "/user/**"
+
+
 
     };
     public static String[] USER = {
             "/ads/create",
             "/ads/update/{adId}",
-            "/ads/myAds/{status}",
-            "/ads/user/{userId}",
-            "/ads/delete/{id}",
+            "/ads/myAds",
+            "/ads/delete/{adId}",
             "/favorites/{userId}/toggle/{adId}",
             "/favorites/{userId}",
             "/user/update",
-            "/user/delete"
-
-
+            "/user/delete/{userId}",
+            "/user/info"
     };
 
 }

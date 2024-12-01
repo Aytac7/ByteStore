@@ -6,9 +6,11 @@ import com.example.startapp.dto.request.common.AdRequest;
 import com.example.startapp.dto.response.common.*;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.enums.AdStatus;
+import com.example.startapp.service.auth.JwtService;
 import com.example.startapp.service.common.AdService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +34,7 @@ public class AdController {
 
     private final AdService adService;
     private final ObjectMapper objectMapper;
+    private final JwtService jwtService;
 
 
     @GetMapping("/model/{modelId}")
@@ -58,7 +62,9 @@ public class AdController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createAd(
             @RequestParam("adRequest") String adRequestJson,
-            @RequestParam("files") List<MultipartFile> files) {
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
 
         if (adRequestJson == null || adRequestJson.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Elan haqqında məlumat yoxdu");
@@ -69,38 +75,56 @@ public class AdController {
         }
 
         try {
+            String token = authorizationHeader.replace("Bearer ", "");
             AdRequest adRequest = objectMapper.readValue(adRequestJson, AdRequest.class);
-            adService.createAd(adRequest, files);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Ad added successfully");
+            adService.createAd(adRequest, files, token);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Ad created successfully");
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid adRequest data");
+            return ResponseEntity.badRequest().body("Invalid adRequest data");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating advertisement");
         }
     }
 
-    @PutMapping("/update/{adId}")
-    public ResponseEntity<String> update(@PathVariable Long adId, @RequestParam("adRequest") String adRequestJson, @RequestParam("files") List<MultipartFile> files) {
-        AdRequest adRequest;
+    @DeleteMapping("/delete/{adId}")
+    public ResponseEntity<String> deleteAd(
+            @PathVariable Long adId,
+            @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            adRequest = objectMapper.readValue(adRequestJson, AdRequest.class);
-        } catch (IOException e) {
-            log.error("Error parsing adRequest JSON", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request data");
-        }
+            String token = authorizationHeader.replace("Bearer ", "");
+            adService.deleteAdById(adId, token);
+            return ResponseEntity.ok("Ad deleted successfully");
 
-        try {
-            adService.updateAd(adId, adRequest, files);
-            return ResponseEntity.status(HttpStatus.OK).body("Ad changed successfully");
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            log.error("Error creating advertisement", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating advertisement");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
-    @GetMapping("/myAds/{status}")
-    public ResponseEntity<List<AdDTO>> getMyAds(@AuthenticationPrincipal User user, @PathVariable AdStatus status) {
-        List<AdDTO> myAds = adService.getUserAdsByStatus(user.getUserId(), status);
+
+    @PutMapping("/update/{adId}")
+    public ResponseEntity<?> update(@PathVariable Long adId,
+                                    @RequestParam("adRequest") String adRequestJson,
+                                    @RequestParam("files") List<MultipartFile> files,
+                                    @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            AdRequest adRequest = objectMapper.readValue(adRequestJson, AdRequest.class);
+            String token = authorizationHeader.replace("Bearer ", "");
+            adService.updateAd(adId, adRequest, files, token);
+            return ResponseEntity.ok("Ad updated successfully");
+        } catch (Exception e) {
+            log.error("Error updating advertisement", e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/myAds")
+    public ResponseEntity<List<AdDTO>> getMyAds(@RequestParam("status") AdStatus status) {
+        List<AdDTO> myAds = adService.getUserAdsByStatus(status);
         return ResponseEntity.ok(myAds);
     }
 
@@ -117,6 +141,13 @@ public class AdController {
 //        return ResponseEntity.ok(ads);
 //    }
 
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AdDTO>> getAdByUserId(@PathVariable Long userId) {
+        List<AdDTO> ads = adService.getAdsByUserId(userId);
+        return ResponseEntity.ok(ads);
+    }
+
     @GetMapping("/new")
     public Map<String, Object> getAllNewAds(
             @RequestParam (value="userId", required = false) Long userId,
@@ -129,18 +160,6 @@ public class AdController {
             @RequestParam (value = "userId",required = false) Long userId,
             Pageable pageable) {
         return adService.getAllSecondHandAds(userId,pageable);
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AdDTO>> getAdByUserId(@PathVariable Long userId) {
-        List<AdDTO> ads = adService.getAdsByUserId(userId);
-        return ResponseEntity.ok(ads);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteAd(@PathVariable Long id) {
-        adService.deleteAdById(id);
-        return ResponseEntity.ok("Ad deleted successfully");
     }
 
 

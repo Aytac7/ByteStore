@@ -1,9 +1,11 @@
 package com.example.startapp.controller.common;
 
+import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.entity.common.Ad;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.entity.common.Feedbacks;
 
+import com.example.startapp.enums.AdStatus;
 import com.example.startapp.exception.EmptyRejectionException;
 import com.example.startapp.service.common.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -43,29 +45,22 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/pendingAds")
-    public ResponseEntity<List<Ad>> getPendingAds() {
-        List<Ad> pendingAds = adminService.getPendingAds();
-        return ResponseEntity.ok(pendingAds);
-    }
-
-
-    @GetMapping("/rejectedAds")
-    public ResponseEntity<List<Ad>> getRejectedAds() {
-        List<Ad> rejectedAds = adminService.getRejectedAds();
-        return ResponseEntity.ok(rejectedAds);
-    }
-
-    @GetMapping("/approvedAds")
-    public ResponseEntity<List<Ad>> getApprovedAds() {
-        List<Ad> approvedAds = adminService.getApprovedAds();
-        return ResponseEntity.ok(approvedAds);
+    @GetMapping("/ads")
+    public ResponseEntity<List<AdDTO>> getAdsStatus(@RequestParam("status") AdStatus status) {
+        List<AdDTO> ads = adminService.getAdsByStatus(status);
+        return ResponseEntity.ok(ads);
     }
 
     @GetMapping("/feedbacks")
     public ResponseEntity<List<Feedbacks>> getFeedbacks() {
         List<Feedbacks> feedbacks = adminService.getFeedbacks();
         return ResponseEntity.ok(feedbacks);
+    }
+
+    @DeleteMapping("/delete/{adId}")
+    public ResponseEntity<String> deleteAd(@PathVariable Long adId) {
+        adminService.deleteAd(adId);
+        return ResponseEntity.ok("Ad deleted successfully");
     }
 
 }

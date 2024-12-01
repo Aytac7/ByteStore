@@ -8,4 +8,3 @@ databaseChangeLog:
               INSERT INTO categories (
               name) VALUES ('Telefonlar'), ('Kompüter və Notbuklar'), 
               ('Planşetlər'), ('Smart saat və qolbaqlar'), ('Oyun konsolları'), ('Aksesuarlar');
-              ;

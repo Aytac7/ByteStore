@@ -35,13 +35,13 @@ public class RefreshTokenService {
 
             refreshToken = RefreshToken.builder()
                     .refreshToken(UUID.randomUUID().toString())
-                    .expirationTime(Instant.now().plus(Duration.ofMinutes(30)))
+                    .expirationTime(Instant.now().plus(Duration.ofMinutes(100)))
                     .user(user)
                     .build();
 
             refreshTokenRepository.save(refreshToken);
         } else if (refreshToken.getExpirationTime().compareTo(Instant.now()) < 0) {
-            refreshToken.setExpirationTime(Instant.now().plus(Duration.ofMinutes(30)));
+            refreshToken.setExpirationTime(Instant.now().plus(Duration.ofMinutes(100)));
             refreshTokenRepository.save(refreshToken);
         }
         return refreshToken;

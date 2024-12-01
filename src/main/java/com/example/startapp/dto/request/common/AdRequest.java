@@ -29,9 +29,6 @@ public class AdRequest {
     private Boolean isNew;
 
     @NotNull
-    private Long userId;
-
-    @NotNull
     private Long categoryId;
 
     @NotNull

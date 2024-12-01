@@ -14,12 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("categories")
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 
 public class CategoryController {
 
     private final CategoryService categoryService;
+
+    @GetMapping("/nested")
+    public List<CategoryDTO> getAll() {
+        return categoryService.getAllCategoriesWithBrandsAndModels();
+    }
 
     @GetMapping("/all-categories")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModelDTO {
-    private String name;
     private Long id;
+    private String name;
 }
