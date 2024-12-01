@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 
 
 public class UserDtoSpecific {
-    private Long userId;
 
     private String name;
 

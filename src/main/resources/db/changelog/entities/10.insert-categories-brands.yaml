@@ -6,40 +6,50 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO categories_brands (brand_id, category_id) VALUES
-              (1, 1), 
-              (2, 1),
-              (8, 1), 
-              (9, 1),
-              (10, 1),
-              (11, 1),
-              (12, 1),
+                  -- Telefonlar
+              ((SELECT id FROM brands WHERE name = 'Samsung'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
+              ((SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
+              ((SELECT id FROM brands WHERE name = 'Mi'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
+              ((SELECT id FROM brands WHERE name = 'Huawei'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
+              ((SELECT id FROM brands WHERE name = 'Honor'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
+              ((SELECT id FROM brands WHERE name = 'Poco'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
+              ((SELECT id FROM brands WHERE name = 'Digər'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
+
+  
+               -- Kompüter və Notbuklar
+              ((SELECT id FROM brands WHERE name = 'HP'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              ((SELECT id FROM brands WHERE name = 'Dell'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              ((SELECT id FROM brands WHERE name = 'Lenovo'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              ((SELECT id FROM brands WHERE name = 'ASUS'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              ((SELECT id FROM brands WHERE name = 'Acer'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              ((SELECT id FROM brands WHERE name = 'Digər'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               
               
+              -- Planşetlər
+              ((SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Planşetlər')),
+              ((SELECT id FROM brands WHERE name = 'Samsung'), (SELECT id FROM categories WHERE name = 'Planşetlər')),
+              ((SELECT id FROM brands WHERE name = 'Huawei'), (SELECT id FROM categories WHERE name = 'Planşetlər')),
+              ((SELECT id FROM brands WHERE name = 'Xiaomi'), (SELECT id FROM categories WHERE name = 'Planşetlər')),
+              ((SELECT id FROM brands WHERE name = 'Lenovo'), (SELECT id FROM categories WHERE name = 'Planşetlər')),
+              ((SELECT id FROM brands WHERE name = 'Digər'), (SELECT id FROM categories WHERE name = 'Planşetlər')),
+
+              -- Smart saat və qolbaqlar
+
+              ((SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Smart saat və qolbaqlar')),
+              ((SELECT id FROM brands WHERE name = 'Samsung'), (SELECT id FROM categories WHERE name = 'Smart saat və qolbaqlar')),
+              ((SELECT id FROM brands WHERE name = 'Huawei'), (SELECT id FROM categories WHERE name = 'Smart saat və qolbaqlar')),
+              ((SELECT id FROM brands WHERE name = 'Xiaomi'), (SELECT id FROM categories WHERE name = 'Smart saat və qolbaqlar')),
+              ((SELECT id FROM brands WHERE name = 'Digər'), (SELECT id FROM categories WHERE name = 'Smart saat və qolbaqlar')),
+              
+              -- Oyun konsolları
+              ((SELECT id FROM brands WHERE name = 'Sony'), (SELECT id FROM categories WHERE name = 'Oyun konsolları')),
+              ((SELECT id FROM brands WHERE name = 'Microsoft'), (SELECT id FROM categories WHERE name = 'Oyun konsolları')),
+              ((SELECT id FROM brands WHERE name = 'Nintendo'), (SELECT id FROM categories WHERE name = 'Oyun konsolları')),
+              ((SELECT id FROM brands WHERE name = 'Digər'), (SELECT id FROM categories WHERE name = 'Oyun konsolları')),
+
             
-              (1, 2),  
-              (2, 2),  
-              (3, 2),
-              (4, 2),
-              (5, 2),
-              (6, 2),
-              (7, 2),
-              
-              (1, 3),
-              (2, 3),
-              (8, 3), 
-              (9, 3),
-              (5, 3),
-              
-              
-              (1, 4),
-              (2, 4),
-              (8, 4), 
-              (9, 4),
-              
-              (13, 5),
-              (14 ,5),
-              
-              
-              (16, 6), 
-              (17, 6),
-              (18, 6);
+               -- Aksesuarlar
+              ((SELECT id FROM brands WHERE name = 'Telefon aksesuarları'), (SELECT id FROM categories WHERE name = 'Aksesuarlar')),
+              ((SELECT id FROM brands WHERE name = 'Kompüter aksesuarları'), (SELECT id FROM categories WHERE name = 'Aksesuarlar')),
+              ((SELECT id FROM brands WHERE name = 'Oyun konsolları'), (SELECT id FROM categories WHERE name = 'Aksesuarlar')),
+              ((SELECT id FROM brands WHERE name = 'Digər'), (SELECT id FROM categories WHERE name = 'Aksesuarlar'));

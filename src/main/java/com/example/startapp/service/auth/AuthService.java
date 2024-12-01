@@ -11,6 +11,8 @@ import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.*;
 import com.example.startapp.repository.auth.UserOtpRepository;
 import com.example.startapp.repository.auth.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
 
@@ -38,6 +41,8 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final UserOtpRepository userOtpRepository;
     private final EmailService emailService;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Transactional
     public String register(RegisterRequest registerRequest) {
@@ -69,7 +74,7 @@ public class AuthService {
 
         verifyEmail(savedUser.getEmail());
 
-      return "Otp kodu mailinizə göndərildi";
+        return "Otp kodu mailinizə göndərildi";
     }
 
     public ResponseEntity<String> verifyEmail(String email) {
@@ -84,7 +89,6 @@ public class AuthService {
         UserOtp byUser = userOtpRepository.findByUser(user);
 
         if (byUser != null) {
-
             byUser.setOtp(otp);
             byUser.setExpirationTime(new Date(System.currentTimeMillis() + 3 * 60 * 1000));
         } else {
@@ -99,6 +103,38 @@ public class AuthService {
         userOtpRepository.save(byUser);
         return ResponseEntity.ok("Email sent for verification!");
     }
+
+    @Transactional
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found!"));
+
+        entityManager.refresh(user);
+        log.info("Forced refreshed User: {}", user);
+
+        if (!user.isEnabled()) {
+            throw new CustomLockedException("Hesabınız aktiv deyil.");
+        }
+        log.info("Status: {}", user.isEnabled());
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            log.info("Invalid password for user: {}", user.getEmail());
+            handleFailedAttempts(user);
+            throw new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Invalid username or password");
+        }
+
+        resetFailedAttempts(user.getEmail());
+        log.info("User login successful: {}", user.getEmail());
+
+        var accessToken = jwtService.generateToken(user);
+        var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getRefreshToken())
+                .build();
+    }
+
 
     public AuthResponse confirmRegistration(String email, Integer otp) {
         User user = userRepository.findByEmail(email)
@@ -122,38 +158,6 @@ public class AuthService {
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .build();
-    }
-
-    public AuthResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found!"));
-
-        if (!user.isAccountNonLocked()) {
-            if (unlockWhenTimeExpired(user)) {
-                log.info("User account unlocked: {}", user.getEmail());
-                throw new CustomLockedException("Your account has been unlocked. Please try to login again.");
-            } else {
-                log.info("User account is locked: {}", user.getEmail());
-                throw new CustomLockedException("Your account is locked due to multiple failed login attempts. Try again later.");
-            }
-        }
-
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            log.info("Invalid password for user: {}", user.getEmail());
-            handleFailedAttempts(user);
-            throw new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Invalid username or password");
-        }
-
-        resetFailedAttempts(user.getEmail());
-        log.info("User login successful: {}", user.getEmail());
-
-        var accessToken = jwtService.generateToken(user);
-        var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
-
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getRefreshToken())
                 .build();
     }
 

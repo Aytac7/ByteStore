@@ -1,8 +1,10 @@
 package com.example.startapp.service.common;
 
+import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.entity.common.Feedbacks;
 import com.example.startapp.entity.common.Ad;
 import com.example.startapp.entity.auth.User;
+import com.example.startapp.entity.common.Image;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.AdNotFoundException;
@@ -18,13 +20,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminService {
 
     private final AdRepository adRepository;
-    private final UserRepository userRepository;
     private final FeedbacksRepository feedbackRepository;
 
 
@@ -53,17 +55,38 @@ public class AdminService {
         adRepository.save(ad);
     }
 
-    public List<Ad> getPendingAds() {
-        return adRepository.findAllByStatus(AdStatus.PENDING);
+    public List<AdDTO> getAdsByStatus(AdStatus status) {
+        List<Ad> ads = adRepository.findAdsByStatus(status);
+        return ads.stream()
+                .map(this::convertToAdDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Ad> getRejectedAds() {
-        return adRepository.findAllByStatus(AdStatus.REJECTED);
+    private AdDTO convertToAdDTO(Ad ad) {
+        return AdDTO.builder()
+                .id(ad.getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .additionalInfo(ad.getAdditionalInfo())
+                .isNew(ad.getIsNew())
+                .userId(ad.getUser().getUserId())
+                .categoryId(ad.getCategory().getId())
+                .brandId(ad.getBrand().getId())
+                .modelId(ad.getModel().getId())
+                .city(ad.getCity())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .phonePrefix(ad.getPhonePrefix())
+                .phoneNumber(ad.getPhoneNumber())
+                .status(ad.getStatus().toString())
+                .build();
     }
 
-    public List<Ad> getApprovedAds() {
-        return adRepository.findAllByStatus(AdStatus.APPROVED);
+    public void deleteAd(Long adId) {
+        adRepository.deleteById(adId);
     }
+
     public List<Feedbacks> getFeedbacks(){
         return feedbackRepository.findAll();
     }

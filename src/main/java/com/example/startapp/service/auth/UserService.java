@@ -1,8 +1,10 @@
 package com.example.startapp.service.auth;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.example.startapp.dto.request.UserInfoRequest;
 import com.example.startapp.dto.response.auth.UserDTO;
 import com.example.startapp.dto.response.auth.UserDtoSpecific;
+import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.entity.common.Image;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.repository.auth.UserRepository;
@@ -10,6 +12,7 @@ import com.example.startapp.repository.common.ImageRepository;
 import io.jsonwebtoken.Jwt;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,10 +26,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final ImageRepository imageRepository;
+    private final JwtService jwtService;
+    private final AmazonS3 s3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
 
 
     @Transactional
-    public void updateInfo(Long userId, UserInfoRequest userInfoRequest, MultipartFile file) {
+    public void updateInfo(String token, UserInfoRequest userInfoRequest, MultipartFile file) {
+        Long userId = jwtService.extractUserId(token);
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı id: " + userId));
 
         user.setName(userInfoRequest.getName());
@@ -93,37 +101,28 @@ public class UserService {
         }
     }
 
-//    public UserDTO getUserInfo(Long userId) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Istidafəçi tapılmadı"));
-//        return UserDTO.builder()
-//                .userId(user.getUserId())
-//                .name(user.getName())
-//                .surname(user.getSurname())
-//                .phonePrefix(user.getPhonePrefix())
-//                .phoneNumber(user.getPhoneNumber())
-//                .profilePhoto(user.getProfilePhoto())
-//                .username(user.getUsername())
-//                .email(user.getEmail()).build();
-//
-//
-//    }
 
-    public UserDtoSpecific getUserInfo() {
-        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User user = userRepository.findByUsername(username)
+    public UserDtoSpecific getUserInfo(String token) {
+        Long userId = jwtService.extractUserId(token);
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı"));
 
+        Image profilePhoto = null;
+        if (user.getProfilePhoto() != null) {
+            String profilePhotoUrl = s3Client.getUrl(bucketName, user.getProfilePhoto().getFilePath()).toString();
+            profilePhoto = Image.builder()
+                    .imageUrl(profilePhotoUrl)
+                    .build();
+        }
+
         return UserDtoSpecific.builder()
-                .userId(user.getUserId())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .phonePrefix(user.getPhonePrefix())
                 .phoneNumber(user.getPhoneNumber())
-                .profilePhoto(user.getProfilePhoto())
-                .role(user.getRole())
+                .profilePhoto(profilePhoto)
                 .build();
     }
 

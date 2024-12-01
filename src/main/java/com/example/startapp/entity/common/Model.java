@@ -2,15 +2,13 @@ package com.example.startapp.entity.common;
 
 import com.example.startapp.entity.common.Brand;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "models")
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Model {
@@ -20,9 +18,12 @@ public class Model {
 
     String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    Brand brand;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
 }
