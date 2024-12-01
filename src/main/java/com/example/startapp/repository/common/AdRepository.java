@@ -33,6 +33,7 @@ public interface AdRepository extends JpaRepository<Ad, Long>,
     Page<Ad> findByIsNewTrueAndStatus(Pageable pageable, AdStatus status);
 
     Page<Ad> findByIsNewFalseAndStatus(Pageable pageable, AdStatus status);
+    Page<Ad> findAllAdByStatus(Pageable pageable, AdStatus status);
 
 
 }

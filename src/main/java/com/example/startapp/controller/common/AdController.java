@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -31,6 +32,7 @@ public class AdController {
     private final AdService adService;
     private final ObjectMapper objectMapper;
 
+
     @GetMapping("/model/{modelId}")
     public ResponseEntity<List<AdDTO>> getAdsByModel(@PathVariable Long modelId) {
         List<AdDTO> ads = adService.getAdsByModel(modelId);
@@ -38,23 +40,13 @@ public class AdController {
     }
 
 
-    @GetMapping("/search/suggestions")
-    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
-        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
-
-        if (suggestions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Heç bir uyğun nəticə tapılmadı.");
-        }
-
-        return ResponseEntity.ok(suggestions);
-    }
-
     @GetMapping("/filter")
-    public ResponseEntity<Page<AdDTOSpecific>> getAdsWithFilter(
+    public ResponseEntity<Map<String, Object>> getAdsWithFilter(
+            @RequestParam (value="userId", required = false) Long userId,
             AdCriteriaRequest adCriteriaRequest,
             Pageable pageable) {
 
-        Page<AdDTOSpecific> ads = adService.getAdsWithFilter(adCriteriaRequest, pageable);
+        Map<String, Object> ads = adService.getAdsWithFilter(userId, adCriteriaRequest, pageable);
 
         if (ads.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -63,7 +55,7 @@ public class AdController {
         return ResponseEntity.ok(ads);
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createAd(
             @RequestParam("adRequest") String adRequestJson,
             @RequestParam("files") List<MultipartFile> files) {
@@ -119,20 +111,24 @@ public class AdController {
         return ResponseEntity.ok(ad);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<AdDTO>> getAllAds() {
-        List<AdDTO> ads = adService.getAllAds();
-        return ResponseEntity.ok(ads);
-    }
+//    @GetMapping("/all")
+//    public ResponseEntity<List<AdDTO>> getAllAds() {
+//        List<AdDTO> ads = adService.getAllAds();
+//        return ResponseEntity.ok(ads);
+//    }
 
     @GetMapping("/new")
-    public Page<AdDTOSpecific> getAllNewAds(Pageable pageable) {
-        return adService.getAllNewAds(pageable);
+    public Map<String, Object> getAllNewAds(
+            @RequestParam (value="userId", required = false) Long userId,
+            Pageable pageable) {
+        return adService.getAllNewAds(userId,pageable);
     }
 
     @GetMapping("/secondhand")
-    public Page<AdDTOSpecific> getAllSecondHandAds(Pageable pageable) {
-        return adService.getAllSecondHandAds(pageable);
+    public Map<String, Object> getAllSecondHandAds(
+            @RequestParam (value = "userId",required = false) Long userId,
+            Pageable pageable) {
+        return adService.getAllSecondHandAds(userId,pageable);
     }
 
     @GetMapping("/user/{userId}")
@@ -148,4 +144,16 @@ public class AdController {
     }
 
 
+
+
+    //    @GetMapping("/search/suggestions")
+//    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
+//        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
+//
+//        if (suggestions.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Heç bir uyğun nəticə tapılmadı.");
+//        }
+//
+//        return ResponseEntity.ok(suggestions);
+//    }
 }
