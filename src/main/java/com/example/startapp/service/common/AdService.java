@@ -50,14 +50,15 @@ public class AdService {
     private final FavoriteRepository favoriteRepository;
 
 
+    //updated version 11:56
 
-    public Map<String, Object> getAdsWithFilter(Long userId, AdCriteriaRequest adCriteriaRequest, Pageable pageable){
+    public Map<String, Object> getAdsWithFilter(Long userId, AdCriteriaRequest adCriteriaRequest, Pageable pageable) {
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
-        Page<Ad> ads=adRepository.findAll(specification,pageable);
+        Page<Ad> ads = adRepository.findAll(specification, pageable);
 
         Set<Long> favoriteAdIds;
-        if(userId!=null){
-            List<Favorite> favorites= favoriteRepository.findByUserUserId(userId);
+        if (userId != null) {
+            List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
             favoriteAdIds = favorites.stream()
                     .map(fav -> fav.getAd().getId())
                     .collect(Collectors.toSet());
@@ -88,7 +89,7 @@ public class AdService {
 
     }
 
-    public Map<String,Object> getAllNewAds(Long userId,Pageable pageable) {
+    public Map<String, Object> getAllNewAds(Long userId, Pageable pageable) {
         Page<Ad> ads = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
 
         getFavoriteAdIds(userId);
@@ -107,30 +108,16 @@ public class AdService {
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
                 .build());
-        Map<String,Object> response= new  HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("totalCount", ads.getTotalElements());
         response.put("page", adDTOSpecificPage);
         return response;
     }
 
-        public Map<String,Object> getAllSecondHandAds(Long userId,Pageable pageable) {
+    public Map<String, Object> getAllSecondHandAds(Long userId, Pageable pageable) {
         Page<Ad> ads = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
 
-    public Map<String, Object> getAdsWithFilter(Long userId, AdCriteriaRequest adCriteriaRequest, Pageable pageable){
-        Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
-        Page<Ad> ads=adRepository.findAll(specification,pageable);
-
-        Set<Long> favoriteAdIds;
-        if(userId!=null){
-            List<Favorite> favorites= favoriteRepository.findByUserUserId(userId);
-            favoriteAdIds = favorites.stream()
-                    .map(fav -> fav.getAd().getId())
-                    .collect(Collectors.toSet());
-        } else {
-            favoriteAdIds = new HashSet<>();
-        }
-
-
+        getFavoriteAdIds(userId);
         Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
@@ -140,19 +127,17 @@ public class AdService {
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
-                .isFavorite(userId != null && favoriteAdIds.contains(ad.getId()))
+                .isFavorite(userId != null && getFavoriteAdIds(userId).contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
                 .build());
-
         Map<String, Object> response = new HashMap<>();
         response.put("totalCount", ads.getTotalElements());
         response.put("page", adDTOSpecificPage);
         return response;
-
     }
-          
+
     private Set<Long> getFavoriteAdIds(Long userId) {
         if (userId != null) {
             List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
@@ -164,16 +149,29 @@ public class AdService {
         }
     }
 
-    public void deleteAdById(Long adId, String token) {
-        Long userId = jwtService.extractUserId(token);
-        Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new AdNotFoundException("Ad not found with ID: " + adId));
+    public List<AdDTO> getAdsByModel(Long modelId) {
+        List<Ad> ads = adRepository.findByModelIdAndStatus(modelId, AdStatus.APPROVED);
 
-        if (ad.getUser().getUserId().equals(userId)) {
-            adRepository.delete(ad);
-        } else {
-            throw new SecurityException("You do not have permission to delete this ad.");
-        }
+        return ads.stream().map(ad -> AdDTO.builder()
+                .id(ad.getId())
+                .categoryId(ad.getCategory().getId())
+                .brandId(ad.getBrand().getId())
+                .modelId(ad.getModel().getId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .additionalInfo(ad.getAdditionalInfo())
+                .isNew(ad.getIsNew())
+                .city(ad.getCity())
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .userId(ad.getUser().getUserId())
+                .phonePrefix(ad.getPhonePrefix())
+                .phoneNumber(ad.getPhoneNumber())
+                .createdAt(ad.getCreatedAt())
+
+                .build()
+        ).collect(Collectors.toList());
     }
 
 
@@ -298,6 +296,19 @@ public class AdService {
     }
 
 
+    public void deleteAdById(Long adId, String token) {
+        Long userId = jwtService.extractUserId(token);
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new AdNotFoundException("Ad not found with ID: " + adId));
+
+        if (ad.getUser().getUserId().equals(userId)) {
+            adRepository.delete(ad);
+        } else {
+            throw new SecurityException("You do not have permission to delete this ad.");
+        }
+    }
+
+
     public List<AdDTO> getAllAds() {
         return adRepository.findAll().stream().map(
                 ad -> AdDTO.builder()
@@ -322,10 +333,8 @@ public class AdService {
     }
 
 
-
     public List<AdDTO> getAdsByUserId(Long userId) {
         List<Ad> ads = adRepository.findByUser_UserId(userId);
-
 
         return ads.stream().map(ad -> AdDTO.builder()
                 .id(ad.getId())
@@ -377,6 +386,7 @@ public class AdService {
 
     }
 
+
     public List<AdDTO> getUserAdsByStatus(AdStatus status) {
         List<Ad> ads = adRepository.findAdsByStatus(status);
         return ads.stream()
@@ -407,76 +417,6 @@ public class AdService {
                 .status(ad.getStatus().toString())
                 .build();
     }
-
-
-
-    public void updateAd(Long adId, AdRequest adRequest, List<MultipartFile> files) {
-        Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));
-
-        Category category = categoryRepository.findById(adRequest.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
-
-        Brand brand = brandRepository.findById(adRequest.getBrandId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid brand ID"));
-
-        Model model = modelRepository.findById(adRequest.getModelId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid model ID"));
-
-
-        if (!ad.getStatus().equals(AdStatus.PENDING) && !ad.getStatus().equals(AdStatus.REJECTED)) {
-            throw new IllegalStateException("Only pending or rejected ads can be edited");
-        }
-
-        ad.setCategory(category);
-        ad.setBrand(brand);
-        ad.setModel(model);
-        ad.setHeader(adRequest.getHeader());
-        ad.setAdditionalInfo(adRequest.getAdditionalInfo());
-        ad.setPrice(adRequest.getPrice());
-        ad.setPhonePrefix(adRequest.getPhonePrefix());
-        ad.setPhoneNumber(adRequest.getPhoneNumber());
-        ad.setUpdatedAt(LocalDateTime.now());
-        ad.setIsNew(adRequest.getIsNew());
-        ad.setName(adRequest.getName());
-        ad.setSurname(adRequest.getSurname());
-        ad.setCity(adRequest.getCity());
-
-        if (files != null && !files.isEmpty()) {
-            List<Image> images = files.stream()
-                    .map(file -> {
-                        String key = "ads/" + adRequest.getUserId() + "/" + file.getOriginalFilename();
-                        String fileUrl;
-                        try {
-                            fileUrl = s3Service.uploadFile(key, file);
-                        } catch (IOException e) {
-                            throw new RuntimeException("Error uploading file: " + file.getOriginalFilename(), e);
-                        }
-
-                        Image image = new Image();
-                        image.setImageUrl(fileUrl);
-                        image.setFileName(file.getOriginalFilename());
-                        image.setFileType(file.getContentType());
-                        image.setFilePath(fileUrl);
-                        image.setAd(ad);
-
-                        return image;
-                    })
-                    .collect(Collectors.toList());
-
-            ad.setImages(images);
-        }
-
-        ad.setStatus(AdStatus.PENDING);
-
-        adRepository.save(ad);
-    }
-
-    public void deleteAdById(Long id) {
-        adRepository.deleteById(id);
-    }
-
-
 
 
 }
