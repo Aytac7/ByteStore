@@ -28,8 +28,13 @@ public interface AdRepository extends JpaRepository<Ad, Long>,
     List<Ad> findByUser_UserId(Long userId);
 
     List<Ad> findAdsByStatus(AdStatus status);
+//    @Query("SELECT a FROM Ad a WHERE a.status = :status")
+//    Page<Ad> findAdsByStatus(Pageable pageable,@Param("status") AdStatus status);
+
+    Page<Ad> findAdsByStatus(AdStatus status, Pageable pageable);
 
     Page<Ad> findByIsNewTrueAndStatus(Pageable pageable, AdStatus status);
+    Page<Ad> findByUser_UserIdAndStatus(Long userId,Pageable pageable, AdStatus status);
 
     Page<Ad> findByIsNewFalseAndStatus(Pageable pageable, AdStatus status);
     Page<Ad> findAllAdByStatus(Pageable pageable, AdStatus status);

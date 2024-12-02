@@ -30,6 +30,7 @@ public class AdDTO {
      PhonePrefix phonePrefix;
      String city;
      Favorite favorite;
+     boolean isFavorite;
      String modelName;
      String brandName;
      String categoryName;

@@ -9,6 +9,10 @@ import com.example.startapp.enums.AdStatus;
 import com.example.startapp.exception.EmptyRejectionException;
 import com.example.startapp.service.common.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,10 +49,22 @@ public class AdminController {
         }
     }
 
+//    @GetMapping("/ads")
+//    public ResponseEntity<List<AdDTO>> getAdsStatus(@RequestParam("status") AdStatus status) {
+//        List<AdDTO> ads = adminService.getAdsByStatus(status);
+//        return ResponseEntity.ok(ads);
+//    }
+//@GetMapping
+//public Page<AdDTO> getAdsByStatus(
+//        @RequestParam AdStatus status,
+//        Pageable pageable) {
+//     return adminService.getAdsByStatus(status, pageable);
+//
+//}
+
     @GetMapping("/ads")
-    public ResponseEntity<List<AdDTO>> getAdsStatus(@RequestParam("status") AdStatus status) {
-        List<AdDTO> ads = adminService.getAdsByStatus(status);
-        return ResponseEntity.ok(ads);
+    public Page<AdDTO> getAdsByStatus(@RequestParam AdStatus status, Pageable pageable) {
+        return adminService.getAdsByStatus(status, pageable);
     }
 
     @GetMapping("/feedbacks")

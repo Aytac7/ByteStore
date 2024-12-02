@@ -135,17 +135,13 @@ public class AdController {
         return ResponseEntity.ok(ad);
     }
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<AdDTO>> getAllAds() {
-//        List<AdDTO> ads = adService.getAllAds();
-//        return ResponseEntity.ok(ads);
-//    }
-
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AdDTO>> getAdByUserId(@PathVariable Long userId) {
-        List<AdDTO> ads = adService.getAdsByUserId(userId);
-        return ResponseEntity.ok(ads);
+    public Map<String, Object>  getAdByUserId(
+            @RequestParam (value="userId", required = false) Long userId,
+                                                      Pageable pageable) {
+        return adService.getAdsByUserId(userId,pageable);
+
     }
 
     @GetMapping("/new")
@@ -165,14 +161,4 @@ public class AdController {
 
 
 
-    //    @GetMapping("/search/suggestions")
-//    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
-//        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
-//
-//        if (suggestions.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Heç bir uyğun nəticə tapılmadı.");
-//        }
-//
-//        return ResponseEntity.ok(suggestions);
-//    }
 }

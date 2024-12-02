@@ -88,7 +88,38 @@ public class AdService {
         return response;
 
     }
+    public  Map<String, Object> getAdsByUserId(Long userId,Pageable pageable) {
+        Page<Ad> ads = adRepository.findByUser_UserIdAndStatus(userId,pageable, AdStatus.APPROVED);
+        getFavoriteAdIds(userId);
 
+                Page <AdDTO> adPage= ads.map(ad -> AdDTO.builder()
+                .id(ad.getId())
+                .userId(ad.getUser().getUserId())
+                .price(ad.getPrice())
+                .header(ad.getHeader())
+                .additionalInfo(ad.getAdditionalInfo())
+                .isNew(ad.getIsNew())
+                .categoryId(ad.getCategory().getId())
+                .brandId(ad.getBrand().getId())
+                .modelId(ad.getModel().getId())
+                .modelName(ad.getModel().getName())
+                .categoryName(ad.getCategory().getName())
+                .brandName(ad.getBrand().getName())
+                .isFavorite(userId != null && getFavoriteAdIds(userId).contains(ad.getId()))
+                .imageUrls(ad.getImages().stream()
+                        .map(Image::getImageUrl)
+                        .collect(Collectors.toList()))
+                .phonePrefix(ad.getPhonePrefix())
+                .phoneNumber(ad.getPhoneNumber())
+                .status(ad.getStatus().toString())
+                .city(ad.getCity())
+                .build());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adPage);
+        return response;
+    }
     public Map<String, Object> getAllNewAds(Long userId, Pageable pageable) {
         Page<Ad> ads = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
 
@@ -309,56 +340,8 @@ public class AdService {
     }
 
 
-    public List<AdDTO> getAllAds() {
-        return adRepository.findAll().stream().map(
-                ad -> AdDTO.builder()
-                        .id(ad.getId())
-                        .categoryId(ad.getCategory().getId())
-                        .brandId(ad.getBrand().getId())
-                        .modelId(ad.getModel().getId())
-                        .price(ad.getPrice())
-                        .header(ad.getHeader())
-                        .additionalInfo(ad.getAdditionalInfo())
-                        .city(ad.getCity())
-                        .isNew(ad.getIsNew())
-                        .imageUrls(ad.getImages().stream()
-                                .map(Image::getImageUrl)
-                                .collect(Collectors.toList()))
-                        .userId(ad.getUser().getUserId())
-                        .phonePrefix(ad.getPhonePrefix())
-                        .phoneNumber(ad.getPhoneNumber())
-                        .status(ad.getStatus().toString())
-                        .build()
-        ).collect(Collectors.toList());
-    }
 
 
-    public List<AdDTO> getAdsByUserId(Long userId) {
-        List<Ad> ads = adRepository.findByUser_UserId(userId);
-
-        return ads.stream().map(ad -> AdDTO.builder()
-                .id(ad.getId())
-                .userId(ad.getUser().getUserId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .additionalInfo(ad.getAdditionalInfo())
-                .isNew(ad.getIsNew())
-                .categoryId(ad.getCategory().getId())
-                .brandId(ad.getBrand().getId())
-                .modelId(ad.getModel().getId())
-                .modelName(ad.getModel().getName())
-                .categoryName(ad.getCategory().getName())
-                .brandName(ad.getBrand().getName())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .phonePrefix(ad.getPhonePrefix())
-                .phoneNumber(ad.getPhoneNumber())
-                .status(ad.getStatus().toString())
-                .city(ad.getCity())
-                .build()
-        ).collect(Collectors.toList());
-    }
 
     public AdDTO getAdById(Long id) {
         Ad ad = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));

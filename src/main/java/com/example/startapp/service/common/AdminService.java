@@ -3,19 +3,15 @@ package com.example.startapp.service.common;
 import com.example.startapp.dto.response.common.AdDTO;
 import com.example.startapp.entity.common.Feedbacks;
 import com.example.startapp.entity.common.Ad;
-import com.example.startapp.entity.auth.User;
 import com.example.startapp.entity.common.Image;
 import com.example.startapp.enums.AdStatus;
-import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.AdNotFoundException;
-import com.example.startapp.exception.UnauthorizedException;
-import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.exception.EmptyRejectionException;
 import com.example.startapp.repository.common.FeedbacksRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -55,33 +51,44 @@ public class AdminService {
         adRepository.save(ad);
     }
 
-    public List<AdDTO> getAdsByStatus(AdStatus status) {
-        List<Ad> ads = adRepository.findAdsByStatus(status);
-        return ads.stream()
-                .map(this::convertToAdDTO)
-                .collect(Collectors.toList());
+
+
+
+    public Page<AdDTO> getAdsByStatus(AdStatus status, Pageable pageable) {
+        Page<Ad> ads = adRepository.findAdsByStatus(status, pageable);
+
+        if (ads.isEmpty()) {
+            System.out.println("No ads found for status: " + status);
+            return Page.empty();
+        }
+
+
+        return ads.map(ad -> {
+
+            return AdDTO.builder()
+                    .id(ad.getId())
+                    .userId(ad.getUser().getUserId())
+                    .price(ad.getPrice())
+                    .header(ad.getHeader())
+                    .additionalInfo(ad.getAdditionalInfo())
+                    .isNew(ad.getIsNew())
+                    .categoryId(ad.getCategory().getId())
+                    .brandId(ad.getBrand().getId())
+                    .modelId(ad.getModel().getId())
+                    .modelName(ad.getModel().getName())
+                    .categoryName(ad.getCategory().getName())
+                    .brandName(ad.getBrand().getName())
+                    .imageUrls(ad.getImages().stream()
+                            .map(Image::getImageUrl)
+                            .collect(Collectors.toList()))
+                    .phonePrefix(ad.getPhonePrefix())
+                    .phoneNumber(ad.getPhoneNumber())
+                    .status(ad.getStatus().toString())
+                    .city(ad.getCity())
+                    .build();
+        });
     }
 
-    private AdDTO convertToAdDTO(Ad ad) {
-        return AdDTO.builder()
-                .id(ad.getId())
-                .price(ad.getPrice())
-                .header(ad.getHeader())
-                .additionalInfo(ad.getAdditionalInfo())
-                .isNew(ad.getIsNew())
-                .userId(ad.getUser().getUserId())
-                .categoryId(ad.getCategory().getId())
-                .brandId(ad.getBrand().getId())
-                .modelId(ad.getModel().getId())
-                .city(ad.getCity())
-                .imageUrls(ad.getImages().stream()
-                        .map(Image::getImageUrl)
-                        .collect(Collectors.toList()))
-                .phonePrefix(ad.getPhonePrefix())
-                .phoneNumber(ad.getPhoneNumber())
-                .status(ad.getStatus().toString())
-                .build();
-    }
 
     public void deleteAd(Long adId) {
         adRepository.deleteById(adId);
