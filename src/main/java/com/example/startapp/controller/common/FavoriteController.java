@@ -1,6 +1,7 @@
 package com.example.startapp.controller.common;
 
 import com.example.startapp.dto.response.common.AdDTOSpecific;
+import com.example.startapp.exception.AdNotFoundException;
 import com.example.startapp.service.common.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,22 +17,38 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-    @PostMapping("/{userId}/toggle/{adId}")
+    @PostMapping("/toggle/{adId}")
     public ResponseEntity<String> toggleFavorite(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long adId) {
         try {
-            String result = favoriteService.toggleFavoriteAd(userId, adId);
+            String token = authorizationHeader.replace("Bearer ", "");
+            String result = favoriteService.toggleFavoriteAd(token, adId);
             return ResponseEntity.ok(result);
+
+        } catch (AdNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @GetMapping("/{userId}")
-    public Page<AdDTOSpecific> getFavoritesForUser(
-            @PathVariable Long userId,
+    @GetMapping("/myFavs")
+    public ResponseEntity<Page<AdDTOSpecific>> getFavoritesForUser(
+            @RequestHeader("Authorization") String authorizationHeader,
             Pageable pageable) {
-        return favoriteService.getFavoritesForUser(userId, pageable);
+        try {
+            String token = authorizationHeader.replace("Bearer ", "");
+            Page<AdDTOSpecific> favorites = favoriteService.getFavoritesForUser(token, pageable);
+
+            if (favorites.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(favorites);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

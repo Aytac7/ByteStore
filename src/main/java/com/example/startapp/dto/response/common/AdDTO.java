@@ -21,6 +21,7 @@ public class AdDTO {
      Long brandId;
      String header;
      Boolean isNew;
+     boolean isFavorite;
      String status;
      Long categoryId;
      String phoneNumber;

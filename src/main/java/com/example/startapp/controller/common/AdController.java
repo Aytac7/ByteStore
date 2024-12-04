@@ -3,22 +3,20 @@ package com.example.startapp.controller.common;
 import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 
+import com.example.startapp.dto.response.auth.UserDtoSpecific;
 import com.example.startapp.dto.response.common.*;
-import com.example.startapp.entity.auth.User;
 import com.example.startapp.enums.AdStatus;
 import com.example.startapp.service.auth.JwtService;
 import com.example.startapp.service.common.AdService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.v3.oas.models.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.ErrorResponse;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +32,6 @@ public class AdController {
 
     private final AdService adService;
     private final ObjectMapper objectMapper;
-    private final JwtService jwtService;
 
 
     @GetMapping("/model/{modelId}")
@@ -46,24 +43,31 @@ public class AdController {
 
     @GetMapping("/filter")
     public ResponseEntity<Map<String, Object>> getAdsWithFilter(
-            @RequestParam (value="userId", required = false) Long userId,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             AdCriteriaRequest adCriteriaRequest,
             Pageable pageable) {
+        try {
+            String token = authorizationHeader.replace("Bearer ", "");
+            Map<String, Object> ads = adService.getAdsWithFilter(token, adCriteriaRequest, pageable);
+            if (ads.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(ads);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
 
-        Map<String, Object> ads = adService.getAdsWithFilter(userId, adCriteriaRequest, pageable);
-
-        if (ads.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
         }
-
-        return ResponseEntity.ok(ads);
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createAd(
             @RequestParam("adRequest") String adRequestJson,
             @RequestParam("files") List<MultipartFile> files,
-            @RequestHeader("Authorization") String authorizationHeader) {
+            @RequestHeader(value = "Authorization") String authorizationHeader) {
 
 
         if (adRequestJson == null || adRequestJson.isEmpty()) {
@@ -142,30 +146,32 @@ public class AdController {
 //    }
 
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AdDTO>> getAdByUserId(@PathVariable Long userId) {
-        List<AdDTO> ads = adService.getAdsByUserId(userId);
-        return ResponseEntity.ok(ads);
+    @GetMapping("/user")
+    public Map<String, Object> getAdByUserId(@RequestHeader(value = "Authorization", required = false) String authorizationHeader, Pageable pageable) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        return adService.getAdsByUserId(token, pageable);
     }
 
     @GetMapping("/new")
     public Map<String, Object> getAllNewAds(
-            @RequestParam (value="userId", required = false) Long userId,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             Pageable pageable) {
-        return adService.getAllNewAds(userId,pageable);
+
+        String token = authorizationHeader.replace("Bearer ", "");
+        return adService.getAllNewAds(token, pageable);
+
     }
 
     @GetMapping("/secondhand")
     public Map<String, Object> getAllSecondHandAds(
-            @RequestParam (value = "userId",required = false) Long userId,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             Pageable pageable) {
-        return adService.getAllSecondHandAds(userId,pageable);
+        String token = authorizationHeader.replace("Bearer ", "");
+        return adService.getAllSecondHandAds(token, pageable);
     }
 
 
-
-
-    //    @GetMapping("/search/suggestions")
+//    @GetMapping("/search/suggestions")
 //    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
 //        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
 //

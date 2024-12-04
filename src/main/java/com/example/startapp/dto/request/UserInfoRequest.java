@@ -25,9 +25,6 @@ public class UserInfoRequest {
 
     private String phoneNumber;
 
-    @NotNull
-    private Long userId;
-
     @Size(max = 1)
-    private List<MultipartFile> image;
+    private transient List<MultipartFile> image;
 }

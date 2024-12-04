@@ -9,6 +9,7 @@ import com.example.startapp.exception.AdNotFoundException;
 import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.repository.common.AdRepository;
 import com.example.startapp.repository.common.FavoriteRepository;
+import com.example.startapp.service.auth.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +26,12 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final AdRepository adRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Transactional
-    public String toggleFavoriteAd(Long userId, Long adId) {
+    public String toggleFavoriteAd(String token, Long adId) {
+        Long userId = jwtService.extractUserId(token);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı, ID: " + userId));
 
@@ -51,7 +55,8 @@ public class FavoriteService {
         }
     }
 
-    public Page<AdDTOSpecific> getFavoritesForUser(Long userId, Pageable pageable) {
+    public Page<AdDTOSpecific> getFavoritesForUser(String token, Pageable pageable) {
+        Long userId = jwtService.extractUserId(token);
         Page<Favorite> favoritesPage = favoriteRepository.findByUserUserId(userId, pageable);
 
         return favoritesPage.map(favorite -> {

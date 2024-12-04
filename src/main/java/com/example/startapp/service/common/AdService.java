@@ -50,9 +50,8 @@ public class AdService {
     private final FavoriteRepository favoriteRepository;
 
 
-    //updated version 11:56
-
-    public Map<String, Object> getAdsWithFilter(Long userId, AdCriteriaRequest adCriteriaRequest, Pageable pageable) {
+    public Map<String, Object> getAdsWithFilter(String token, AdCriteriaRequest adCriteriaRequest, Pageable pageable) {
+        Long userId = jwtService.extractUserId(token);
         Specification<Ad> specification = AdSpecification.getAdByCriteriaRequest(adCriteriaRequest);
         Page<Ad> ads = adRepository.findAll(specification, pageable);
 
@@ -89,10 +88,11 @@ public class AdService {
 
     }
 
-    public Map<String, Object> getAllNewAds(Long userId, Pageable pageable) {
+    public Map<String, Object> getAllNewAds(String token, Pageable pageable) {
         Page<Ad> ads = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
+        Long userId = jwtService.extractUserId(token);
 
-        getFavoriteAdIds(userId);
+        getFavoriteAdIds(String.valueOf(userId));
 
         Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
@@ -103,7 +103,7 @@ public class AdService {
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
-                .isFavorite(userId != null && getFavoriteAdIds(userId).contains(ad.getId()))
+                .isFavorite(userId != null && getFavoriteAdIds(String.valueOf(userId)).contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -114,10 +114,11 @@ public class AdService {
         return response;
     }
 
-    public Map<String, Object> getAllSecondHandAds(Long userId, Pageable pageable) {
+    public Map<String, Object> getAllSecondHandAds(String token, Pageable pageable) {
         Page<Ad> ads = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
+        Long userId = jwtService.extractUserId(token);
 
-        getFavoriteAdIds(userId);
+        getFavoriteAdIds(String.valueOf(userId));
         Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
@@ -127,7 +128,7 @@ public class AdService {
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
-                .isFavorite(userId != null && getFavoriteAdIds(userId).contains(ad.getId()))
+                .isFavorite(userId != null && getFavoriteAdIds(String.valueOf(userId)).contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -138,7 +139,8 @@ public class AdService {
         return response;
     }
 
-    private Set<Long> getFavoriteAdIds(Long userId) {
+    private Set<Long> getFavoriteAdIds(String token) {
+        Long userId = jwtService.extractUserId(token);
         if (userId != null) {
             List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
             return favorites.stream()
@@ -177,17 +179,21 @@ public class AdService {
 
     public void createAd(AdRequest adRequest, List<MultipartFile> files, String token) {
         Long userId = jwtService.extractUserId(token);
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+        Category category = categoryRepository.findById(adRequest.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+
+        Brand brand = brandRepository.findById(adRequest.getBrandId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid brand ID"));
+
+        Model model = modelRepository.findById(adRequest.getModelId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid model ID"));
 
         Ad ad = Ad.builder()
-                .category(categoryRepository.findById(adRequest.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID")))
-                .brand(brandRepository.findById(adRequest.getBrandId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid brand ID")))
-                .model(modelRepository.findById(adRequest.getModelId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid model ID")))
+                .category(category)
+                .brand(brand)
+                .model(model)
                 .price(adRequest.getPrice())
                 .header(adRequest.getHeader())
                 .additionalInfo(adRequest.getAdditionalInfo())
@@ -295,7 +301,6 @@ public class AdService {
         adRepository.save(ad);
     }
 
-
     public void deleteAdById(Long adId, String token) {
         Long userId = jwtService.extractUserId(token);
         Ad ad = adRepository.findById(adId)
@@ -332,11 +337,12 @@ public class AdService {
         ).collect(Collectors.toList());
     }
 
+    public Map<String, Object> getAdsByUserId(String token, Pageable pageable) {
+        Page<Ad> ads = adRepository.findByUser_UserIdAndStatus(pageable, AdStatus.APPROVED);
+        Long userId = jwtService.extractUserId(token);
+        getFavoriteAdIds(String.valueOf(userId));
 
-    public List<AdDTO> getAdsByUserId(Long userId) {
-        List<Ad> ads = adRepository.findByUser_UserId(userId);
-
-        return ads.stream().map(ad -> AdDTO.builder()
+        Page<AdDTO> adPage = ads.map(ad -> AdDTO.builder()
                 .id(ad.getId())
                 .userId(ad.getUser().getUserId())
                 .price(ad.getPrice())
@@ -349,6 +355,7 @@ public class AdService {
                 .modelName(ad.getModel().getName())
                 .categoryName(ad.getCategory().getName())
                 .brandName(ad.getBrand().getName())
+                .isFavorite(userId != null && getFavoriteAdIds(String.valueOf(userId)).contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -356,8 +363,12 @@ public class AdService {
                 .phoneNumber(ad.getPhoneNumber())
                 .status(ad.getStatus().toString())
                 .city(ad.getCity())
-                .build()
-        ).collect(Collectors.toList());
+                .build());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adPage);
+        return response;
     }
 
     public AdDTO getAdById(Long id) {

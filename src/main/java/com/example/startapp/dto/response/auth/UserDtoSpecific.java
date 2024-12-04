@@ -1,12 +1,10 @@
 package com.example.startapp.dto.response.auth;
 
+import com.example.startapp.dto.response.common.ImageDto;
 import com.example.startapp.entity.common.Image;
 import com.example.startapp.enums.PhonePrefix;
 import com.example.startapp.enums.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -28,8 +26,10 @@ public class UserDtoSpecific {
 
     private String phoneNumber;
 
-    private Image profilePhoto;
+    private ImageDto profilePhoto;
 
     private UserRole role;
 
 }
+
+

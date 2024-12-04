@@ -125,16 +125,7 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//        grantedAuthoritiesConverter.setAuthorityPrefix("");
-//        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
-//
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-//        return jwtAuthenticationConverter;
-//    }
+
 
     @Bean
     public AuthenticationSuccessHandler oAuth2LoginSuccessHandler() {
@@ -181,9 +172,7 @@ public class SecurityConfiguration {
     };
     public static String[] ADMIN = {
             "/admin/**",
-            "/ads/**",
-//            "/user/**"
-
+            "/ads/**"
 
 
     };
@@ -192,10 +181,10 @@ public class SecurityConfiguration {
             "/ads/update/{adId}",
             "/ads/myAds",
             "/ads/delete/{adId}",
-            "/favorites/{userId}/toggle/{adId}",
-            "/favorites/{userId}",
+            "/favorites/toggle/{adId}",
+            "/favorites/myFavs",
             "/user/update",
-            "/user/delete/{userId}",
+            "/user/delete",
             "/user/info"
     };
 
