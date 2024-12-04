@@ -24,15 +24,13 @@ public interface AdRepository extends JpaRepository<Ad, Long>,
     List<Ad> findByModelIdAndStatus(Long modelId,AdStatus adStatus);
 
     List<Ad> findAllByCreatedAtBefore(LocalDateTime createdAt);
-
-    List<Ad> findByUser_UserId(Long userId);
-
+    Page<Ad> findByUser_UserIdAndStatus(Pageable pageable, AdStatus status);
     List<Ad> findAdsByStatus(AdStatus status);
 
     Page<Ad> findByIsNewTrueAndStatus(Pageable pageable, AdStatus status);
 
     Page<Ad> findByIsNewFalseAndStatus(Pageable pageable, AdStatus status);
     Page<Ad> findAllAdByStatus(Pageable pageable, AdStatus status);
-
+    Page<Ad> findAdsByStatus(Pageable pageable,AdStatus status);
     void deleteAdById(Long id);
 }

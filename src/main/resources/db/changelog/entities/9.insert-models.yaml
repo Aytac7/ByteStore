@@ -86,7 +86,9 @@ databaseChangeLog:
               ('Digər', (SELECT id FROM brands WHERE name = 'Digər'), (SELECT id FROM categories WHERE name = 'Telefonlar')),
         
         
-        
+              ('ZenBook', (SELECT id FROM brands WHERE name = 'ASUS'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              ('VivoBook', (SELECT id FROM brands WHERE name = 'ASUS'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              ('ROG', (SELECT id FROM brands WHERE name = 'ASUS'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ('MacBook Air M1', (SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ('MacBook Air M2', (SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ('MacBook M1', (SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
@@ -95,9 +97,7 @@ databaseChangeLog:
               ('iMac', (SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ('Mac mini', (SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ('Mac studio', (SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
-              ('ZenBook', (SELECT id FROM brands WHERE name = 'ASUS'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
-              ('VivoBook', (SELECT id FROM brands WHERE name = 'ASUS'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
-              ('ROG', (SELECT id FROM brands WHERE name = 'ASUS'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
+              
               ('Aspire', (SELECT id FROM brands WHERE name = 'Acer'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ('Predator', (SELECT id FROM brands WHERE name = 'Acer'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ('Swift', (SELECT id FROM brands WHERE name = 'Acer'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),

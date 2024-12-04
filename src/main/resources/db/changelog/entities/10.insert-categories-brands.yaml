@@ -17,6 +17,7 @@ databaseChangeLog:
 
   
                -- Kompüter və Notbuklar
+              ((SELECT id FROM brands WHERE name = 'Apple'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ((SELECT id FROM brands WHERE name = 'HP'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ((SELECT id FROM brands WHERE name = 'Dell'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),
               ((SELECT id FROM brands WHERE name = 'Lenovo'), (SELECT id FROM categories WHERE name = 'Kompüter və Notbuklar')),

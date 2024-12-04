@@ -46,15 +46,6 @@ public class JwtService {
         return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
 
-
-
-
-//    public Boolean extractEnabled(String token) {
-//        return extractClaim(token, claims -> claims.get("enabled", Boolean.class));
-//    }
-
-
-
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -85,14 +76,12 @@ public class JwtService {
         extraClaims.put("userId", userEntity.getUserId());
         extraClaims.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
 
-//        extraClaims.put("enabled", userEntity.getUserId());
-
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername().isEmpty() ? "user" : userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(Date.from(Instant.now().plus(Duration.ofMinutes(30))))
+                .setExpiration(Date.from(Instant.now().plus(Duration.ofMinutes(90))))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -109,28 +98,5 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-
-    public User getCurrentUserFromToken() {
-        String token = getTokenFromSecurityContext();
-
-        if (token == null) {
-            throw new IllegalStateException("Token not found");
-        }
-        Long userId = extractClaim(token, claims -> claims.get("userId", Long.class));
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
-    }
-
-    public String getTokenFromSecurityContext() {
-    var authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication != null) {
-        if (authentication.getCredentials() instanceof String) {
-            return (String) authentication.getCredentials();
-        } else {
-            throw new IllegalStateException("No JWT token found in SecurityContext");
-        }
-    }
-    throw new IllegalStateException("Authentication not found in SecurityContext");
-}
 
 }

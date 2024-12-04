@@ -18,26 +18,27 @@ public class ForgotPasswordController {
 
 
     public ForgotPasswordController(ForgotPasswordService forgotPasswordService) {
-        this.forgotPasswordService=forgotPasswordService;
+        this.forgotPasswordService = forgotPasswordService;
     }
 
 
     @PostMapping("/verifyMail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
-        return  forgotPasswordService.verifyEmail(email);
+        return forgotPasswordService.verifyEmail(email);
 
 
     }
+
     @PostMapping("/verifyOtp/{otp}/{email}")
     public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) throws IOException {
-            return forgotPasswordService.verifyOtp(otp, email);
+        return forgotPasswordService.verifyOtp(otp, email);
 
     }
 
     @PostMapping("/changePassword/{token}")
     public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
                                                         @PathVariable String token) {
-       return forgotPasswordService.changePasswordHandler(changePassword,token);
+        return forgotPasswordService.changePasswordHandler(changePassword, token);
     }
 
 }

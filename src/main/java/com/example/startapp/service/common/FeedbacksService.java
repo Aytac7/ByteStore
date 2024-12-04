@@ -1,6 +1,5 @@
 package com.example.startapp.service.common;
 
-import com.amazonaws.services.guardduty.model.Feedback;
 import com.example.startapp.dto.request.common.FeedbackRequest;
 import com.example.startapp.entity.common.Feedbacks;
 import com.example.startapp.repository.common.FeedbacksRepository;

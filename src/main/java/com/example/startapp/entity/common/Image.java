@@ -2,6 +2,8 @@ package com.example.startapp.entity.common;
 
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.entity.common.Ad;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,8 +35,8 @@ public class Image {
     @Column(nullable = false)
     private String filePath;
 
-
     @Column(nullable = false)
+    @JsonProperty("imageUrl")
     String imageUrl;
 
     @CreationTimestamp
@@ -49,5 +51,6 @@ public class Image {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)
+    @JsonIgnore
     private User user;
 }

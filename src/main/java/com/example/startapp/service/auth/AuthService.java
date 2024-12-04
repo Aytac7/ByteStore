@@ -101,39 +101,9 @@ public class AuthService {
 
         emailService.sendSimpleMessage(mailBody);
         userOtpRepository.save(byUser);
-        return ResponseEntity.ok("Email sent for verification!");
+        return ResponseEntity.ok("Təsdiqləmə üçün mail göndərildi");
     }
 
-    @Transactional
-    public AuthResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found!"));
-
-        entityManager.refresh(user);
-        log.info("Forced refreshed User: {}", user);
-
-        if (!user.isEnabled()) {
-            throw new CustomLockedException("Hesabınız aktiv deyil.");
-        }
-        log.info("Status: {}", user.isEnabled());
-
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            log.info("Invalid password for user: {}", user.getEmail());
-            handleFailedAttempts(user);
-            throw new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Invalid username or password");
-        }
-
-        resetFailedAttempts(user.getEmail());
-        log.info("User login successful: {}", user.getEmail());
-
-        var accessToken = jwtService.generateToken(user);
-        var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
-
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getRefreshToken())
-                .build();
-    }
 
 
     public AuthResponse confirmRegistration(String email, Integer otp) {
@@ -158,6 +128,34 @@ public class AuthService {
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Transactional
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "User not found!"));
+
+        if (!user.isEmailVerified()) {
+            throw new CustomLockedException("Hesabınız təsdiqlənməyib. Zəhmət olmasa emailinizi təsdiqləyin.");
+        }
+        if (!user.isEnabled()) {
+            throw new CustomLockedException("Hesabınız aktiv deyil.");
+        }
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            log.info("Kod yanlışdır: {}", user.getEmail());
+            handleFailedAttempts(user);
+            throw new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Yanlış kod ya ad");
+        }
+
+        resetFailedAttempts(user.getEmail());
+        var accessToken = jwtService.generateToken(user);
+        var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getRefreshToken())
                 .build();
     }
 
