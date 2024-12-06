@@ -145,12 +145,18 @@ public class AdController {
 //        return ResponseEntity.ok(ads);
 //    }
 
-
     @GetMapping("/user")
-    public Map<String, Object> getAdByUserId(@RequestHeader(value = "Authorization", required = false) String authorizationHeader, Pageable pageable) {
+    public Map<String, Object> getAdByUserId(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+            Pageable pageable
+    ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid or missing Authorization header");
+        }
         String token = authorizationHeader.replace("Bearer ", "");
         return adService.getAdsByUserId(token, pageable);
     }
+
 
     @GetMapping("/new")
     public Map<String, Object> getAllNewAds(

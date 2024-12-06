@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   bstore:
-    image: projectb8/bstore:v1
+    image: projectb8/bstore:v2
     ports:
       - 8082:8082
     environment:

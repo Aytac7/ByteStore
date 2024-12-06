@@ -338,8 +338,8 @@ public class AdService {
     }
 
     public Map<String, Object> getAdsByUserId(String token, Pageable pageable) {
-        Page<Ad> ads = adRepository.findByUser_UserIdAndStatus(pageable, AdStatus.APPROVED);
         Long userId = jwtService.extractUserId(token);
+        Page<Ad> ads = adRepository.findByUser_UserIdAndStatus(userId, pageable, AdStatus.APPROVED);
         getFavoriteAdIds(String.valueOf(userId));
 
         Page<AdDTO> adPage = ads.map(ad -> AdDTO.builder()
