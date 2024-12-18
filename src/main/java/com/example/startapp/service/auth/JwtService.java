@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-    private final UserRepository userRepository;
 
     private static final String SECRET_KEY = "BF7FD11ACE545745B7BA1AF98B6F156D127BC7BB544BAB6A4FD74E4FC7";
 
@@ -81,7 +80,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername().isEmpty() ? "user" : userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(Date.from(Instant.now().plus(Duration.ofMinutes(90))))
+                .setExpiration(Date.from(Instant.now().plus(Duration.ofMinutes(2))))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

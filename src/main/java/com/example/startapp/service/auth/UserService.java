@@ -154,6 +154,7 @@ public class UserService {
                 .phonePrefix(user.getPhonePrefix())
                 .phoneNumber(user.getPhoneNumber())
                 .profilePhoto(profilePhoto)
+                .role(user.getRole())
                 .build();
     }
 }

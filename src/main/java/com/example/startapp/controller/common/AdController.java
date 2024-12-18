@@ -3,10 +3,8 @@ package com.example.startapp.controller.common;
 import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 
-import com.example.startapp.dto.response.auth.UserDtoSpecific;
 import com.example.startapp.dto.response.common.*;
 import com.example.startapp.enums.AdStatus;
-import com.example.startapp.service.auth.JwtService;
 import com.example.startapp.service.common.AdService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -127,9 +125,20 @@ public class AdController {
     }
 
     @GetMapping("/myAds")
-    public ResponseEntity<List<AdDTO>> getMyAds(@RequestParam("status") AdStatus status) {
-        List<AdDTO> myAds = adService.getUserAdsByStatus(status);
-        return ResponseEntity.ok(myAds);
+    public ResponseEntity<Map<String, Object>> getUserAdsByStatus(
+            @RequestHeader(value = "Authorization") String authorizationHeader,
+            @RequestParam("status") AdStatus status,
+            Pageable pageable) {
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Authorization token is required"));
+        }
+        String token = authorizationHeader.replace("Bearer ", "");
+        if (!isValidJwt(token)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Invalid JWT token"));
+        }
+        Map<String, Object> response = adService.getUserAdsByStatus(token, status, pageable);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -139,7 +148,8 @@ public class AdController {
         return ResponseEntity.ok(ad);
     }
 
-//    @GetMapping("/all")
+
+    //    @GetMapping("/all")
 //    public ResponseEntity<List<AdDTO>> getAllAds() {
 //        List<AdDTO> ads = adService.getAllAds();
 //        return ResponseEntity.ok(ads);
@@ -147,36 +157,59 @@ public class AdController {
 
     @GetMapping("/user")
     public Map<String, Object> getAdByUserId(
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
-            Pageable pageable
-    ) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid or missing Authorization header");
-        }
-        String token = authorizationHeader.replace("Bearer ", "");
-        return adService.getAdsByUserId(token, pageable);
-    }
+            @RequestHeader("Authorization") String authorizationHeader,
+            Pageable pageable) {
 
+        String token = authorizationHeader.replace("Bearer ", "");
+        Map<String, Object> ads = adService.getAdsByUserId(token, pageable);
+        return ResponseEntity.ok(ads).getBody();
+    }
 
     @GetMapping("/new")
-    public Map<String, Object> getAllNewAds(
+    public ResponseEntity<?> getAllNewAds(
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             Pageable pageable) {
+        String token = null;
 
-        String token = authorizationHeader.replace("Bearer ", "");
-        return adService.getAllNewAds(token, pageable);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.replace("Bearer ", "").trim();
 
+            if (!isValidJwt(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid JWT token format");
+            }
+        }
+
+        Map<String, Object> response = adService.getAllNewAds(token, pageable);
+        return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/secondhand")
-    public Map<String, Object> getAllSecondHandAds(
+    public ResponseEntity<?> getAllSecondHandAds(
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             Pageable pageable) {
-        String token = authorizationHeader.replace("Bearer ", "");
-        return adService.getAllSecondHandAds(token, pageable);
+        String token = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.replace("Bearer ", "").trim();
+
+            if (!isValidJwt(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid JWT token format");
+            }
+        }
+
+        Map<String, Object> response = adService.getAllSecondHandAds(token, pageable);
+        return ResponseEntity.ok(response);
     }
 
+    private boolean isValidJwt(String token) {
+        return token != null && !token.isEmpty() && token.split("\\.").length == 3;
+    }
+}
 
+
+//
+//
 //    @GetMapping("/search/suggestions")
 //    public ResponseEntity<?> findSuggestions(@RequestParam String searchQuery, Pageable pageable) {
 //        Page<AdDTOSpecific> suggestions = adService.getSuggestions(searchQuery, pageable);
@@ -187,4 +220,3 @@ public class AdController {
 //
 //        return ResponseEntity.ok(suggestions);
 //    }
-}

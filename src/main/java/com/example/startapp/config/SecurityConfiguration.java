@@ -185,7 +185,9 @@ public class SecurityConfiguration {
             "/favorites/myFavs",
             "/user/update",
             "/user/delete",
-            "/user/info"
+            "/user/info",
+            "/ads/secondhand",
+
     };
 
 }

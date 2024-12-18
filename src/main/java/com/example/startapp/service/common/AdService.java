@@ -1,32 +1,24 @@
 package com.example.startapp.service.common;
 
-import com.amazonaws.services.accessanalyzer.model.AccessDeniedException;
 import com.example.startapp.dto.request.common.AdCriteriaRequest;
 import com.example.startapp.dto.request.common.AdRequest;
 import com.example.startapp.dto.response.common.*;
 import com.example.startapp.entity.auth.User;
 import com.example.startapp.entity.common.*;
 import com.example.startapp.enums.AdStatus;
-import com.example.startapp.enums.PhonePrefix;
-import com.example.startapp.enums.UserRole;
 import com.example.startapp.exception.AdNotFoundException;
-import com.example.startapp.exception.CustomLockedException;
-import com.example.startapp.exception.UserNotFoundException;
 import com.example.startapp.repository.auth.UserRepository;
 import com.example.startapp.repository.common.*;
 import com.example.startapp.service.auth.JwtService;
 import com.example.startapp.service.auth.S3Service;
-import com.example.startapp.service.auth.UserService;
 import com.example.startapp.service.specification.AdSpecification;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,7 +38,6 @@ public class AdService {
     private final ModelRepository modelRepository;
     private final S3Service s3Service;
     private final JwtService jwtService;
-    private static final Logger log = LoggerFactory.getLogger(AdService.class);
     private final FavoriteRepository favoriteRepository;
 
 
@@ -90,9 +81,16 @@ public class AdService {
 
     public Map<String, Object> getAllNewAds(String token, Pageable pageable) {
         Page<Ad> ads = adRepository.findByIsNewTrueAndStatus(pageable, AdStatus.APPROVED);
-        Long userId = jwtService.extractUserId(token);
+        Long userId;
+        Set<Long> favoriteAdIds;
 
-        getFavoriteAdIds(String.valueOf(userId));
+        if (token != null && !token.isEmpty()) {
+            userId = jwtService.extractUserId(token);
+            favoriteAdIds = getFavoriteAdIds(userId);
+        } else {
+            favoriteAdIds = new HashSet<>();
+            userId = null;
+        }
 
         Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
@@ -103,7 +101,7 @@ public class AdService {
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
-                .isFavorite(userId != null && getFavoriteAdIds(String.valueOf(userId)).contains(ad.getId()))
+                .isFavorite(userId != null && favoriteAdIds.contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -112,13 +110,22 @@ public class AdService {
         response.put("totalCount", ads.getTotalElements());
         response.put("page", adDTOSpecificPage);
         return response;
+
     }
 
     public Map<String, Object> getAllSecondHandAds(String token, Pageable pageable) {
         Page<Ad> ads = adRepository.findByIsNewFalseAndStatus(pageable, AdStatus.APPROVED);
-        Long userId = jwtService.extractUserId(token);
+        Long userId;
+        Set<Long> favoriteAdIds;
 
-        getFavoriteAdIds(String.valueOf(userId));
+        if (token != null && !token.isEmpty()) {
+            userId = jwtService.extractUserId(token);
+            favoriteAdIds = getFavoriteAdIds(userId);
+        } else {
+            favoriteAdIds = new HashSet<>();
+            userId = null;
+        }
+
         Page<AdDTOSpecific> adDTOSpecificPage = ads.map(ad -> AdDTOSpecific.builder()
                 .id(ad.getId())
                 .categoryId(ad.getCategory().getId())
@@ -128,28 +135,18 @@ public class AdService {
                 .price(ad.getPrice())
                 .header(ad.getHeader())
                 .createdAt(ad.getCreatedAt())
-                .isFavorite(userId != null && getFavoriteAdIds(String.valueOf(userId)).contains(ad.getId()))
+                .isFavorite(userId != null && favoriteAdIds.contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
                 .build());
+
         Map<String, Object> response = new HashMap<>();
         response.put("totalCount", ads.getTotalElements());
         response.put("page", adDTOSpecificPage);
         return response;
     }
 
-    private Set<Long> getFavoriteAdIds(String token) {
-        Long userId = jwtService.extractUserId(token);
-        if (userId != null) {
-            List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
-            return favorites.stream()
-                    .map(favorite -> favorite.getAd().getId())
-                    .collect(Collectors.toSet());
-        } else {
-            return new HashSet<>();
-        }
-    }
 
     public List<AdDTO> getAdsByModel(Long modelId) {
         List<Ad> ads = adRepository.findByModelIdAndStatus(modelId, AdStatus.APPROVED);
@@ -313,7 +310,6 @@ public class AdService {
         }
     }
 
-
     public List<AdDTO> getAllAds() {
         return adRepository.findAll().stream().map(
                 ad -> AdDTO.builder()
@@ -339,9 +335,7 @@ public class AdService {
 
     public Map<String, Object> getAdsByUserId(String token, Pageable pageable) {
         Long userId = jwtService.extractUserId(token);
-        Page<Ad> ads = adRepository.findByUser_UserIdAndStatus(userId, pageable, AdStatus.APPROVED);
-        getFavoriteAdIds(String.valueOf(userId));
-
+        Page<Ad> ads = adRepository.findByUser_UserId(userId, pageable);
         Page<AdDTO> adPage = ads.map(ad -> AdDTO.builder()
                 .id(ad.getId())
                 .userId(ad.getUser().getUserId())
@@ -355,7 +349,6 @@ public class AdService {
                 .modelName(ad.getModel().getName())
                 .categoryName(ad.getCategory().getName())
                 .brandName(ad.getBrand().getName())
-                .isFavorite(userId != null && getFavoriteAdIds(String.valueOf(userId)).contains(ad.getId()))
                 .imageUrls(ad.getImages().stream()
                         .map(Image::getImageUrl)
                         .collect(Collectors.toList()))
@@ -370,6 +363,7 @@ public class AdService {
         response.put("page", adPage);
         return response;
     }
+
 
     public AdDTO getAdById(Long id) {
         Ad ad = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Invalid ad ID"));
@@ -398,11 +392,19 @@ public class AdService {
     }
 
 
-    public List<AdDTO> getUserAdsByStatus(AdStatus status) {
-        List<Ad> ads = adRepository.findAdsByStatus(status);
-        return ads.stream()
-                .map(this::convertToAdDTO)
-                .collect(Collectors.toList());
+    public Map<String, Object> getUserAdsByStatus(String token, AdStatus status, Pageable pageable) {
+        Long userId = null;
+        if (token != null && !token.isEmpty()) {
+             userId = jwtService.extractUserId(token);
+        }
+
+        Page<Ad> ads = adRepository.findAdsByStatus(pageable, status);
+        Page<AdDTO> adDTOPage = ads.map(this::convertToAdDTO);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalCount", ads.getTotalElements());
+        response.put("page", adDTOPage);
+        return response;
     }
 
     private AdDTO convertToAdDTO(Ad ad) {
@@ -429,6 +431,14 @@ public class AdService {
                 .build();
     }
 
-
+    private Set<Long> getFavoriteAdIds(Long userId) {
+        if (userId != null) {
+            List<Favorite> favorites = favoriteRepository.findByUserUserId(userId);
+            return favorites.stream()
+                    .map(favorite -> favorite.getAd().getId())
+                    .collect(Collectors.toSet());
+        }
+        return new HashSet<>();
+    }
 }
 

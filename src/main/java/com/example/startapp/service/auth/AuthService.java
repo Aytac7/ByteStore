@@ -48,13 +48,13 @@ public class AuthService {
     public String register(RegisterRequest registerRequest) {
 
         if (!registerRequest.getPassword().equals(registerRequest.getRepeatPassword())) {
-            throw new PasswordInvalidException(HttpStatus.BAD_REQUEST.name(), "Passwords do not match!");
+            throw new PasswordInvalidException(HttpStatus.BAD_REQUEST.name(), "Kod uyğunlaşmır");
         }
 
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            throw new UserEmailExistsException(HttpStatus.BAD_REQUEST.name(), "Email Exists");
+            throw new UserEmailExistsException(HttpStatus.BAD_REQUEST.name(), "Email mövcuddur");
         }
-        System.out.println("User Details: " + registerRequest);
+        System.out.println("İstifadəçi məlumatları: " + registerRequest);
 
         User user = User.builder()
                 .email(registerRequest.getEmail())
@@ -79,7 +79,7 @@ public class AuthService {
 
     public ResponseEntity<String> verifyEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Please provide an valid email!" + email));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND.name(), "Zəhmət olmasa düzgün email hesabı qeyd edin" + email));
 
         Integer otp = otpGenerator();
 

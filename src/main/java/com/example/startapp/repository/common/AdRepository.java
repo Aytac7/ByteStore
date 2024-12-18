@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface AdRepository extends JpaRepository<Ad, Long>,
@@ -24,8 +25,7 @@ public interface AdRepository extends JpaRepository<Ad, Long>,
     List<Ad> findByModelIdAndStatus(Long modelId,AdStatus adStatus);
 
     List<Ad> findAllByCreatedAtBefore(LocalDateTime createdAt);
-    Page<Ad> findByUser_UserIdAndStatus(Long userId, Pageable pageable, AdStatus status);
-    List<Ad> findAdsByStatus(AdStatus status);
+    Page<Ad> findByUser_UserId(Long userId, Pageable pageable);
 
     Page<Ad> findByIsNewTrueAndStatus(Pageable pageable, AdStatus status);
 
